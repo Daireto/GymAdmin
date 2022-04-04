@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using GymAdmin.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymAdmin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ServiciesController : Controller
     {
-        // use crud servicies is alone for admins
-       // [Authorize(Roles = "Admin")]
-
         private readonly DataContext _context;
 
-        public CountriesController(DataContext context)
+        public ServiciesController(DataContext context)
         {
             _context = context;
         }

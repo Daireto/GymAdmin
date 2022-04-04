@@ -17,12 +17,12 @@ namespace GymAdmin.Models
         [StringLength(20, MinimumLength = 6, ErrorMessage = "El campo {0} debe tener entre {2} y {1} carácteres")]
         public string Password { get; set; }
 
-        [Compare("Password", ErrorMessage = "Las contraseñas no coinciden")]
+        [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden")]
         [Display(Name = "Confirmación de contraseña")]
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [StringLength(20, MinimumLength = 6, ErrorMessage = "El campo {0} debe tener entre {2} y {1} carácteres")]
-        public string PasswordConfirm { get; set; }
+        public string ConfirmPassword { get; set; }
 
         [Display(Name = "Rol")]
         public UserType UserType { get; set; }
