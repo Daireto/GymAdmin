@@ -15,15 +15,20 @@ builder.Services.AddDbContext<DataContext>(o =>
 });
 
 //User configuration
+//TODO: Make strongest password
 builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 {
+    cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+    cfg.SignIn.RequireConfirmedEmail = true;
     cfg.User.RequireUniqueEmail = true;
     cfg.Password.RequireDigit = false;
     cfg.Password.RequiredUniqueChars = 0;
     cfg.Password.RequireLowercase = false;
     cfg.Password.RequireNonAlphanumeric = false;
     cfg.Password.RequireUppercase = false;
-}).AddEntityFrameworkStores<DataContext>();
+})
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<DataContext>();
 
 //Not authorized action configuration
 builder.Services.ConfigureApplicationCookie(options =>
@@ -35,6 +40,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 //Inyections
 builder.Services.AddScoped<IUserHelper, UserHelper>(); //IUserHelper
 builder.Services.AddScoped<IBlobHelper, BlobHelper>(); //IBlobHelper
+builder.Services.AddScoped<IMailHelper, MailHelper>(); //IMailHelper
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); //Real time changes on views
 
