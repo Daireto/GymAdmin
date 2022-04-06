@@ -49,7 +49,7 @@ namespace GymAdmin.Controllers
                 }
                 else if (result.IsNotAllowed)
                 {
-                    //TODO: Change for a view
+                    //TODO: Change for a view in the case the confirmation email was not sent, with a button to try to send again
                     ModelState.AddModelError(string.Empty, "¡Este email no está verificado! Siga los pasos enviados al correo");
                 }
                 else
@@ -67,6 +67,7 @@ namespace GymAdmin.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        //TODO: Make the view fot register user
         //Register get method
         public IActionResult Register()
         {
@@ -176,6 +177,7 @@ namespace GymAdmin.Controllers
             return View(); //TODO: Make the view
         }
 
+        //TODO: Make the view for edit user and change password
         //Edit user get method
         public async Task<IActionResult> EditUser()
         {
@@ -285,7 +287,7 @@ namespace GymAdmin.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            return View();
+            return View(); //TODO: Make the view
         }
 
         //Recover password post method
@@ -358,7 +360,7 @@ namespace GymAdmin.Controllers
                 Token = token
             };
 
-            return View(model);
+            return View(model); //TODO: Make the view
         }
 
         //Reset password post method
