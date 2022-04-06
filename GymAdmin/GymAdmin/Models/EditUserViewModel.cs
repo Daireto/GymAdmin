@@ -35,8 +35,8 @@ namespace GymAdmin.Models
 
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
-            ? "https://localhost:7156/images/noimage.png" //TODO: Correct path
-            : "https://gymadmin1.blob.core.windows.net/users/{ImageId}";
+            ? $"https://localhost:7156/images/noimage.png" //TODO: Correct path
+            : $"https://gymadmin1.blob.core.windows.net/users/{ImageId}";
 
         [Display(Name = "Foto")]
 #pragma warning disable CS8632 //Disable the warning because the "?"

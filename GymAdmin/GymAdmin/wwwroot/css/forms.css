@@ -1,0 +1,123 @@
+﻿/*
+    Containers
+*/
+#GymAdminPrincipalContainer {
+    width: 100%;
+    margin: 0;
+    padding: 10px 0;
+    border: none;
+    background-color: transparent;
+}
+
+#GymAdminFieldsContainer {
+    margin: 0;
+    padding: 0;
+    background-color: rgba(31, 32, 37, 0.8);
+    color: white;
+}
+
+/*
+    Forms
+*/
+#GymAdminForm {
+    margin: 0;
+    padding: 10px 60px;
+}
+
+.GymAdminFormElement {
+    margin-top: 40px;
+}
+
+.GymAdminFormLabel {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+}
+
+.GymAdminFormInput {
+    width: 100%;
+    display: block;
+    background-color: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    color: #f2c60d;
+    border-bottom: 1px solid #a8a7a7;
+    transition: all .2s ease-out;
+}
+
+    .GymAdminFormInput:focus {
+        border-bottom-color: #f2c60d;
+        outline: none;
+    }
+
+    .GymAdminFormInput:hover {
+        border-bottom-color: #f2c60d;
+    }
+
+.GymAdminFormButton {
+    padding: 0;
+    display: inline;
+    color: white;
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: #1F2025;
+    transition: all .2s ease-out;
+}
+
+input.GymAdminFormButton {
+    padding: 10px 20px;
+    display: inline;
+    color: white;
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: #1F2025;
+    transition: all .2s ease-out;
+}
+
+    .GymAdminFormButton a {
+        display: block !important;
+        margin: 0;
+        padding: 10px 20px;
+    }
+
+    .GymAdminFormButton a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .GymAdminFormButton:hover {
+        color: black;
+        background-color: #f2c60d;
+    }
+
+        .GymAdminFormButton:hover a {
+            color: black;
+        }
+
+.GymAdminFormLink {
+    margin: 20px;
+    display: block;
+    color: white;
+    text-decoration: none;
+    transition: all .2s ease-out;
+}
+
+    .GymAdminFormLink:hover {
+        color: #f2c60d;
+    }
+
+.GymAdminFormCheckbox:checked {
+    background-color: #9a6900;
+}
+
+.GymAdminFormCheckbox:hover ~ .GymAdminFormCheckboxLabel {
+    color: #f2c60d;
+}
+
+.GymAdminFormCheckbox:checked ~ .GymAdminFormCheckboxLabel {
+    color: #f2c60d;
+}
+
+.GymAdminFormCheckboxLabel {
+    transition: all .2s ease-out;
+}

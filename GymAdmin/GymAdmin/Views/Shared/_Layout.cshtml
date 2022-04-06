@@ -1,46 +1,94 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
+    <!-- Metadata -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- This tags refresh the caché for solved image caché errors -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- View data -->
     <title>@ViewData["Title"] - GymAdmin</title>
+
+    <!-- Libraries -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
+
+    <!-- Default style -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/GymAdmin.styles.css" asp-append-version="true" />
 </head>
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/layout.css" />
+
+<!-- Layout body -->
 <body>
+    <!-- Header -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="GymAdminHeader navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GymAdmin</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <!-- Header brand -->
+                <a class="GymAdminHeaderBrand navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">GymAdmin</a>
+                <!-- Header menu -->
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <!-- Header right menu -->
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
                         </li>
+                    </ul>
+                    <!-- Header left menu -->
+                    <ul class="navbar-nav justify-content-end flex-grow-1">
+                        <li class="nav-item">
+                            <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="ViewUser">@User.Identity.Name</a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <!-- Logout option -->
+                            <li class="nav-item">
+                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="Logout">Cerrar sesión</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- Login and register options -->
+
+                            <li class="nav-item">
+                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="Login">Ingresar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="Register">Registrarse</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
+    <!-- View body -->
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - GymAdmin - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- Footer -->
+    <footer class="GymAdminFooter footer text-muted">
+        <div class="GymAdminFooterContainer container">
+            &copy; 2022 - GymAdmin - <a class="GymAdminFooterLink text-muted" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
         </div>
     </footer>
+
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -1,67 +1,50 @@
 ﻿@model GymAdmin.Models.LoginViewModel
 
 @{
-    Layout = null;
     ViewData["title"] = "Login";
 }
 
-<!-- This tags refresh the caché for solved image caché errors -->
-<meta http-equiv='cache-control' content='no-cache'>
-<meta http-equiv='expires' content='0'>
-<meta http-equiv='pragma' content='no-cache'>
-
-<!-- Style libraries and sheets -->
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/Login.css" />
 
-<!-- Login header -->
-<header>
-    <nav class="LoginHeader navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
-        <div class="container-fluid" style="justify-content: center;">
-            <a class="navbar-brand text-white LoginHeaderBrand" asp-area="" asp-controller="Home" asp-action="Index">GymAdmin</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </nav>
-</header>
-
 <!-- Login form -->
-<div id="PrincipalContainer">
-    <div class="row" id="LoginElementsContainer">
-        <div class="col-md-5" id="LoginImageContainer">
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminLoginFormElementsContainer">
+        <div class="col-md-5" id="GymAdminLoginImageContainer">
             <img src="~/images/login-form-image.jpg" width="100%" />
         </div>
-        <div class="col-md-7" id="LoginFieldsContainer">
-            <form asp-action="Login" id="LoginForm">
+        <div class="col-md-7" id="GymAdminFieldsContainer">
+            <form asp-action="Login" id="GymAdminForm">
+                <!-- Validation summary -->
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group LoginFormField">
-                    <label asp-for="Username" class="control-label FormLabel"></label>
-                    <input asp-for="Username" class="FormInput" autocomplete="off" />
+                <!-- Field -->
+                <div class="form-group GymAdminFormElement">
+                    <label asp-for="Username" class="control-label GymAdminFormLabel"></label>
+                    <input asp-for="Username" class="GymAdminFormInput" autocomplete="off" />
                     <span asp-validation-for="Username" class="text-danger"></span>
                 </div>
-                <div class="form-group LoginFormField">
-                    <label asp-for="Password" class="control-label FormLabel"></label>
-                    <input asp-for="Password" type="password" class="FormInput" />
+                <!-- Field -->
+                <div class="form-group GymAdminFormElement">
+                    <label asp-for="Password" class="control-label GymAdminFormLabel"></label>
+                    <input asp-for="Password" type="password" class="GymAdminFormInput" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
+                <!-- Field -->
                 <div class="form-group mt-2">
                     <div class="form-check">
-                        <input asp-for="RememberMe" type="checkbox" class="form-check-input FormCheckbox" />
-                        <label asp-for="RememberMe" class="form-check-label FormLabel FormCheckboxLabel"></label>
+                        <input asp-for="RememberMe" type="checkbox" class="form-check-input GymAdminFormCheckbox" />
+                        <label asp-for="RememberMe" class="form-check-label GymAdminFormLabel GymAdminFormCheckboxLabel"></label>
                     </div>
                     <span asp-validation-for="RememberMe" class="text-warning"></span>
                 </div>
+                <!-- Buttons and links -->
                 <div class="form-group mt-2">
-                    <input type="submit" value="Iniciar sesión" class="FormButton LoginFormField FormLabel" />
-                    <button class="FormButton">
-                        <a asp-action="Register" class="LoginFormField FormLabel">Registrarse</a>
+                    <input type="submit" value="Iniciar sesión" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel" />
+                    <button disable class="GymAdminFormButton">
+                        <a asp-action="Register" class="GymAdminFormElement GymAdminFormLabel">Registrarse</a>
                     </button>
-                    <a asp-action="RecoverPassword" class="FormLink FormLabel">¿Has olvidado tu contraseña?</a>
+                    <a asp-action="RecoverPassword" class="GymAdminFormLink GymAdminFormLabel">¿Has olvidado tu contraseña?</a>
                 </div>
             </form>
         </div>

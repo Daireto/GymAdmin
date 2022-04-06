@@ -1,0 +1,11 @@
+﻿/*
+    User image
+*/
+.GymAdminUserImage{
+    border-radius: 50%;
+    width: 200px;
+}
+
+.GymAdminViewUserImageContainer{
+    text-align: center;
+}

@@ -29,8 +29,8 @@ namespace GymAdmin.Data.Entities
 
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
-            ? "https://localhost:7156/images/noimage.png" //TODO: Correct path
-            : "https://gymadmin1.blob.core.windows.net/users/{ImageId}";
+            ? $"https://localhost:7156/images/noimage.png" //TODO: Correct path
+            : $"https://gymadmin1.blob.core.windows.net/users/{ImageId}";
         
         [Display(Name = "Rol")]
         public UserType UserType { get; set; }

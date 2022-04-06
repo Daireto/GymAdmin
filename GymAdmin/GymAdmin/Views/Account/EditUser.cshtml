@@ -1,0 +1,83 @@
+﻿@model GymAdmin.Models.EditUserViewModel
+
+@{
+    ViewData["title"] = "Edit";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+
+<!-- Edit form -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="EditUser" id="GymAdminForm" enctype="multipart/form-data">
+                <!-- Hidden inputs -->
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="ImageId" />
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                <!-- Left column -->
+                    <div class="col-md-6">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="FirstName" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="FirstName" value="@Model.FirstName" class="GymAdminFormInput" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Document" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="Document" value="@Model.Document" class="GymAdminFormInput" />
+                            <span asp-validation-for="Document" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="PhoneNumber" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="PhoneNumber" value="@Model.PhoneNumber" class="GymAdminFormInput" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="LastName" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="LastName" value="@Model.LastName" class="GymAdminFormInput" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Document" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="Document" value="@Model.Document" class="GymAdminFormInput" />
+                            <span asp-validation-for="Document" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="ImageFile" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="ImageFile" class="GymAdminFormInput GymAdminFormImageInput" autocomplete="off" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Buttons and links -->
+                <div class="GymAdminRegisterFormButtons form-group mt-2">
+                    <input type="submit" value="Guardar cambios" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                    <button disabled class="GymAdminFormButton">
+                        <a asp-action="ViewUser" asp-controller="Account" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

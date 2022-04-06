@@ -19,6 +19,30 @@ namespace GymAdmin.Controllers
             _blobHelper = blobHelper;
             _mailHelper = mailHelper;
         }
+        //View user method
+        public async Task<IActionResult> ViewUser()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                User user = await _userHelper.GetUserAsync(User.Identity.Name);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                EditUserViewModel model = new()
+                {
+                    Id = user.Id,
+                    PhoneNumber = user.PhoneNumber,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Document = user.Document,
+                    DocumentType = user.DocumentType,
+                    ImageId = user.ImageId,
+                };
+                return View(model);
+            }
+            return RedirectToAction("Index", "Home");
+        }
 
         //Login get method
         public IActionResult Login()
@@ -67,7 +91,6 @@ namespace GymAdmin.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //TODO: Make the view fot register user
         //Register get method
         public IActionResult Register()
         {
@@ -90,6 +113,7 @@ namespace GymAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(AddUserViewModel model)
         {
+            //TODO: Evitar registrar usuario con documento que ya existe
             if (ModelState.IsValid)
             {
                 Guid imageId = Guid.Empty;
@@ -145,13 +169,13 @@ namespace GymAdmin.Controllers
         //View with the email confirmation message about instructions to do
         public IActionResult ConfirmEmailMessage()
         {
-            return View(); //TODO: Make the view
+            return View();
         }
 
         //View with the error sending email message
         public IActionResult ConfirmEmailErrorMessage()
         {
-            return View(); //TODO: Make the view
+            return View(); //TODO: Make the view (En caso de error al enviar el email)
         }
 
         //Confirm email method
@@ -174,10 +198,9 @@ namespace GymAdmin.Controllers
                 return NotFound();
             }
 
-            return View(); //TODO: Make the view
+            return View();
         }
 
-        //TODO: Make the view for edit user and change password
         //Edit user get method
         public async Task<IActionResult> EditUser()
         {
@@ -224,11 +247,12 @@ namespace GymAdmin.Controllers
                 user.LastName = model.LastName;
                 user.Document = model.Document;
                 user.DocumentType = model.DocumentType;
+                user.PhoneNumber = model.PhoneNumber;
                 user.ImageId = imageId;
                 var result = await _userHelper.UpdateUserAsync(user);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("ViewUser", "Account");
                 }
                 else
                 {
@@ -245,7 +269,7 @@ namespace GymAdmin.Controllers
             {
                 return View();
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home"); //TODO: Make the view  for change password
         }
 
         //Change password post method
@@ -287,7 +311,7 @@ namespace GymAdmin.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            return View(); //TODO: Make the view
+            return View();
         }
 
         //Recover password post method
@@ -343,13 +367,13 @@ namespace GymAdmin.Controllers
         //View with the recovering password message about instructions to do
         public IActionResult RecoverPasswordMessage()
         {
-            return View(); //TODO: Make the view
+            return View();
         }
 
         //View with the error recovering password message
         public IActionResult RecoverPasswordErrorMessage()
         {
-            return View(); //TODO: Make the view
+            return View();
         }
 
         //Reset password get method
@@ -384,7 +408,7 @@ namespace GymAdmin.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("ResetPasswordErrorMessage", "Account");
+                    return RedirectToAction("RecoverPasswordErrorMessage", "Account");
                 }
             }
 
@@ -394,13 +418,7 @@ namespace GymAdmin.Controllers
         //View with the reseting password message
         public IActionResult ResetPasswordMessage()
         {
-            return View(); //TODO: Make the view
-        }
-
-        //View with the error reseting password message
-        public IActionResult ResetPasswordErrorMessage()
-        {
-            return View(); //TODO: Make the view
+            return View();
         }
     }
 }

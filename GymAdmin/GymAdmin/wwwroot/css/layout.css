@@ -1,0 +1,61 @@
+﻿/*
+    Body
+*/
+body {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: black;
+    backdrop-filter: blur(6px);
+}
+
+/*
+    Header
+*/
+.GymAdminHeader {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: none;
+}
+
+.GymAdminHeaderBrand {
+    color: white;
+    font-size: 30px;
+    transition: all .2s ease-out;
+}
+
+    .GymAdminHeaderBrand:hover {
+        color: #f2c60d !important;
+    }
+
+.GymAdminHeaderLink {
+    color: white;
+    border-bottom: 1px solid transparent;
+    transition: all .2s ease-out;
+}
+
+    .GymAdminHeaderLink:hover {
+        color: #f2c60d !important;
+        border-bottom: 1px solid #f2c60d;
+    }
+
+/*
+    Footer
+*/
+.GymAdminFooter {
+    background-color: rgba(0, 0, 0, 0.4);
+    border: none;
+}
+
+.GymAdminFooterContainer {
+    font-size: 15px;
+    text-align: center;
+}
+
+.GymAdminFooterLink {
+    text-decoration: none;
+    transition: all .2s ease-out;
+}
+
+    .GymAdminFooterLink:hover {
+        color: #f2c60d !important;
+    }
