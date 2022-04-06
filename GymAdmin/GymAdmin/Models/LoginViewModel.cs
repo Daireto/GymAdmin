@@ -4,7 +4,7 @@ namespace GymAdmin.Models
 {
     public class LoginViewModel
     {
-        [Display(Name = "Email")]
+        [Display(Name = "Correo electrónico")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [EmailAddress(ErrorMessage = "Debes ingresar un correo válido")]
         public string Username { get; set; }
