@@ -25,40 +25,40 @@
                     </div>
                 </div>
                 <div class="row">
-                <!-- Left column -->
-                    <div class="col-md-6">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="FirstName" class="control-label GymAdminFormLabel"></label>
-                            <input value="@Model.FirstName" class="GymAdminFormInput" autocomplete="off" readonly/>
+                            <input value="@Model.FirstName" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label class="control-label GymAdminFormLabel">Correo electrónico</label>
-                            <input value="@User.Identity.Name" class="GymAdminFormInput" autocomplete="off" readonly/>
+                            <input value="@User.Identity.Name" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="Document" class="control-label GymAdminFormLabel"></label>
-                            <input value="@Model.Document" class="GymAdminFormInput" autocomplete="off" readonly/>
+                            <input value="@Model.Document" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                     <!-- Right column -->
-                    <div class="col-md-6">
+                    <div class="col-md-6 GymAdminFormColumn">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="LastName" class="control-label GymAdminFormLabel"></label>
-                            <input value="@Model.LastName" class="GymAdminFormInput" autocomplete="off" readonly/>
+                            <input value="@Model.LastName" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="PhoneNumber" class="control-label GymAdminFormLabel"></label>
-                            <input value="@Model.PhoneNumber" class="GymAdminFormInput" autocomplete="off" readonly/>
+                            <input value="@Model.PhoneNumber" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="Document" class="control-label GymAdminFormLabel"></label>
-                            <input value="@Model.Document" class="GymAdminFormInput" autocomplete="off" readonly/>
+                            <input value="@Model.Document" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                         <a asp-action="EditUser" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Editar</a>
                     </button>
                     <button disabled class="GymAdminFormButton">
-                        <a asp-action="RecoverPassword" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cambiar contraseña</a>
+                        <a asp-action="ChangePassword" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cambiar contraseña</a>
                     </button>
                 </div>
             </form>

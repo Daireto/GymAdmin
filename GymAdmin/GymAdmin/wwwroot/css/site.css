@@ -1,29 +1,15 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
-}
-
-html, body {
-    height: 100%;
-}
-
-body, footer {
+    max-height: 300vh;
     position: relative;
-    bottom: 0;
-}
-
-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
+    min-height: 100%;
 }

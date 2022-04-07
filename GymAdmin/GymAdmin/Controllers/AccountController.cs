@@ -142,7 +142,7 @@ namespace GymAdmin.Controllers
                     protocol: HttpContext.Request.Scheme);
 
                 string body = "<style>body{text-align:center;font-family:Verdana,Arial;}</style>" +
-                    $"<h1>Bienvenido a GymAdmin</h1>" +
+                    $"<h1>Soporte GymAdmin</h1>" +
                     $"<h3>Estás a un solo paso de ser parte de nuestra comunidad</h3>" +
                     $"<h4>Sólo debes hacer click en el siguiente botón para confirmar tu email</h4>" +
                     $"<br/>" +
@@ -269,7 +269,7 @@ namespace GymAdmin.Controllers
             {
                 return View();
             }
-            return RedirectToAction("Index", "Home"); //TODO: Make the view  for change password
+            return RedirectToAction("Index", "Home");
         }
 
         //Change password post method
@@ -293,7 +293,7 @@ namespace GymAdmin.Controllers
                     var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                     if (result.Succeeded)
                     {
-                        return RedirectToAction(nameof(EditUser));
+                        return RedirectToAction(nameof(ViewUser));
                     }
                     else
                     {
@@ -343,7 +343,8 @@ namespace GymAdmin.Controllers
                     $"<h1>Soporte GymAdmin</h1>" +
                     $"<h3>Recuperación de contraseña</h3>" +
                     $"<h4>Para recuperar tu acceso a GymAdmin haz click en el siguiente botón</h4>" +
-                    $"<a style=\"padding:15px;background-color:#f1b00e;text-decoration:none;color:black;border: 5px solid #000;border-radius:10px;\" href=\"{tokenLink}\">Confirmar email</a>";
+                    $"<br/>" +
+                    $"<a style=\"padding:15px;background-color:#f1b00e;text-decoration:none;color:black;border: 5px solid #000;border-radius:10px;\" href=\"{tokenLink}\">Recuperar contraseña</a>";
 
                 Response response = _mailHelper.SendMail(
                     user.FullName,
@@ -384,7 +385,7 @@ namespace GymAdmin.Controllers
                 Token = token
             };
 
-            return View(model); //TODO: Make the view
+            return View(model);
         }
 
         //Reset password post method

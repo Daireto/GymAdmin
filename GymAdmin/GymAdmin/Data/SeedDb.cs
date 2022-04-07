@@ -64,7 +64,7 @@ namespace GymAdmin.Data
         //    if (user == null)
         //    {
         //        Guid imageId = await _blobHelper.UploadBlobAsync($"wwwroot/images/{imageName}", "users");
-                
+
         //        user = new User
         //        {
         //            FirstName = firstName,

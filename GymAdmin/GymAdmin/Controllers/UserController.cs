@@ -8,7 +8,7 @@ using GymAdmin.Helpers;
 using GymAdmin.Models;
 using GymAdmin.Enums;
 
-namespace Shopping.Controllers
+namespace GymAdmin.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class UserController : Controller
@@ -29,7 +29,6 @@ namespace Shopping.Controllers
         {
             return View(await _context.Users
                 .ToListAsync());
-            //TODO: Use the relationships
         }
 
         public IActionResult Create()
@@ -59,7 +58,7 @@ namespace Shopping.Controllers
                 User user = await _userHelper.AddUserAsync(model, imageId);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Este correo ya está en uso");
+                    ModelState.AddModelError(string.Empty, "¡Este correo ya está en uso!");
                     return View(model);
                 }
 
@@ -76,7 +75,7 @@ namespace Shopping.Controllers
                     protocol: HttpContext.Request.Scheme);
 
                 string body = "<style>body{text-align:center;font-family:Verdana,Arial;}</style>" +
-                    $"<h1>Bienvenido a GymAdmin</h1>" +
+                    $"<h1>Soporte GymAdmin</h1>" +
                     $"<h3>Estás a un solo paso de ser parte de nuestra comunidad</h3>" +
                     $"<h4>Sólo debes hacer click en el siguiente botón para confirmar tu email</h4>" +
                     $"<br/>" +

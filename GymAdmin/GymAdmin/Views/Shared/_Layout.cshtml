@@ -29,7 +29,7 @@
 <!-- Layout body -->
 <body>
     <!-- Header -->
-    <header>
+    <header id="body-header">
         <nav class="GymAdminHeader navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
             <div class="container-fluid">
                 <!-- Header brand -->
@@ -75,7 +75,7 @@
     </header>
 
     <!-- View body -->
-    <div class="container">
+    <div class="container" id="body-container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -93,5 +93,17 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script type="text/javascript">
+
+$(document).ready(function(){
+
+      var height = $(window).height() - $('#body-header').height() - 40;
+
+      $('#body-container').css('min-height', height);
+});
+
+</script>
+
 </body>
 </html>

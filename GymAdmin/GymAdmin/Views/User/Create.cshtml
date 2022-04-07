@@ -1,7 +1,7 @@
 ﻿@model GymAdmin.Models.AddUserViewModel
 
 @{
-    ViewData["title"] = "Register";
+    ViewData["Title"] = "Create user";
 }
 
 <!-- GymAdmin style -->
@@ -12,7 +12,7 @@
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-            <form asp-action="Register" id="GymAdminForm" enctype="multipart/form-data">
+            <form asp-action="Create" id="GymAdminForm" enctype="multipart/form-data">
                 <!-- Hidden inputs -->
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="UserType" />
@@ -76,8 +76,10 @@
                 </div>
                 <!-- Buttons and links -->
                 <div class="GymAdminRegisterFormButtons form-group mt-2">
-                    <input type="submit" value="Registrarse" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                    <a asp-action="Login" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink">¡Ya tengo una cuenta!</a>
+                    <input type="submit" value="Crear administrador" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                    <button disable class="GymAdminFormButton">
+                        <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel">Regresar</a>
+                    </button>
                 </div>
             </form>
         </div>
