@@ -54,6 +54,32 @@
         border-bottom-color: #f2c60d;
     }
 
+.GymAdminFormCombobox {
+    width: 100%;
+    display: block;
+    background-color: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    color: #f2c60d;
+    border-bottom: 1px solid #a8a7a7;
+    transition: all .2s ease-out;
+}
+
+    .GymAdminFormCombobox option {
+        background-color: rgba(0,0,0,0.8) !important;
+        /*color: #f2c60d;*/
+    }
+
+    .GymAdminFormCombobox:focus {
+        border-bottom-color: #f2c60d;
+        outline: none;
+    }
+
+    .GymAdminFormCombobox:hover {
+        border-bottom-color: #f2c60d;
+    }
+
 .GymAdminFormButton {
     padding: 0;
     display: inline;
@@ -74,25 +100,25 @@ input.GymAdminFormButton {
     transition: all .2s ease-out;
 }
 
-    .GymAdminFormButton a {
-        display: block !important;
-        margin: 0;
-        padding: 10px 20px;
-    }
+.GymAdminFormButton a {
+    display: block !important;
+    margin: 0;
+    padding: 10px 20px;
+}
 
-    .GymAdminFormButton a {
-        color: white;
-        text-decoration: none;
-    }
+.GymAdminFormButton a {
+    color: white;
+    text-decoration: none;
+}
 
-    .GymAdminFormButton:hover {
+.GymAdminFormButton:hover {
+    color: black;
+    background-color: #f2c60d;
+}
+
+    .GymAdminFormButton:hover a {
         color: black;
-        background-color: #f2c60d;
     }
-
-        .GymAdminFormButton:hover a {
-            color: black;
-        }
 
 .GymAdminFormLink {
     margin: 20px;

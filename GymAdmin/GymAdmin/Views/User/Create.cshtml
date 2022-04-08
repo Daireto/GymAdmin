@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="~/css/forms.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
 
-<!-- Register form -->
+<!-- Create admin form -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
@@ -45,6 +45,34 @@
                             <input asp-for="Document" class="GymAdminFormInput" autocomplete="off" />
                             <span asp-validation-for="Document" class="text-danger"></span>
                         </div>
+                        <!-- Field -->
+                        @{
+                            var DocumentTypes = Html.GetEnumSelectList<GymAdmin.Enums.DocumentType>();
+                            foreach (var documentType in DocumentTypes)
+                            {
+                                if (documentType.Text == "TI")
+                                {
+                                    documentType.Text = "Tarjeta de Identidad";
+                                }
+                                else if (documentType.Text == "CC")
+                                {
+                                    documentType.Text = "Cédula de Ciudadanía";
+                                }
+                                else if (documentType.Text == "CE")
+                                {
+                                    documentType.Text = "Cédula de Extranjería";
+                                }
+                                else if (documentType.Text == "PAP")
+                                {
+                                    documentType.Text = "Pasaporte";
+                                }
+                            }
+                        }
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="DocumentType" class="control-label GymAdminFormLabel"></label>
+                            <select asp-for="DocumentType" asp-items="@DocumentTypes" class="GymAdminFormCombobox"></select>
+                            <span asp-validation-for="DocumentType" class="text-danger"></span>
+                        </div>
                     </div>
                     <!-- Right column -->
                     <div class="col-md-6">
@@ -72,14 +100,11 @@
                             <input asp-for="PhoneNumber" class="GymAdminFormInput" autocomplete="off" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                            <input type="submit" value="Crear administrador" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                        </div>
                     </div>
-                </div>
-                <!-- Buttons and links -->
-                <div class="GymAdminRegisterFormButtons form-group mt-2">
-                    <input type="submit" value="Crear administrador" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                    <button disable class="GymAdminFormButton">
-                        <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel">Regresar</a>
-                    </button>
                 </div>
             </form>
         </div>

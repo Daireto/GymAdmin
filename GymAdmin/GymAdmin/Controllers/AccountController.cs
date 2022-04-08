@@ -1,5 +1,6 @@
 ﻿using GymAdmin.Common;
 using GymAdmin.Data.Entities;
+using GymAdmin.Enums;
 using GymAdmin.Helpers;
 using GymAdmin.Models;
 using Microsoft.AspNetCore.Identity;
@@ -102,7 +103,7 @@ namespace GymAdmin.Controllers
             AddUserViewModel model = new()
             {
                 Id = Guid.Empty.ToString(),
-                UserType = Enums.UserType.User
+                UserType = UserType.User,
             };
 
             return View(model);

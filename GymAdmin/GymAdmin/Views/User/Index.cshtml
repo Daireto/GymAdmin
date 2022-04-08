@@ -8,14 +8,20 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 
 <!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
+
 <!-- Users -->
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 GymAdminTableContainer">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Usuarios</h3>
+            <div class="panel-heading GymAdminTableHeading">
+                <h3 class="panel-title GymAdminTableTitle">Usuarios</h3>
+                <button disable class="GymAdminFormButton">
+                        <a asp-action="Create" class="GymAdminFormElement GymAdminFormLabel">Crear administrador</a>
+                    </button>
             </div>
-            <div class="panel-body">
+            <div class="panel-body GymAdminTable">
                 <table class="table table-hover table-responsive table-striped" id="MyTable">
                     <!-- Text -->
                     <thead>
@@ -30,10 +36,10 @@
                                 @Html.DisplayNameFor(model => model.Document)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.DocumentType)
+                                Tipo de DNI
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.PhoneNumber)
+                                Teléfono
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.UserType)
@@ -50,7 +56,7 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            <tr>
+                            <tr class="GymAdminTableTr">
                                 <td>
                                     @Html.DisplayFor(modelItem => item.FullName)
                                 </td>

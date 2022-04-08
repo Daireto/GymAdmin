@@ -36,7 +36,7 @@
                 <a class="GymAdminHeaderBrand navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">GymAdmin</a>
                 <!-- Header menu -->
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <!-- Header right menu -->
+                    <!-- Header left menu -->
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
@@ -44,8 +44,14 @@
                         <li class="nav-item">
                             <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
                         </li>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
+                            </li>
+                        }
                     </ul>
-                    <!-- Header left menu -->
+                    <!-- Header right menu -->
                     <ul class="navbar-nav justify-content-end flex-grow-1">
                         <li class="nav-item">
                             <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="ViewUser">@User.Identity.Name</a>
@@ -96,14 +102,14 @@
 
     <script type="text/javascript">
 
-$(document).ready(function(){
+        $(document).ready(function(){
 
-      var height = $(window).height() - $('#body-header').height() - 40;
+              var height = $(window).height() - $('#body-header').height() - 40;
 
-      $('#body-container').css('min-height', height);
-});
+              $('#body-container').css('min-height', height);
+        });
 
-</script>
+    </script>
 
 </body>
 </html>

@@ -56,9 +56,28 @@
                             <input value="@Model.PhoneNumber" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
+                        @{
+                            var documentType = "";
+                            if (Model.DocumentType.ToString() == "TI")
+                            {
+                                documentType = "Tarjeta de Identidad";
+                            }
+                            else if (Model.DocumentType.ToString() == "CC")
+                            {
+                                documentType = "Cédula de Ciudadanía";
+                            }
+                            else if (Model.DocumentType.ToString() == "CE")
+                            {
+                                documentType = "Cédula de Extranjería";
+                            }
+                            else if (Model.DocumentType.ToString() == "PAP")
+                            {
+                                documentType = "Pasaporte";
+                            }
+                        }
                         <div class="form-group GymAdminFormElement">
-                            <label asp-for="Document" class="control-label GymAdminFormLabel"></label>
-                            <input value="@Model.Document" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <label asp-for="DocumentType" class="control-label GymAdminFormLabel"></label>
+                            <input value="@documentType" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                 </div>
