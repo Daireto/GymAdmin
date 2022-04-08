@@ -20,6 +20,13 @@ namespace GymAdmin.Controllers
             _blobHelper = blobHelper;
             _mailHelper = mailHelper;
         }
+
+        //Not authorized actions method
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }
+
         //View user method
         public async Task<IActionResult> ViewUser()
         {

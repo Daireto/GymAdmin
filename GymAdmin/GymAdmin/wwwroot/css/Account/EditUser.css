@@ -1,4 +1,11 @@
 ﻿/*
+    Body
+*/
+body {
+    background-image: url("../../images/bg/edituser-body-background.jpg") !important;
+}
+
+/*
     User image
 */
 .GymAdminUserImage{

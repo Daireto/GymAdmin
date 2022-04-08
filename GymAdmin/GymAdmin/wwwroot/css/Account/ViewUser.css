@@ -1,4 +1,11 @@
 ﻿/*
+    Body
+*/
+body {
+    background-image: url("../../images/bg/viewuser-body-background.jpg") !important;
+}
+
+/*
     Inputs
 */
 .GymAdminFormInput {

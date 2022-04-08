@@ -2,7 +2,11 @@
     Body
 */
 body {
-    background-image: url("../../images/login-body-background.jpg");
+    background-image: url("../../images/bg/message-body-background.jpg");
+}
+
+#GymAdminFieldsContainer {
+    background-color: rgba(0,0,0,0) !important;
 }
 
 .RecoverPasswordLink {

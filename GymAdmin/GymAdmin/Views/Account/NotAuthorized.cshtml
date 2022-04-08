@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Not authorized";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Messages.css">
+
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="" id="GymAdminForm">
+                <!-- Message -->
+                <div class="row">
+                    <div class="col-md-12" style="text-align:center;">
+                        <h2 style="color:#f2c60d;">Acceso denegado</h2>
+                        <h4 class="text-danger">¡No estás autorizado para ver esta página!</h4>
+                        <img src="~/images/notauthorized.gif" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
