@@ -81,7 +81,6 @@ namespace GymAdmin.Controllers
                 }
                 else if (result.IsNotAllowed)
                 {
-                    //TODO: Change for a view in the case the confirmation email was not sent, with a button to try to send again
                     ModelState.AddModelError(string.Empty, "¡Este email no está verificado! Siga los pasos enviados al correo");
                 }
                 else
@@ -121,9 +120,15 @@ namespace GymAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(AddUserViewModel model)
         {
-            //TODO: Evitar registrar usuario con documento que ya existe
             if (ModelState.IsValid)
             {
+                User userDocumentExist = await _userHelper.GetUserAsync(model);
+                if(userDocumentExist != null)
+                {
+                    ModelState.AddModelError(string.Empty, "¡Ya existe un usuario con este documento!");
+                    return View(model);
+                }
+
                 Guid imageId = Guid.Empty;
                 if (model.ImageFile != null)
                 {
@@ -133,6 +138,7 @@ namespace GymAdmin.Controllers
                 User user = await _userHelper.AddUserAsync(model, imageId);
                 if (user == null)
                 {
+                    await _blobHelper.DeleteBlobAsync(imageId, "users");
                     ModelState.AddModelError(string.Empty, "¡Este correo ya está en uso!");
                     return View(model);
                 }
@@ -183,7 +189,7 @@ namespace GymAdmin.Controllers
         //View with the error sending email message
         public IActionResult ConfirmEmailErrorMessage()
         {
-            return View(); //TODO: Make the view (En caso de error al enviar el email)
+            return View(); //TODO: Implement a resend email confirmation option
         }
 
         //Confirm email method

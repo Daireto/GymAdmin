@@ -18,6 +18,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/lib/font-awesome/css/all.min.css" />
 
     <!-- Default style -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -25,6 +26,16 @@
 
 <!-- GymAdmin style -->
 <link rel="stylesheet" type="text/css" href="~/css/layout.css" />
+
+<style>
+    .fa-house,
+    .fa-landmark,
+    .fa-user,
+    .fa-users,
+    .fa-arrow-right-from-bracket {
+        padding-right: 5px;
+    }
+</style>
 
 <!-- Layout body -->
 <body>
@@ -39,39 +50,39 @@
                     <!-- Header left menu -->
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                            <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i>Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
+                            <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy"><i class="fa-solid fa-landmark"></i>Privacidad</a>
                         </li>
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
+                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="User" asp-action="Index"><i class="fa-solid fa-users"></i>Usuarios</a>
                             </li>
                         }
                     </ul>
                     <!-- Header right menu -->
                     <ul class="navbar-nav justify-content-end flex-grow-1">
-                        <li class="nav-item">
-                            <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="ViewUser">@User.Identity.Name</a>
-                        </li>
                         @if (User.Identity.IsAuthenticated)
                         {
+                            <!-- View user option -->
+                            <li class="nav-item">
+                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="ViewUser"><i class="fa-solid fa-user"></i>@User.Identity.Name</a>
+                            </li>
                             <!-- Logout option -->
                             <li class="nav-item">
-                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="Logout">Cerrar sesión</a>
+                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i>Cerrar sesión</a>
                             </li>
                         }
                         else
                         {
                             <!-- Login and register options -->
-
                             <li class="nav-item">
-                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="Login">Ingresar</a>
+                                <a class="GymAdminHeaderLink GymAdminHeaderLoginLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="Login">Ingresar</a>
                             </li>
                             <li class="nav-item">
-                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="Register">Registrarse</a>
+                                <a class="GymAdminHeaderRegisterLink nav-link text-white" asp-area="" asp-controller="Account" asp-action="Register">Registrarse</a>
                             </li>
                         }
                     </ul>
@@ -98,6 +109,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/font-awesome/js/fontawesome.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
     <script type="text/javascript">

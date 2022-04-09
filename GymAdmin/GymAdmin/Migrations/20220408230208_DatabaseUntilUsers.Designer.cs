@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymAdmin.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220406203505_TemporaryDB")]
-    partial class TemporaryDB
+    [Migration("20220408230208_DatabaseUntilUsers")]
+    partial class DatabaseUntilUsers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -109,6 +109,9 @@ namespace GymAdmin.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("Document", "DocumentType")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers", (string)null);
                 });

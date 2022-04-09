@@ -10,6 +10,13 @@
 <link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
 
+<style>
+    .fa-pen-to-square,
+    .fa-lock {
+        padding-right: 5px;
+    }
+</style>
+
 <!-- View user page -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
@@ -84,10 +91,10 @@
                 <!-- Buttons and links -->
                 <div class="GymAdminRegisterFormButtons form-group mt-2">
                     <button disabled class="GymAdminFormButton">
-                        <a asp-action="EditUser" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Editar</a>
+                        <a asp-action="EditUser" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-pen-to-square"></i>Editar</a>
                     </button>
                     <button disabled class="GymAdminFormButton">
-                        <a asp-action="ChangePassword" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cambiar contraseña</a>
+                        <a asp-action="ChangePassword" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Cambiar contraseña</a>
                     </button>
                 </div>
             </form>

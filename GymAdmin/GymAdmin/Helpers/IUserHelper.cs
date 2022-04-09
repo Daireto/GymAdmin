@@ -16,6 +16,7 @@ namespace GymAdmin.Helpers
         Task<string> GeneratePasswordResetTokenAsync(User user);
         Task<User> GetUserAsync(string email);
         Task<User> GetUserAsync(Guid userId);
+        Task<User> GetUserAsync(AddUserViewModel model);
         Task<bool> IsUserInRoleAsync(User user, string roleName);
         Task<SignInResult> LoginAsync(LoginViewModel model);
         Task LogoutAsync();

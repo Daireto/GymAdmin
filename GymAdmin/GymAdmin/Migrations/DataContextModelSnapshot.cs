@@ -108,6 +108,9 @@ namespace GymAdmin.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("Document", "DocumentType")
+                        .IsUnique();
+
                     b.ToTable("AspNetUsers", (string)null);
                 });
 

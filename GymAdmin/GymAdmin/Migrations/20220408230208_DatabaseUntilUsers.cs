@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GymAdmin.Migrations
 {
-    public partial class TemporaryDB : Migration
+    public partial class DatabaseUntilUsers : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -191,6 +191,12 @@ namespace GymAdmin.Migrations
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_Document_DocumentType",
+                table: "AspNetUsers",
+                columns: new[] { "Document", "DocumentType" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

@@ -96,6 +96,10 @@ namespace GymAdmin.Helpers
             return await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == userId.ToString());
         }
+        public async Task<User> GetUserAsync(AddUserViewModel model)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Document == model.Document && u.DocumentType == model.DocumentType);
+        }
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
         {

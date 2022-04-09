@@ -13,7 +13,7 @@ namespace GymAdmin.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<User>().HasIndex("Document", "DocumentType").IsUnique();
         }
     }
-
 }
