@@ -158,79 +158,13 @@ namespace GymAdmin.Controllers
             return _context.Services.Any(e => e.Id == id);
         }
 
-        //Get
-        /*
-        public async Task<IActionResult> AddProfessional(int? id)
-        {
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Service service = await _context.Services.FindAsync(id);
-
-            if (service == null)
-            {
-                return NotFound();
-            }
-
-            AddUserProfessionalViewModel model = new()
-            {
-                ServiceId =service.Id
-            };
-            return View(model);
-        }
-
-        [HttpPost, ActionName("Register")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProfessional(AddUserProfessionalViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    UserProfessional userPro = new()
-                    {
-                        service = await _context.Services.FindAsync(model.ServiceId),
-                        UserName= model.Username,
-                        Password = model.Password,
-                        c = model.ImageId,
-                        UserType= model.UserType,
-                        
-                        //there's left the list of the day that the userprofessional give his asesories
-
-                    };
-                    _context.Add(userPro);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Details), new { Id = model.ServiceId });
-                }
-                catch (DbUpdateException dbUpdateException)
-                {
-                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
-                    {
-                        ModelState.AddModelError(string.Empty, "Ya existe este profesional en este servicio.");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    ModelState.AddModelError(string.Empty, exception.Message);
-                }
-            }
-
-            return View(model);
-        }
-        */
+        
         public IActionResult CreateProfessional()
         {
             AddUserViewModel model = new()
             {
                 Id = Guid.Empty.ToString(),
-                UserType = UserType.Professional
+                UserType = UserType.Admin
             };
 
             return View(model);
