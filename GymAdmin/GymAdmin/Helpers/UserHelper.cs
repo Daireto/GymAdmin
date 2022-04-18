@@ -39,7 +39,7 @@ namespace GymAdmin.Helpers
                 DocumentType = model.DocumentType,
                 ImageId = imageId,
                 UserName = model.Username,
-                UserType = model.UserType
+                UserType = model.UserType,
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, model.Password);

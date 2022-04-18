@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GymAdmin.Data.Entities
 {
-    public class User : IdentityUser
+    public class UserProfessional : IdentityUser
     {
         [Display(Name = "Nombres")]
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres")]
@@ -31,13 +31,15 @@ namespace GymAdmin.Data.Entities
         public string ImageFullPath => ImageId == Guid.Empty
             ? $"https://localhost:7156/images/noimage.png" //TODO: Correct path
             : $"https://gymadmin1.blob.core.windows.net/users/{ImageId}";
-        
+
         [Display(Name = "Rol")]
         public UserType UserType { get; set; }
-        
+
         [Display(Name = "Usuario")]
         public string FullName => $"{FirstName} {LastName}";
 
-        public int ServiceId { get; internal set; }
+        public Service service { get; set; }
+
+        public ICollection<Schedule> schedules { get; set; }
     }
 }

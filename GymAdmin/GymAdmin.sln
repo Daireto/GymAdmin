@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.0.32126.317
+VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymAdmin", "GymAdmin\GymAdmin.csproj", "{73BA5C3D-1A46-4839-83EA-CEBC0FDE4525}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymAdmin", "GymAdmin\GymAdmin.csproj", "{78C58570-C592-4963-A864-6293CECF17C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{73BA5C3D-1A46-4839-83EA-CEBC0FDE4525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{73BA5C3D-1A46-4839-83EA-CEBC0FDE4525}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{73BA5C3D-1A46-4839-83EA-CEBC0FDE4525}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{73BA5C3D-1A46-4839-83EA-CEBC0FDE4525}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78C58570-C592-4963-A864-6293CECF17C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78C58570-C592-4963-A864-6293CECF17C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78C58570-C592-4963-A864-6293CECF17C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78C58570-C592-4963-A864-6293CECF17C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {46ADCD96-BBB3-4BAD-BF59-93F04E386F61}
+		SolutionGuid = {7F96A39C-537B-418B-A37B-FFA8E48807AA}
 	EndGlobalSection
 EndGlobal
