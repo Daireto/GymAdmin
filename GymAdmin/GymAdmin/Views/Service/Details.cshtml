@@ -1,0 +1,113 @@
+﻿@model GymAdmin.Data.Entities.Service
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Service</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="CreateProfessional" asp-route-id="@Model?.Id" class="btn btn-outline-primary">Agregar Profesional</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-outline-warning">Editar</a> |
+    <a asp-action="Index" class="btn btn-outline-success">Regresar</a>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Profesionales</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover table-responsive table-striped" id="MyTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Professionals.FirstOrDefault().FullName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Professionals.FirstOrDefault().Email)
+                            </th>
+                             <th>
+                                @Html.DisplayNameFor(model => model.Professionals.FirstOrDefault().Document)
+                            </th> 
+                             <th>
+                                @Html.DisplayNameFor(model => model.Professionals.FirstOrDefault().PhoneNumber)
+                            </th> 
+                             <th>
+                                @Html.DisplayNameFor(model => model.Professionals.FirstOrDefault().ImageFullPath)
+                            </th>                       
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Professionals)
+                        {
+                            <tr class="GymAdminTableTr">
+                                 <td>
+                                    @Html.DisplayFor(modelItem => item.FullName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Document)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                </td>
+                                <td>
+                                    <img src="@item.ImageFullPath" style="width:100px; border-radius:50%;" />
+                                </td>
+                                <td>
+                                    <a asp-action="EditState" asp-route-id="@item.Id" class="btn btn-outline-warning">Editar</a>
+                                    <a asp-action="DetailsState" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles/Horarios</a>
+                                    <a asp-action="DeleteState" asp-route-id="@item.Id" class="btn btn-outline-danger">Borrar</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [5,25, 50, 100, 200, -1],
+                    [5,25, 50, 100, 200, "Todos"]
+                ]
+            });
+        });
+    </script>
+}

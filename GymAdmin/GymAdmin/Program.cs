@@ -39,6 +39,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 //Inyections
 builder.Services.AddScoped<IUserHelper, UserHelper>(); //IUserHelper
+builder.Services.AddScoped<IUserHelperProfessional, UserProfessionalHelper>(); //IUserHelperProfessional
 builder.Services.AddScoped<IBlobHelper, BlobHelper>(); //IBlobHelper
 builder.Services.AddScoped<IMailHelper, MailHelper>(); //IMailHelper
 builder.Services.AddTransient<SeedDb>(); //Seeder
