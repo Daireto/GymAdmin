@@ -55,7 +55,9 @@ void SeedData()
     using (IServiceScope scope = scopedFactory.CreateScope())
     {
         SeedDb service = scope.ServiceProvider.GetService<SeedDb>();
+        SeedDbProfessional seedDbProfessional = scope.ServiceProvider.GetService<SeedDbProfessional>();
         service.SeedAsync().Wait();
+        seedDbProfessional.SeedAsync().Wait();
     }
 }
 

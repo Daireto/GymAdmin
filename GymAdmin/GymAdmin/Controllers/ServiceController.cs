@@ -14,14 +14,14 @@ namespace GymAdmin.Controllers
 public class ServiceController : Controller
 {
             private readonly DataContext _context;
-            private readonly IUserHelper _userHelper;
+            private readonly IUserHelperProfessional _userProfessionalHelper;
             private readonly IBlobHelper _blobHelper;
             private readonly IMailHelper _mailHelper;
 
-            public ServiceController(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper, IMailHelper mailHelper)
+            public ServiceController(DataContext context, IUserHelperProfessional userProfessionalHelper, IBlobHelper blobHelper, IMailHelper mailHelper)
             {
                 _context = context;
-                _userHelper = userHelper;
+            _userProfessionalHelper = userProfessionalHelper;
                 _blobHelper = blobHelper;
                 _mailHelper = mailHelper;
             }
@@ -172,7 +172,7 @@ public class ServiceController : Controller
 
             [HttpPost]
             [ValidateAntiForgeryToken]
-            public async Task<IActionResult> CreateProfessional(AddUserViewModel model)
+            public async Task<IActionResult> CreateProfessional(AddUserViewModelProfessional model)
             {
                 if (ModelState.IsValid)
                 {
@@ -183,7 +183,7 @@ public class ServiceController : Controller
                         imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
                     }
 
-                    User user = await _userHelper.AddUserAsync(model, imageId);
+                    UserProfessional user = await _userProfessionalHelper.AddUserAsync(model, imageId);
                     if (user == null)
                     {
                         ModelState.AddModelError(string.Empty, "¡Este correo ya está en uso!");
@@ -191,7 +191,7 @@ public class ServiceController : Controller
                     }
 
                     //Email confirmation
-                    string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                    string token = await _userProfessionalHelper.GenerateEmailConfirmationTokenAsync(user);
                     string tokenLink = Url.Action(
                         "ConfirmEmail",
                         "Account",
