@@ -11,6 +11,7 @@ namespace GymAdmin.Data
         public DbSet<Service> Services { get; set; }
         public DbSet<UserProfessional> UsersProfessional { get; set; }
 
+
         //public DbSet<...> ... { get; set; } --> Entidades
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

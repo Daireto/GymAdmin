@@ -172,7 +172,7 @@ public class ServiceController : Controller
 
             [HttpPost]
             [ValidateAntiForgeryToken]
-            public async Task<IActionResult> CreateProfessional(AddUserViewModelProfessional model)
+            public async Task<IActionResult> CreateProfessional(AddUserViewModelProfessional model,int id)
             {
                 if (ModelState.IsValid)
                 {

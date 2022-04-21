@@ -39,10 +39,11 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 //Inyections
 builder.Services.AddScoped<IUserHelper, UserHelper>(); //IUserHelper
-builder.Services.AddScoped<IUserHelperProfessional, UserProfessionalHelper>(); //IUserHelperProfessional
+//builder.Services.AddScoped<IUserHelperProfessional, UserProfessionalHelper>(); //IUserHelper
 builder.Services.AddScoped<IBlobHelper, BlobHelper>(); //IBlobHelper
 builder.Services.AddScoped<IMailHelper, MailHelper>(); //IMailHelper
 builder.Services.AddTransient<SeedDb>(); //Seeder
+//builder.Services.AddTransient<SeedDbProfessional>();
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); //Real time changes on views
 
@@ -54,10 +55,10 @@ void SeedData()
     IServiceScopeFactory scopedFactory = app.Services.GetService<IServiceScopeFactory>();
     using (IServiceScope scope = scopedFactory.CreateScope())
     {
-        SeedDb service = scope.ServiceProvider.GetService<SeedDb>();
-        SeedDbProfessional seedDbProfessional = scope.ServiceProvider.GetService<SeedDbProfessional>();
+        SeedDb service = scope.ServiceProvider.GetService<SeedDb>();    
         service.SeedAsync().Wait();
-        seedDbProfessional.SeedAsync().Wait();
+        //SeedDbProfessional seedDbProfessional = scope.ServiceProvider.GetService<SeedDbProfessional>();
+        //seedDbProfessional.SeedAsync().Wait();
     }
 }
 
