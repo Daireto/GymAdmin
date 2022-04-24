@@ -1,5 +1,134 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<GymAdmin.Data.Entities.Schedule>
+
 @{
+    ViewData["Title"] = "Schedules";
+}
+
+<!-- Libraries -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
+
+<style>
+    a .fa-calendar-circle-plus {
+        padding-right: 5px;
+    }
+
+    h3 .fa-calendar {
+        padding-right: 0;
+        padding-left: 10px;
+    }
+
+    #MyTable th, .td_option{
+        text-align:center;
+    }
+</style>
+
+<!-- Schedules -->
+<div class="row">
+    <div class="col-md-12 GymAdminTableContainer">
+        <div class="panel panel-default">
+            <div class="panel-heading GymAdminTableHeading">
+                <h3 class="panel-title GymAdminTableTitle">Horarios<i class="fa-solid fa-calendar"></i></h3>
+                <div>
+                    <button disable class="GymAdminFormButton">
+                        <a asp-action="CreateSchedule" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-calendar-circle-plus"></i>Crear horario</a>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body GymAdminTable">
+                <table class="table table-hover table-responsive table-striped" id="MyTable">
+                    <!-- Text -->
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Day)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.StartHour)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.FinishHour)
+                            </th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <!-- Values -->
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="GymAdminTableTr">
+                                <td>
+                                    @{
+                                        if (item.Day.ToString() == "Monday")
+                                        {
+                                            <p>Lunes</p>
+                                        }
+                                        else if (item.Day.ToString() == "Tuesday")
+                                        {
+                                            <p>Martes</p>
+                                        }
+                                        else if (item.Day.ToString() == "Wednesday")
+                                        {
+                                            <p>Miércoles</p>
+                                        }
+                                        else if (item.Day.ToString() == "Thursday")
+                                        {
+                                            <p>Jueves</p>
+                                        }
+                                        else if (item.Day.ToString() == "Friday")
+                                        {
+                                            <p>Viernes</p>
+                                        }
+                                        else if (item.Day.ToString() == "Saturday")
+                                        {
+                                            <p>Sábado</p>
+                                        }
+                                        else if (item.Day.ToString() == "Sunday")
+                                        {
+                                            <p>Domingo</p>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartHour)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FinishHour)
+                                </td>
+                                <td class="td_option">
+                                    <a asp-action="DetailsSchedule" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>
+                                    <a asp-action="EditSchedule" asp-route-id="@item.Id" class="btn btn-outline-warning">Editar</a>
+                                    <a asp-action="DeleteSchedule" asp-route-id="@item.Id" class="btn btn-outline-danger">Eliminar</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#MyTable').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            "aLengthMenu": [
+                [25, 50, 100, 200, -1],
+                [25, 50, 100, 200, "Todos"]
+            ]
+        });
+    });
+</script>
 }

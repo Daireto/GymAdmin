@@ -8,12 +8,11 @@ namespace GymAdmin.Data.Entities
         public int Id { get; set; }
 
         [Display(Name = "Servicio")]
-        [MinLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres")]
+        [MaxLength(100, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Name { get; set; }
 
         [Display(Name = "Precio")]
-        [MinLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }

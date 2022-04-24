@@ -6,7 +6,7 @@ namespace GymAdmin.Data.Entities
     {
         public int Id { get; set; }
 
-        [Display(Name = "Días")]
+        [Display(Name = "Día")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public DayOfWeek Day { get; set; }
 

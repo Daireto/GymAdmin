@@ -4,28 +4,155 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
 
-<div>
-    <h4>Service</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-    </dl>
+<style>
+    .fa-pen-to-square,
+    .fa-lock {
+        padding-right: 5px;
+    }
+
+    .GymAdminEditButton {
+        border-color: #FFC107;
+    }
+
+        .GymAdminEditButton:hover {
+            color: black;
+        }
+
+        .GymAdminEditButton a {
+            color: #FFC107;
+        }
+
+            .GymAdminEditButton a:hover {
+                color: black;
+            }
+
+    .GymAdminDeleteButton {
+        border-color: #DC3545;
+        color: #DC3545;
+    }
+
+        .GymAdminDeleteButton:hover {
+            background-color: #DC3545;
+            color: black;
+        }
+
+        .GymAdminDeleteButton a {
+            color: #DC3545;
+        }
+
+            .GymAdminDeleteButton a:hover {
+                color: black;
+            }
+</style>
+
+<!-- View service page -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="" id="GymAdminForm">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <h2 style="text-align:center;">@Model.Name</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Profesional</label>
+                            <input value="@Model.Professional.User.FullName" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Horario de inicio</label>
+                            <input value="@Model.Professional.Schedule.StartHour" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        @{
+                            var day = "";
+                            if(Model.Professional.Schedule.Day.ToString() == "Monday")
+                            {
+                                day = "Lunes";
+                            }
+                            if(Model.Professional.Schedule.Day.ToString() == "Tuesday")
+                            {
+                                day = "Martes";
+                            }
+                            if(Model.Professional.Schedule.Day.ToString() == "Wednesday")
+                            {
+                                day = "Miércoles";
+                            }
+                            if(Model.Professional.Schedule.Day.ToString() == "Thursday")
+                            {
+                                day = "Jueves";
+                            }
+                            if(Model.Professional.Schedule.Day.ToString() == "Friday")
+                            {
+                                day = "Viernes";
+                            }
+                            if(Model.Professional.Schedule.Day.ToString() == "Saturday")
+                            {
+                                day = "Sábado";
+                            }
+                            if(Model.Professional.Schedule.Day.ToString() == "Sunday")
+                            {
+                                day = "Domingo";
+                            }
+                        }
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Día de disponibilidad</label>
+                            <input value="@day" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Correo electrónico</label>
+                            <input value="@Model.Professional.User.Email" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Horario de salida</label>
+                            <input value="@Model.Professional.Schedule.FinishHour" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Precio del servicio</label>
+                            <input value="@Model.Price" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                    </div>
+                </div>
+                <!-- Buttons and links -->
+                <div class="GymAdminRegisterFormButtons form-group mt-2">
+                    <button disabled class="GymAdminFormButton">
+                        <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Regresar</a>
+                    </button>
+                    <button disabled class="GymAdminFormButton GymAdminEditButton">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-pen-to-square"></i>Editar</a>
+                    </button>
+                    <button disabled class="GymAdminFormButton GymAdminDeleteButton">
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Eliminar</a>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="CreateProfessional" asp-route-id="@Model?.Id" class="btn btn-outline-primary">Agregar Profesional</a>
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-outline-warning">Editar</a> |
-    <a asp-action="Index" class="btn btn-outline-success">Regresar</a>
-</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

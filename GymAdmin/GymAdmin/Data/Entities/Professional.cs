@@ -12,6 +12,8 @@ namespace GymAdmin.Data.Entities
 
         public ICollection<Service> Services { get; set; }
 
+        public int ServicesNumber => Services.Count;
+
         public Schedule Schedule { get; set; }
     }
 }

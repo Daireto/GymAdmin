@@ -1,39 +1,81 @@
-﻿@model GymAdmin.Data.Entities.Service
+﻿@model GymAdmin.Models.AddServiceViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
 
-<h4>Service</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-outline-primary" />
-                <a asp-action="Index" class="btn btn-outline-success">Regresar</a>
-            </div>
-        </form>
+<!-- Create form -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+        <h2 style="text-align:center;margin-top: 15px;">Crear servicio</h2>
+            <form asp-action="Create" id="GymAdminForm">
+                <!-- Hidden inputs -->
+                <input type="hidden" asp-for="Id" />
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Name" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="Name" value="@Model.Name" class="GymAdminFormInput" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="ProfessionalUserName" class="control-label GymAdminFormLabel"></label>
+                            <input id="searchProfessional" type="search" list="professionalsList" asp-for="ProfessionalUserName" class="GymAdminFormInput" />
+                            <datalist id="professionalsList">
+                                @foreach (var pro in Model.Professionals)
+                                {
+                                    <option value="@pro.Value">@pro.Text</option>
+                                }
+                            </datalist>
+                            <span asp-validation-for="ProfessionalUserName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Price" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="Price" value="@Model.Price" class="GymAdminFormInput" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                            <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                            <button disabled class="GymAdminFormButton">
+                                <a asp-action="Index" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    
-</div>
-
+<!-- Scripts -->
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+<script type="text/javascript">
+    $(document).ready(function (){
+        $("#searchProfessional").attr("value", null);
+    });
+
+    $("#searchProfessional").on("input", function (){
+        var selected = $(this).val();
+        $(this).attr("value", selected);
+    });
+</script>
 }

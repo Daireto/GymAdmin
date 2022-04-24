@@ -34,7 +34,7 @@ namespace GymAdmin.Controllers
         {
             return View(await _context.Services
                 .Include(s => s.Professional)
-                .ThenInclude(p => p.Schedule)
+                .ThenInclude(p => p.User)
                 .ToListAsync());
         }
 
@@ -48,6 +48,8 @@ namespace GymAdmin.Controllers
             Service service = await _context.Services
                 .Include(s => s.Professional)
                 .ThenInclude(p => p.Schedule)
+                .Include(s => s.Professional)
+                .ThenInclude(p => p.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (service == null)
@@ -74,16 +76,42 @@ namespace GymAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
+                Professional professional = await _context.Professionals.FirstOrDefaultAsync(p => p.User.Email == model.ProfessionalUserName);
+                if(professional == null)
+                {
+                    ModelState.AddModelError(string.Empty, "¡El profesional no existe en el sistema, debe crearlo antes de crear el servicio!");
+                    model.Professionals = await _combosHelper.GetComboProfessionalsAsync();
+                    return View(model);
+                }
+
                 Service service = new()
                 {
                     Name = model.Name,
                     Price = model.Price,
-                    Professional = await _context.Professionals.FindAsync(model.ProfessionalId)
+                    Professional = await _context.Professionals.FirstOrDefaultAsync(p => p.User.UserName == model.ProfessionalUserName)
                 };
 
-                _context.Add(service);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(service);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Ya existe un servicio con este nombre");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
             }
 
             model.Professionals = await _combosHelper.GetComboProfessionalsAsync();
@@ -97,20 +125,33 @@ namespace GymAdmin.Controllers
                 return NotFound();
             }
 
-            Service service = await _context.Services.FindAsync(id);
+            Service service = await _context.Services
+                .Include(s => s.Professional)
+                .ThenInclude(p => p.User)
+                .FirstOrDefaultAsync(s => s.Id == id);
 
             if (service == null)
             {
                 return NotFound();
             }
-            return View(service);
+
+            AddServiceViewModel model = new()
+            {
+                Id = id,
+                Name = service.Name,
+                Price = service.Price,
+                ProfessionalUserName = service.Professional.User.UserName,
+                Professionals = await _combosHelper.GetComboProfessionalsAsync()
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Service service)
+        public async Task<IActionResult> Edit(int id, AddServiceViewModel model)
         {
-            if (id != service.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -119,6 +160,11 @@ namespace GymAdmin.Controllers
             {
                 try
                 {
+                    Service service = await _context.Services.FindAsync(model.Id);
+                    service.Name = model.Name;
+                    service.Price = model.Price;
+                    service.Professional = await _context.Professionals.FirstOrDefaultAsync(p => p.User.UserName == model.ProfessionalUserName);
+
                     _context.Update(service);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -139,7 +185,9 @@ namespace GymAdmin.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-            return View(service);
+
+            model.Professionals = await _combosHelper.GetComboProfessionalsAsync();
+            return View(model);
         }
 
         public async Task<IActionResult> Delete(int? id)
@@ -172,6 +220,22 @@ namespace GymAdmin.Controllers
 
         //------------------------------------- Professionals --------------------------------------------
 
+        public async Task<IActionResult> DetailsProfessional(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Professional professional = await _context.Professionals
+                .Include(p => p.User)
+                .Include(p => p.Schedule)
+                .Include(p => p.Services)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            return View(professional);
+        }
+
         public async Task<IActionResult> CreateProfessional()
         {
             AddProfessionalViewModel model = new()
@@ -190,9 +254,17 @@ namespace GymAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (model.ScheduleId == 0)
+                {
+                    model.Schedules = await _combosHelper.GetComboSchedulesAsync();
+                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un horario!");
+                    return View(model);
+                }
+
                 User userDocumentExist = await _userHelper.GetUserAsync(model);
                 if (userDocumentExist != null)
                 {
+                    model.Schedules = await _combosHelper.GetComboSchedulesAsync();
                     ModelState.AddModelError(string.Empty, "¡Ya existe un usuario con este documento!");
                     return View(model);
                 }
@@ -207,6 +279,7 @@ namespace GymAdmin.Controllers
                 if (user == null)
                 {
                     await _blobHelper.DeleteBlobAsync(imageId, "users");
+                    model.Schedules = await _combosHelper.GetComboSchedulesAsync();
                     ModelState.AddModelError(string.Empty, "¡Este correo ya está en uso!");
                     return View(model);
                 }
@@ -270,7 +343,9 @@ namespace GymAdmin.Controllers
 
             if (id != null)
             {
-                Professional professional = await _context.Professionals.FindAsync(id);
+                Professional professional = await _context.Professionals
+                    .Include(p => p.Schedule)
+                    .FirstOrDefaultAsync(p => p.Id == id);
                 if (professional != null)
                 {
                     model.Id = professional.Id;
@@ -289,6 +364,31 @@ namespace GymAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (model.Username == null || model.Username == "")
+                {
+                    model.Users = await _combosHelper.GetComboUsersAsync();
+                    model.Schedules = await _combosHelper.GetComboSchedulesAsync();
+                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un usuario!");
+                    return View(model);
+                }
+
+                if (model.ScheduleId == 0)
+                {
+                    model.Users = await _combosHelper.GetComboUsersAsync();
+                    model.Schedules = await _combosHelper.GetComboSchedulesAsync();
+                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un horario!");
+                    return View(model);
+                }
+
+                User user = await _userHelper.GetUserAsync(model.Username);
+                if(user == null)
+                {
+                    model.Users = await _combosHelper.GetComboUsersAsync();
+                    model.Schedules = await _combosHelper.GetComboSchedulesAsync();
+                    ModelState.AddModelError(string.Empty, "¡Este usuario no existe en el sistema!");
+                    return View(model);
+                }
+
                 Professional professional = new();
 
                 if (model.Id != null)
@@ -302,20 +402,31 @@ namespace GymAdmin.Controllers
                 }
                 else
                 {
-                    professional = new()
+                    try
                     {
-                        User = await _userHelper.GetUserAsync(model.Username),
-                        ProfessionalType = model.ProfessionalType,
-                        Schedule = await _context.Schedules.FindAsync(model.ScheduleId)
-                    };
-                    _context.Add(professional);
-                    await _context.SaveChangesAsync();
+                        professional = new()
+                        {
+                            User = await _userHelper.GetUserAsync(model.Username),
+                            ProfessionalType = model.ProfessionalType,
+                            Schedule = await _context.Schedules.FindAsync(model.ScheduleId)
+                        };
+                        _context.Add(professional);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception exception)
+                    {
+                        ModelState.AddModelError(string.Empty, "¡Este usuario ya tiene esta profesión!");
+                        model.Users = await _combosHelper.GetComboUsersAsync();
+                        model.Schedules = await _combosHelper.GetComboSchedulesAsync();
+                        return View(model);
+                    }
                 }
 
-                return RedirectToAction(nameof(ShowProfessionals));
+                return RedirectToAction(nameof(DetailsProfessional), new { id = professional.Id });
             }
 
             model.Users = await _combosHelper.GetComboUsersAsync();
+            model.Schedules = await _combosHelper.GetComboSchedulesAsync();
             return View(model);
         }
 
@@ -327,6 +438,8 @@ namespace GymAdmin.Controllers
             }
 
             Professional professional = await _context.Professionals
+                .Include(p => p.User)
+                .Include(p => p.Services)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (professional == null)
@@ -344,17 +457,27 @@ namespace GymAdmin.Controllers
             Professional professional = await _context.Professionals
                 .Include(p => p.Services)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            foreach(var service in professional.Services)
+            {
+                _context.Services.Remove(service);
+            }
+
             _context.Professionals.Remove(professional);
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(ShowProfessionals));
         }
 
         public async Task<IActionResult> ShowProfessionals()
         {
-            return View(await _context.Professionals.ToListAsync());
+            return View(await _context.Professionals
+                .Include(p => p.Schedule)
+                .Include(p => p.User)
+                .ToListAsync());
         }
 
-        //------------------------------------- Professionals --------------------------------------------
+        //------------------------------------- Schedules --------------------------------------------
 
         public async Task<IActionResult> ShowSchedules()
         {
@@ -365,7 +488,12 @@ namespace GymAdmin.Controllers
          * SCHEDULE ACTIONS
          */
 
+        //DetailsSchedule
+
+        //CreateSchedule
+
+        //EditSchedule
+
+        //DeleteSchedule
     }
-
-
 }

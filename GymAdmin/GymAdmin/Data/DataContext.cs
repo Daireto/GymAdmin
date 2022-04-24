@@ -19,6 +19,7 @@ namespace GymAdmin.Data
             modelBuilder.Entity<User>().HasIndex("Document", "DocumentType").IsUnique();
             modelBuilder.Entity<Service>().HasIndex(s => s.Name).IsUnique();
             modelBuilder.Entity<Schedule>().HasIndex("Day", "StartHour", "FinishHour").IsUnique();
+            modelBuilder.Entity<Professional>().HasIndex("UserId", "ProfessionalType").IsUnique();
         }
     }
 }

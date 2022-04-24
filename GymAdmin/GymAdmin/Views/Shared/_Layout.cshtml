@@ -32,7 +32,8 @@
     .fa-landmark,
     .fa-user,
     .fa-users,
-    .fa-arrow-right-from-bracket {
+    .fa-arrow-right-from-bracket,
+    .fa-bell-concierge {
         padding-right: 5px;
     }
 </style>
@@ -55,13 +56,13 @@
                         <li class="nav-item">
                             <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy"><i class="fa-solid fa-landmark"></i>Privacidad</a>
                         </li>
-                        <li class="nav-item">
-                             <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Service" asp-action="Index"><i class="fa-solid fa-bell-concierge"></i>Servicios</a>
-                        </li>
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="User" asp-action="Index"><i class="fa-solid fa-users"></i>Usuarios</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="GymAdminHeaderLink nav-link text-white" asp-area="" asp-controller="Service" asp-action="Index"><i class="fa-solid fa-bell-concierge"></i>Servicios</a>
                             </li>
                         }
                     </ul>

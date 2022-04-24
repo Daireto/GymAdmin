@@ -1,4 +1,5 @@
 ﻿using GymAdmin.Data;
+using GymAdmin.Data.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,14 +22,7 @@ namespace GymAdmin.Helpers
                     Text = p.User.FullName,
                     Value = p.User.UserName
                 })
-                .OrderBy(p => p.Text)
                 .ToListAsync();
-
-            list.Insert(0, new SelectListItem
-            {
-                Text = "[Seleccione un profesional]",
-                Value = "0"
-            });
 
             return list;
         }
@@ -41,12 +35,11 @@ namespace GymAdmin.Helpers
                     Text = $"{s.Day}, {s.StartHour} - {s.FinishHour}",
                     Value = $"{s.Id}"
                 })
-                .OrderBy(s => s.Text)
                 .ToListAsync();
 
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione un horario]",
+                Text = "Seleccione un horario",
                 Value = "0"
             });
 
@@ -55,13 +48,22 @@ namespace GymAdmin.Helpers
 
         public async Task<IEnumerable<SelectListItem>> GetComboUsersAsync()
         {
+            List<Professional> professionals = await _context.Professionals
+                .Include(p => p.User)
+                .ToListAsync();
+            List<string> userIds = new();
+            foreach(var professional in professionals)
+            {
+                userIds.Add(professional.User.Id);
+            }
+
             List<SelectListItem> list = await _context.Users
+                .Where(u => !userIds.Contains(u.Id))
                 .Select(u => new SelectListItem
                 {
                     Text = u.FullName,
-                    Value = u.Document
+                    Value = u.UserName
                 })
-                .OrderBy(u => u.Text)
                 .ToListAsync();
 
             return list;

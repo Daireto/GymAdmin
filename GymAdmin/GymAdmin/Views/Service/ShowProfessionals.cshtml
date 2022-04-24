@@ -1,5 +1,136 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<GymAdmin.Data.Entities.Professional>
+
 @{
+    ViewData["Title"] = "Professionals";
+}
+
+<!-- Libraries -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
+
+<style>
+    a .fa-user-tie, a .fa-calendar {
+        padding-right: 5px;
+    }
+
+    h3 .fa-dumbbell {
+        padding-right: 0;
+        padding-left: 10px;
+    }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+</style>
+
+<!-- Professionals -->
+<div class="row">
+    <div class="col-md-12 GymAdminTableContainer">
+        <div class="panel panel-default">
+            <div class="panel-heading GymAdminTableHeading">
+                <h3 class="panel-title GymAdminTableTitle">Profesionales<i class="fa-solid fa-dumbbell"></i></h3>
+                <div>
+                    <button disable class="GymAdminFormButton">
+                        <a asp-action="CreateProfessional" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Crear profesional</a>
+                    </button>
+                    <button disable class="GymAdminFormButton">
+                        <a asp-action="EditProfessional" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Asignar usuario como profesional</a>
+                    </button>
+                    <button disable class="GymAdminFormButton">
+                        <a asp-action="ShowSchedules" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-calendar"></i>Ver horarios</a>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body GymAdminTable">
+                <table class="table table-hover table-responsive table-striped" id="MyTable">
+                    <!-- Text -->
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.User.FullName)
+                            </th>
+                            <th>
+                                Profesión
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Schedule.Day)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Schedule.StartHour)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Schedule.FinishHour)
+                            </th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <!-- Values -->
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="GymAdminTableTr">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User.FullName)
+                                </td>
+                                <td>
+                                    @{
+                                        if (item.ProfessionalType.ToString() == "Physiotherapist")
+                                        {
+                                            <p>Fisioterapeuta</p>
+                                        }
+                                        else if (item.ProfessionalType.ToString() == "Nutritionist")
+                                        {
+                                            <p>Nutricionista</p>
+                                        }
+                                        else if (item.ProfessionalType.ToString() == "Instructor")
+                                        {
+                                            <p>Instructor</p>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Schedule.Day)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Schedule.StartHour)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Schedule.FinishHour)
+                                </td>
+                                <td class="td_option">
+                                    <a asp-action="DetailsProfessional" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>
+                                    <a asp-action="EditProfessional" asp-route-id="@item.Id" class="btn btn-outline-warning">Editar</a>
+                                    <a asp-action="DeleteProfessional" asp-route-id="@item.Id" class="btn btn-outline-danger">Eliminar</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#MyTable').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            "aLengthMenu": [
+                [25, 50, 100, 200, -1],
+                [25, 50, 100, 200, "Todos"]
+            ]
+        });
+    });
+</script>
 }

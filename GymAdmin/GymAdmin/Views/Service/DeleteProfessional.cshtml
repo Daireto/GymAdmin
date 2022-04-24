@@ -1,5 +1,99 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model GymAdmin.Data.Entities.Professional
+
 @{
+    ViewData["Title"] = "Delete";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
+
+<style>
+    .fa-lock {
+        padding-right: 5px;
+    }
+
+    .GymAdminDeleteButton {
+        border-color: #DC3545 !important;
+        color: #DC3545 !important;
+    }
+
+        .GymAdminDeleteButton:hover {
+            background-color: #DC3545 !important;
+            color: black !important;
+        }
+</style>
+
+<!-- View professional page -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="DeleteProfessional" id="GymAdminForm">
+                <input type="hidden" asp-for="Id" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <h2 style="text-align:center;">¿Estás seguro de querer remover a este usuario de los profesionales?</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Nombre del profesional</label>
+                            <input value="@Model.User.FullName" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Cantidad de servicios</label>
+                            <input value="@Model.ServicesNumber" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        @{
+                            var professionalType = "";
+                            if (Model.ProfessionalType.ToString() == "Physiotherapist")
+                                {
+                                    professionalType = "Fisioterapeuta";
+                                }
+                                else if (Model.ProfessionalType.ToString() == "Nutritionist")
+                                {
+                                    professionalType = "Nutricionista";
+                                }
+                                else if (Model.ProfessionalType.ToString() == "Instructor")
+                                {
+                                    professionalType = "Instructor";
+                                }
+                        }
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Profesión</label>
+                            <input value="@professionalType" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                    <!-- Buttons and links -->
+                    <div class="GymAdminRegisterFormButtons form-group mt-2">
+                        <button disabled class="GymAdminFormButton">
+                            <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Cancelar</a>
+                        </button>
+                        <input type="submit" value="Eliminar" class="GymAdminFormButton GymAdminDeleteButton" />
+                    </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
