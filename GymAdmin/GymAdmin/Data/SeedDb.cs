@@ -46,38 +46,38 @@ namespace GymAdmin.Data
                 _context.Add(new Schedule
                 {
                     Day = DayOfWeek.Monday,
-                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
-                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                    StartHour = "07:00",
+                    FinishHour = "12:00",
                 });
                 _context.Add(new Schedule
                 {
                     Day = DayOfWeek.Tuesday,
-                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
-                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                    StartHour = "07:00",
+                    FinishHour = "12:00",
                 });
                 _context.Add(new Schedule
                 {
                     Day = DayOfWeek.Wednesday,
-                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
-                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                    StartHour = "07:00",
+                    FinishHour = "12:00",
                 });
                 _context.Add(new Schedule
                 {
                     Day = DayOfWeek.Thursday,
-                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
-                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                    StartHour = "07:00",
+                    FinishHour = "12:00",
                 });
                 _context.Add(new Schedule
                 {
                     Day = DayOfWeek.Friday,
-                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
-                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                    StartHour = "07:00",
+                    FinishHour = "12:00",
                 });
                 _context.Add(new Schedule
                 {
                     Day = DayOfWeek.Saturday,
-                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
-                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                    StartHour = "07:00",
+                    FinishHour = "12:00",
                 });
             }
             await _context.SaveChangesAsync();

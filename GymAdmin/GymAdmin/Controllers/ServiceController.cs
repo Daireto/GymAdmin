@@ -6,6 +6,7 @@ using GymAdmin.Helpers;
 using GymAdmin.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymAdmin.Controllers
@@ -77,7 +78,7 @@ namespace GymAdmin.Controllers
             if (ModelState.IsValid)
             {
                 Professional professional = await _context.Professionals.FirstOrDefaultAsync(p => p.User.Email == model.ProfessionalUserName);
-                if(professional == null)
+                if (professional == null)
                 {
                     ModelState.AddModelError(string.Empty, "¡El profesional no existe en el sistema, debe crearlo antes de crear el servicio!");
                     model.Professionals = await _combosHelper.GetComboProfessionalsAsync();
@@ -381,7 +382,7 @@ namespace GymAdmin.Controllers
                 }
 
                 User user = await _userHelper.GetUserAsync(model.Username);
-                if(user == null)
+                if (user == null)
                 {
                     model.Users = await _combosHelper.GetComboUsersAsync();
                     model.Schedules = await _combosHelper.GetComboSchedulesAsync();
@@ -413,7 +414,7 @@ namespace GymAdmin.Controllers
                         _context.Add(professional);
                         await _context.SaveChangesAsync();
                     }
-                    catch (Exception exception)
+                    catch (Exception)
                     {
                         ModelState.AddModelError(string.Empty, "¡Este usuario ya tiene esta profesión!");
                         model.Users = await _combosHelper.GetComboUsersAsync();
@@ -458,7 +459,7 @@ namespace GymAdmin.Controllers
                 .Include(p => p.Services)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            foreach(var service in professional.Services)
+            foreach (var service in professional.Services)
             {
                 _context.Services.Remove(service);
             }
@@ -484,16 +485,141 @@ namespace GymAdmin.Controllers
             return View(await _context.Schedules.ToListAsync());
         }
 
-        /*
-         * SCHEDULE ACTIONS
-         */
-
         //DetailsSchedule
+        public async Task<IActionResult> DetailsSchedule(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //CreateSchedule
+            Schedule schedule = await _context.Schedules
+                .Include(s => s.Professionals)
+                .ThenInclude(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-        //EditSchedule
+            return View(schedule);
+        }
 
-        //DeleteSchedule
+        public IActionResult CreateSchedule()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSchedule(Schedule model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Add(model);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(ShowSchedules));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "¡Este horario ya existe!");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> EditSchedule(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Schedule schedule = await _context.Schedules
+                .Include(s => s.Professionals)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
+            return View(schedule);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSchedule(int id, Schedule model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(ShowSchedules));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "¡Este horario ya existe!");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> DeleteSchedule(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Schedule schedule = await _context.Schedules
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
+            return View(schedule);
+        }
+
+        [HttpPost, ActionName("DeleteSchedule")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteScheduleConfirmed(int id)
+        {
+            Schedule schedule = await _context.Schedules.FindAsync(id);
+            _context.Schedules.Remove(schedule);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ShowSchedules));
+        }
     }
 }
