@@ -12,12 +12,14 @@ namespace GymAdmin.Data
 
         public DbSet<Service> Services { get; set; }
         //public DbSet<...> ... { get; set; } --> Entidades
+        public DbSet<UserProfessional> Professionals { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<User>().HasIndex("Document", "DocumentType").IsUnique();
             modelBuilder.Entity<Service>().HasIndex(s => s.Name).IsUnique();
+            modelBuilder.Entity<UserProfessional>().HasIndex("Document" , "DocumentType").IsUnique();
         }
     }
 }
