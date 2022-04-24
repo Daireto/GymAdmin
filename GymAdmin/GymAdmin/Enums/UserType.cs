@@ -4,6 +4,5 @@
     {
         Admin,
         User,
-        Professional
     }
 }

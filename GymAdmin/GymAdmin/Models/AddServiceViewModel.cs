@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GymAdmin.Data.Entities
+namespace GymAdmin.Models
 {
-    public class Service
+    public class AddServiceViewModel
     {
-        public int Id { get; set; }
-
         [Display(Name = "Servicio")]
         [MinLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -15,11 +14,12 @@ namespace GymAdmin.Data.Entities
         [Display(Name = "Precio")]
         [MinLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
 
-        public ICollection<ServiceAccess> ServiceAccesses { get; set; }
+        [Display(Name = "Profesional")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public int ProfessionalId { get; set; }
 
-        public Professional Professional { get; set; }
+        public IEnumerable<SelectListItem> Professionals { get; set; }
     }
 }

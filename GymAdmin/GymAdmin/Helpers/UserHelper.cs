@@ -1,5 +1,6 @@
 ﻿using GymAdmin.Data;
 using GymAdmin.Data.Entities;
+using GymAdmin.Enums;
 using GymAdmin.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,32 @@ namespace GymAdmin.Helpers
         }
 
         public async Task<User> AddUserAsync(AddUserViewModel model, Guid imageId)
+        {
+            User user = new()
+            {
+                Email = model.Username,
+                PhoneNumber = model.PhoneNumber,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Document = model.Document,
+                DocumentType = model.DocumentType,
+                ImageId = imageId,
+                UserName = model.Username,
+                UserType = model.UserType,
+            };
+
+            IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                return null;
+            }
+
+            User user2 = await GetUserAsync(model.Username);
+            await AddUserToRoleAsync(user2, user.UserType.ToString());
+            return user2;
+        }
+
+        public async Task<User> AddUserAsync(AddProfessionalViewModel model, Guid imageId)
         {
             User user = new()
             {
@@ -96,7 +123,13 @@ namespace GymAdmin.Helpers
             return await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == userId.ToString());
         }
+
         public async Task<User> GetUserAsync(AddUserViewModel model)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Document == model.Document && u.DocumentType == model.DocumentType);
+        }
+
+        public async Task<User> GetUserAsync(AddProfessionalViewModel model)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Document == model.Document && u.DocumentType == model.DocumentType);
         }

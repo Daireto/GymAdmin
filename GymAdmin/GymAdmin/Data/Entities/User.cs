@@ -38,6 +38,6 @@ namespace GymAdmin.Data.Entities
         [Display(Name = "Usuario")]
         public string FullName => $"{FirstName} {LastName}";
 
-        public int ServiceId { get; internal set; }
+        public ICollection<ServiceAccess> ServiceAccesses { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace GymAdmin.Data
             //Database creation and migrations execution
             await _context.Database.EnsureCreatedAsync();
 
-            //Seeds
+            //Roles seed
             await CheckRolesAsync();
 
             //User seeds
@@ -31,10 +31,108 @@ namespace GymAdmin.Data
             await CheckUsersAsync("1002", DocumentType.CC, "Lindsey", "Morgan", "lindsey@yopmail.com", "311 456 1885", "image-lindsey.jpg", UserType.Admin);
             await CheckUsersAsync("1003", DocumentType.CC, "Marie", "Avgeropoulos", "marie@yopmail.com", "311 456 9696", "image-marie.jpg", UserType.User);
             await CheckUsersAsync("1004", DocumentType.PAP, "Curtis", "Jackson", "curtis@yopmail.com", "311 456 7589", "image-curtis.jpg", UserType.User);
-            await CheckUsersAsync("1005", DocumentType.CE, "Brian", "Henry", "brian@yopmail.com", "311 456 5012", "image-brian.jpg", UserType.User);
-            await CheckUsersAsync("1006", DocumentType.PAP, "Dwayne", "Johnson", "dwayne@yopmail.com", "311 456 7898", "image-rock.jpg", UserType.User);
-            await CheckUsersAsync("1007", DocumentType.TI, "Brett", "Gray", "brett@yopmail.com", "311 456 5018", "image-brett.jpg", UserType.User);
-            await CheckUsersAsync("1008", DocumentType.TI, "Millie", "Brown", "millie@yopmail.com", "311 456 4921", "image-millie.jpg", UserType.User);
+            await CheckUsersAsync("1005", DocumentType.PAP, "Dwayne", "Johnson", "dwayne@yopmail.com", "311 456 7898", "image-rock.jpg", UserType.User);
+
+            //Services seeds
+            await CheckSchedulesAsync();
+            await CheckProfessionalsAsync();
+            await CheckServicesAsync();
+        }
+
+        private async Task CheckSchedulesAsync()
+        {
+            if (!_context.Schedules.Any())
+            {
+                _context.Add(new Schedule
+                {
+                    Day = DayOfWeek.Monday,
+                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
+                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                });
+                _context.Add(new Schedule
+                {
+                    Day = DayOfWeek.Tuesday,
+                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
+                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                });
+                _context.Add(new Schedule
+                {
+                    Day = DayOfWeek.Wednesday,
+                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
+                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                });
+                _context.Add(new Schedule
+                {
+                    Day = DayOfWeek.Thursday,
+                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
+                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                });
+                _context.Add(new Schedule
+                {
+                    Day = DayOfWeek.Friday,
+                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
+                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                });
+                _context.Add(new Schedule
+                {
+                    Day = DayOfWeek.Saturday,
+                    StartHour = new DateTime(2022, 4, 24, 7, 0, 0).TimeOfDay.ToString(),
+                    FinishHour = new DateTime(2022, 4, 24, 7, 0, 0).AddHours(5).TimeOfDay.ToString(),
+                });
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task CheckProfessionalsAsync()
+        {
+            if (!_context.Professionals.Any())
+            {
+                _context.Add(new Professional
+                {
+                    User = await _userHelper.GetUserAsync("lindsey@yopmail.com"),
+                    ProfessionalType = ProfessionalType.Physiotherapist,
+                    Schedule = await _context.Schedules.FindAsync(1)
+                });
+                _context.Add(new Professional
+                {
+                    User = await _userHelper.GetUserAsync("marie@yopmail.com"),
+                    ProfessionalType = ProfessionalType.Nutritionist,
+                    Schedule = await _context.Schedules.FindAsync(2)
+                });
+                _context.Add(new Professional
+                {
+                    User = await _userHelper.GetUserAsync("dwayne@yopmail.com"),
+                    ProfessionalType = ProfessionalType.Instructor,
+                    Schedule = await _context.Schedules.FindAsync(3)
+                });
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task CheckServicesAsync()
+        {
+            if (!_context.Services.Any())
+            {
+                _context.Add(new Service
+                {
+                    Name = "Fortalecimiento muscular",
+                    Price = 120000,
+                    Professional = await _context.Professionals.FindAsync(1)
+                });
+                _context.Add(new Service
+                {
+                    Name = "Evaluación física",
+                    Price = 90000,
+                    Professional = await _context.Professionals.FindAsync(2)
+                });
+                _context.Add(new Service
+                {
+                    Name = "Instrucción",
+                    Price = 140000,
+                    Professional = await _context.Professionals.FindAsync(3)
+                });
+            }
+            await _context.SaveChangesAsync();
         }
 
         private async Task<User> CheckUsersAsync(
