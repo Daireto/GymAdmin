@@ -1,11 +1,309 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "GymAdmin";
+    Layout = null;
 }
 
 <!-- GymAdmin style -->
 <link rel="stylesheet" type="text/css" href="~/css/Home/Index.css" />
 
-<div class="home-container text-center text-white">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Libraries -->
+<link rel="stylesheet" type="text/css" href="~/lib/font-awesome/css/all.min.css" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
+
+<header>
+    <div class="bg-transition">
+        <figure id="img"></figure>
+    </div>
+    <div class="contenedor">
+        <div class="menu">
+            <div></div>
+            <nav>
+                <ul>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a></li>
+                    <li><a asp-area="" asp-controller="Account" asp-action="Login">Ingresar</a></li>
+                    <li><a asp-area="" asp-controller="Account" asp-action="Register">Registrarse</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="titular">
+        <h1>COMIENZA A ENTRENAR CON NOSOTROS</h1>
+        <a asp-area="" asp-controller="Account" asp-action="Register">ÚNETE A GYMADMIN</a>
+    </div>
+</header>
+
+<section id="tarjetas">
+    <div class="contenedor">
+        <div class="contenedor-tarjetas">
+            <div class="tarjeta" id="tarjeta1">
+                <img src="~/images/home/index/card-icon1.png" width="100" alt="" />
+                <h3>CARDIO</h3>
+                <p>Alienum phaedrum torquatos nec eu, vis detraxit periculis exnihil.</p>
+                <a href="#">LEER MÁS</a>
+            </div>
+            <div class="tarjeta" id="tarjeta2">
+                <img src="~/images/home/index/card-icon2.png" width="100" alt="" />
+                <h3>RESISTENCIA</h3>
+                <p>Alienum phaedrum torquatos nec eu, vis detraxit periculis exnihil.</p>
+                <a href="#">LEER MÁS</a>
+            </div>
+            <div class="tarjeta" id="tarjeta3">
+                <img src="~/images/home/index/card-icon3.png" width="100" alt="" />
+                <h3>FUERZA</h3>
+                <p>Alienum phaedrum torquatos nec eu, vis detraxit periculis exnihil.</p>
+                <a href="#">LEER MÁS</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="plans">
+    <h2 class="plans-title">ELIGE TU <span>PLAN</span></h2>
+    <div class="contenedor">
+        <div class="plan">
+            <div class="plan-head plan-head-div">
+                <p>PLAN</p>
+                <h3>TIQUETERA</h3>
+            </div>
+            <div class="plan-price">
+                <p>DESDE</p>
+                <h3>$ 14.900</h3>
+                <hr />
+            </div>
+            <div class="plan-description">
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+            </div>
+            <a href="#">Inscríbete</a>
+        </div>
+        <div class="plan">
+            <div class="plan-black-head plan-head-div">
+                <p>PLAN</p>
+                <h3>BLACK</h3>
+            </div>
+            <div class="plan-price">
+                <p>DESDE</p>
+                <h3>$ 69.900</h3>
+                <hr />
+            </div>
+            <div class="plan-description">
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+            </div>
+            <a href="#">Inscríbete</a>
+        </div>
+        <div class="plan">
+            <div class="plan-head plan-head-div">
+                <p>PLAN</p>
+                <h3>REGULAR</h3>
+            </div>
+            <div class="plan-price">
+                <p>DESDE</p>
+                <h3>$ 49.000</h3>
+                <hr />
+            </div>
+            <div class="plan-description">
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+                <p>Alienum phaedrum torquatos nec eu</p>
+            </div>
+            <a href="#">Inscríbete</a>
+        </div>
+    </div>
+</section>
+
+<section id="classes">
+    <div class="contenedor">
+        <h2>EVENTOS INCREÍBLES</h2>
+        <table>
+            <tr>
+                <th>DÍAS</th>
+                <th>LUNES</th>
+                <th>MARTES</th>
+                <th>MIÉRCOLES</th>
+                <th>JUEVES</th>
+                <th>VIERNES</th>
+                <th>SÁBADO</th>
+                <th>DOMINGO</th>
+            </tr>
+            <tr class="row1">
+                <td>09:00 - 10:00</td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p>Yoga</p>
+                    <p>Michael Lewis</p>
+                </td>
+                <td>
+                    <p>Zumba</p>
+                    <p>Donald Cox</p>
+                </td>
+                <td>
+                    <p>Body Balance</p>
+                    <p>Gloria Parker</p>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="row2">
+                <td>10:00 - 12:00</td>
+                <td>
+                    <p>Zumba</p>
+                    <p>Donald Cox</p>
+                </td>
+                <td>
+                    <p>Body Balance</p>
+                    <p>Gloria Parker</p>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p>Yoga</p>
+                    <p>Michael Lewis</p>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="row3">
+                <td>12:00 - 02:00</td>
+                <td>
+                    <p>Body Balance</p>
+                    <p>Gloria Parker</p>
+                </td>
+                <td>
+                    <p>Zumba</p>
+                    <p>Donald Cox</p>
+                </td>
+                <td></td>
+                <td>
+                    <p>Yoga</p>
+                    <p>Michael Lewis</p>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    <a href="#">Quiero inscribirme a un evento</a>
+    </div>
+</section>
+
+<section id="services">
+    <div class="contenedor">
+        <h2>SERVICIOS ADICIONALES</h2>
+        <div class="service">
+            <div class="service-image">
+                <img src="~/images/home/professionals/professional-instructor-header.jpg" width="500" alt="" />
+            </div>
+            <div class="service-text">
+                <h3>INSTRUCTORES</h3>
+                <p>Alienum phaedrum torquatos nec eu, vis detraxit periculis exnihil.</p>
+                <a href="#">Leer más</a>
+            </div>
+        </div>
+        <div class="service">
+            <div class="service-text">
+                <h3>FISIOTERAPEUTAS</h3>
+                <p>Alienum phaedrum torquatos nec eu, vis detraxit periculis exnihil.</p>
+                <a href="#">Leer más</a>
+            </div>
+            <div class="service-image">
+                <img src="~/images/home/professionals/professional-physiotherapist-header.jpg" width="500" alt="" />
+            </div>
+        </div>
+        <div class="service">
+            <div class="service-image">
+                <img src="~/images/home/professionals/professional-nutritionist-header.jpg" width="500" alt="" />
+            </div>
+            <div class="service-text">
+                <h3>NUTRICIONISTAS</h3>
+                <p>Alienum phaedrum torquatos nec eu, vis detraxit periculis exnihil.</p>
+                <a href="#">Leer más</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@*<section id="gallery">
+    <div class="photo">
+    <img class="img-hover" src="~/images/home/index/gal-1.jpg" alt="" />
+    <div class="oculto">
+    <h4>Clase 1</h4>
+    </div>
+    </div>
+    <div class="photo">
+    <img class="img-hover" src="~/images/home/index/gal-2.jpg" alt="" />
+    <div class="oculto">
+    <h4>Clase 2</h4>
+    </div>
+    </div>
+    <div class="photo">
+    <img class="img-hover" src="~/images/home/index/gal-3.jpg" alt="" />
+    <div class="oculto">
+    <h4>Clase 3</h4>
+    </div>
+    </div>
+    <div class="photo">
+    <img class="img-hover" src="~/images/home/index/gal-4.jpg" alt="" />
+    <div class="oculto">
+    <h4>Clase 4</h4>
+    </div>
+    </div>
+    <div class="photo">
+    <img class="img-hover" src="~/images/home/index/gal-5.jpg" alt="" />
+    <div class="oculto">
+    <h4>Clase 5</h4>
+    </div>
+    </div>
+    <div class="photo">
+    <img class="img-hover" src="~/images/home/index/gal-6.jpg" alt="" />
+    <div class="oculto">
+    <h4>Clase 6</h4>
+    </div>
+    </div>
+    <div class="photo">
+    <img class="img-hover" src="~/images/home/index/gal-7.jpg" alt="" />
+    <div class="oculto">
+    <h4>Clase 7</h4>
+    </div>
+    </div>
+    <div class="photo">
+    <img class="img-hover" src="~/images/home/index/gal-8.jpg" alt="" />
+    <div class="oculto">
+    <h4>Clase 8</h4>
+    </div>
+    </div>
+    </section>*@
+
+<section id="contact">
+    <div class="contenedor">
+        <h2>CONTÁCTANOS</h2>
+        <div class="info">
+            <p><i class="fas fa-phone-alt"></i>(+57) 311 456 9860</p>
+            <a href="mailto:pruebasdairoandres123@gmail.com" class="mail"><i class="fas fa-envelope"></i>info@gymadmin.com</a>
+        </div>
+        <a class="Privacy" asp-area="" asp-controller="Home" asp-action="Privacy">PRIVACIDAD</a>
+    </div>
+</section>
+
+<!-- Scripts -->
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/main.js"></script>
+<script src="~/lib/font-awesome/js/fontawesome.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

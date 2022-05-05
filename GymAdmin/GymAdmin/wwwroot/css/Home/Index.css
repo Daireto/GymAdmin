@@ -1,6 +1,401 @@
-﻿/*
-    Body
-*/
-body {
-    background-color: #202020;
+﻿body {
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat";
+    background-color: #2c2b2c;
+    background-attachment: fixed;
+    overflow-x: hidden;
 }
+
+.contenedor {
+    width: 90%;
+    max-width: 1280px;
+    margin: auto;
+    z-index: 1;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+header {
+    background-image: url("../../images/home/index/home-slider3.jpg");
+    background-size: cover;
+    height: 140vh;
+}
+
+.bg-transition #img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 140vh;
+    margin: 0;
+    background-image: url("../../images/home/index/home-slider3.jpg");
+    background-size: cover;
+    z-index: 1;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header ul {
+    display: flex;
+}
+
+    header ul li {
+        margin: 0 20px;
+        z-index: 2;
+    }
+
+        header ul li a {
+            font-size: 15px;
+            color: white;
+            border-bottom: 1px solid transparent;
+            transition: all .2s ease-out;
+        }
+
+            header ul li a:hover {
+                color: #f2c60d !important;
+                border-bottom: 1px solid #f2c60d;
+            }
+
+.titular {
+    text-align: center;
+    margin-top: 40vh;
+    color: #fff;
+    position: relative;
+    z-index: 2;
+}
+
+h1 {
+    font-size: 80px;
+    font-style: italic;
+    font-weight: bold;
+    width: 80%;
+    margin: auto;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 3;
+}
+
+.titular a {
+    background: black;
+    color: #f2c60d;
+    padding: 20px 40px;
+}
+
+/* Cards */
+.contenedor-tarjetas {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 80px;
+    position: relative;
+    z-index: 2;
+}
+
+.tarjeta {
+    text-align: center;
+    box-shadow: -1px 1px 5px #0000001f;
+    width: 20%;
+    margin-top: -100px;
+    background-color: #484748;
+    padding: 40px 40px;
+    border-radius: 6px;
+    color: white;
+}
+
+    .tarjeta a {
+        color: white !important;
+        text-decoration: none !important;
+        transition: all .2s ease-out !important;
+    }
+
+        .tarjeta a:hover {
+            color: #f2c60d !important;
+        }
+
+#tarjeta2 {
+    margin: 0 60px;
+    margin-top: -100px;
+}
+
+.tarjeta h3 {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.tarjeta p {
+    font-size: 15px;
+}
+
+.tarjeta a {
+    color: #000;
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Plans */
+
+
+#plans .contenedor {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+h2.plans-title span {
+    color: #f2c60d;
+}
+
+.plan {
+    text-align: center;
+    color: white;
+}
+
+    .plan a {
+        color: white;
+        text-decoration: none;
+        transition: all .2s ease-out !important;
+        padding: 10px 20px;
+        border: 1px solid white;
+        border-radius: 7px;
+    }
+
+        .plan a:hover {
+            background-color: #f2c60d;
+            color: black;
+        }
+
+.plan-head {
+    width: 100%;
+    background-color: #f2c60d;
+    color: black;
+}
+
+.plan-black-head {
+    width: 100%;
+    background-color: black;
+    color: white;
+}
+
+.plan-head-div {
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+    .plan-head-div p {
+        font-size: 22px;
+        margin-bottom: 0;
+    }
+
+    .plan-head-div h3 {
+        margin-top: 0;
+        font-size: 36px;
+    }
+
+.plan-price {
+    width: 100%;
+}
+
+.plan-description p:last-child {
+    margin-bottom: 30px;
+}
+/* Events */
+table {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.row2, th {
+    background-color: #fff;
+}
+
+th {
+    padding: 20px 0;
+    font-style: italic;
+    color: #414141;
+}
+
+.row1, .row3 {
+    background-color: #e0e0e0;
+}
+
+tr td:first-child {
+    font-style: italic;
+    color: #414141;
+}
+
+td p:first-child {
+    font-weight: bold;
+}
+
+h2 {
+    text-align: center;
+    font-size: 60px;
+    font-style: italic;
+    font-weight: bold;
+    padding-top: 20px;
+    color: white !important;
+}
+
+#classes .contenedor {
+    text-align: center;
+}
+
+#classes a {
+    color: white;
+    text-decoration: none;
+    transition: all .2s ease-out !important;
+    padding: 10px 20px;
+    border: 1px solid white;
+    border-radius: 7px;
+}
+
+    #classes a:hover {
+        background-color: #f2c60d;
+        color: black;
+    }
+
+/* Services */
+#services .contenedor {
+    display: flex;
+    flex-direction: column;
+}
+
+.service {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    background-color: #414141;
+    padding: 40px 0;
+    margin: 0 0 10px 0;
+}
+
+.service-text {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    text-align: center;
+    color: white;
+}
+
+    .service-text a {
+        color: white !important;
+        text-decoration: none !important;
+        transition: all .2s ease-out !important;
+    }
+
+        .service-text a:hover {
+            color: #f2c60d !important;
+        }
+
+/* Final */
+#gallery {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 60px;
+}
+
+    #gallery img {
+        width: 100%;
+        transition: transform 0.5s ease-in;
+    }
+
+    #gallery .photo {
+        width: 25%;
+        position: relative;
+        overflow: hidden;
+    }
+
+.oculto {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.356);
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    text-align: center;
+    display: none;
+}
+
+    .oculto h4 {
+        position: relative;
+        top: 40%;
+    }
+
+.agrandar {
+    transform: scale(1.2);
+    transition: transform 0.5s ease-in-out;
+}
+
+#contact {
+    background: #000;
+    text-align: center;
+    color: #fff;
+    padding: 60px 0;
+    margin-top: 60px;
+}
+
+    #contact h2 {
+        margin: 0;
+    }
+
+    #contact i {
+        color: #f2c60d;
+        margin-right: 10px;
+    }
+
+.info {
+    display: flex;
+    justify-content: center;
+}
+
+    .info p {
+        margin: 20px;
+    }
+
+#contact a.Privacy {
+    background: #f2c60d;
+    color: #000;
+    font-style: italic;
+    padding: 20px 40px;
+    display: inline-block;
+    margin-top: 30px;
+    border: 2px solid transparent;
+    transition: all .2s ease-out !important;
+}
+
+    #contact a.Privacy:hover {
+        border: 2px solid #f2c60d;
+        background: black;
+        color: #f2c60d;
+    }
+
+#contact p, a.mail {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#contact a.mail {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: white;
+    transition: all .2s ease-out !important;
+}
+
+    #contact a.mail:hover {
+        color: #f2c60d;
+    }
