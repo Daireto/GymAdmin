@@ -26,7 +26,18 @@ namespace GymAdmin.Helpers
 
             return list;
         }
+        public async Task<IEnumerable<SelectListItem>> GetComboDirectorsAsync()
+        {
+            List<SelectListItem> list = await _context.Directors
+                .Select(p => new SelectListItem
+                {
+                    Text = p.User.FullName,
+                    Value = p.User.UserName
+                })
+                .ToListAsync();
 
+            return list;
+        }
         public async Task<IEnumerable<SelectListItem>> GetComboSchedulesAsync()
         {
             List<SelectListItem> list = await _context.Schedules

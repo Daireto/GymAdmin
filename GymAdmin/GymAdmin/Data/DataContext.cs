@@ -7,7 +7,9 @@ namespace GymAdmin.Data
     public class DataContext : IdentityDbContext<User>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
-
+        
+        public DbSet<Director> Directors { get; set; }
+        public DbSet<Event> Events{ get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceAccess> ServiceAccesses { get; set; }
         public DbSet<Professional> Professionals { get; set; }
