@@ -9,15 +9,19 @@
 <!-- Libraries -->
 <link rel="stylesheet" type="text/css" href="~/lib/font-awesome/css/all.min.css" />
 
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet" />
+<!-- Position absolute elements -->
+<div id="Unete">
+    <a asp-area="" asp-controller="Account" asp-action="Register">ÚNETE A GYMADMIN</a>
+</div>
 
+<div class="video">
+    <video id="background-video" autoplay loop muted poster="~/vids/poster.png">
+        <source src="~/vids/video.mp4" type="video/mp4">
+    </video>
+</div>
+
+<!-- Body -->
 <header>
-    <div class="bg-transition">
-        <figure id="img"></figure>
-    </div>
     <div class="contenedor">
         <div class="menu">
             <div></div>
@@ -32,8 +36,7 @@
         </div>
     </div>
     <div class="titular">
-        <h1>COMIENZA A ENTRENAR CON NOSOTROS</h1>
-        <a asp-area="" asp-controller="Account" asp-action="Register">ÚNETE A GYMADMIN</a>
+        <h1>COMIENZA A ENTRENAR<br />CON NOSOTROS</h1>
     </div>
 </header>
 
@@ -200,7 +203,7 @@
                 <td></td>
             </tr>
         </table>
-    <a href="#">Quiero inscribirme a un evento</a>
+        <a href="#">Quiero inscribirme a un evento</a>
     </div>
 </section>
 
@@ -209,7 +212,7 @@
         <h2>SERVICIOS ADICIONALES</h2>
         <div class="service">
             <div class="service-image">
-                <img src="~/images/home/professionals/professional-instructor-header.jpg" width="500" alt="" />
+                <img id="instructorImg" src="~/images/home/professionals/professional-instructor-header.jpg" width="500" alt="" />
             </div>
             <div class="service-text">
                 <h3>INSTRUCTORES</h3>
@@ -224,12 +227,12 @@
                 <a href="#">Leer más</a>
             </div>
             <div class="service-image">
-                <img src="~/images/home/professionals/professional-physiotherapist-header.jpg" width="500" alt="" />
+                <img id="physioImg" src="~/images/home/professionals/professional-physiotherapist-header.jpg" width="500" alt="" />
             </div>
         </div>
         <div class="service">
             <div class="service-image">
-                <img src="~/images/home/professionals/professional-nutritionist-header.jpg" width="500" alt="" />
+                <img id="nutriImg" src="~/images/home/professionals/professional-nutritionist-header.jpg" width="500" alt="" />
             </div>
             <div class="service-text">
                 <h3>NUTRICIONISTAS</h3>
@@ -303,7 +306,7 @@
 </section>
 
 <!-- Scripts -->
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/font-awesome/js/fontawesome.js"></script>
 <script src="~/js/jquery-3.6.0.min.js"></script>
 <script src="~/js/main.js"></script>
-<script src="~/lib/font-awesome/js/fontawesome.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
