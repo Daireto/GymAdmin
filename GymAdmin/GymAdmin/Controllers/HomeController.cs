@@ -12,6 +12,26 @@ namespace GymAdmin.Controllers
             return View();
         }
 
+        public IActionResult Gallery()
+        {
+            return View();
+        }
+
+        public IActionResult Instructors()
+        {
+            return View();
+        }
+
+        public IActionResult Physiotherapists()
+        {
+            return View();
+        }
+
+        public IActionResult Nutritionists()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

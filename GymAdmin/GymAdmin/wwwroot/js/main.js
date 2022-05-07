@@ -14,16 +14,4 @@ $(document).ready(function () {
             $(this).find('.img-hover').removeClass('agrandar');
         }
     );
-
-    var cerrar = false;
-    $(".menu-icon").click(function () {
-        $("nav").stop().slideToggle();
-        if (!cerrar) {
-            cerrar = true;
-            $(this).css("transform", "rotate(90deg)");
-        } else {
-            cerrar = false;
-            $(this).css("transform", "rotate(0deg)");
-        }
-    });
 });

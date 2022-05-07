@@ -1,0 +1,242 @@
+﻿/* General */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Geneva, Tahoma, sans-serif;
+    background-image: url("../../images/bg/message-body-background.jpg");
+    background-attachment: fixed;
+    overflow-x: hidden;
+}
+
+.contenedor {
+    width: 90%;
+    max-width: 1280px;
+    margin: auto;
+    z-index: 1;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+h2 {
+    text-align: center;
+    font-size: 60px;
+    font-style: italic;
+    font-weight: bold;
+    color: white !important;
+    transition: all .2s ease-out;
+}
+
+    header h2:hover {
+        color: #f2c60d !important;
+    }
+
+h3 {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    color: white !important;
+    margin-bottom: 20px;
+}
+
+/* Header */
+header {
+    background-color: black;
+}
+
+    header .contenedor {
+        width: 95% !important;
+    }
+
+.menu {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-self: center;
+}
+
+header ul {
+    margin: 0;
+    display: flex;
+}
+
+    header ul li {
+        margin: 0 20px;
+        z-index: 2;
+    }
+
+        header ul li a {
+            font-size: 18px;
+            color: white;
+            border-bottom: 1px solid transparent;
+            transition: all .2s ease-out;
+        }
+
+            header ul li a:hover {
+                color: #f2c60d !important;
+                border-bottom: 1px solid #f2c60d;
+            }
+
+.titular {
+    text-align: center;
+    margin-top: 40vh;
+    color: #fff;
+    position: relative;
+    z-index: 2;
+    display: none;
+}
+
+/* Gallery */
+#gallery {
+    margin-top: 60px;
+}
+
+    #gallery img {
+        transition: transform 0.5s ease-in;
+    }
+
+.events-gallery {
+    margin: 0 auto 40px auto;
+    padding: 40px 60px 0 60px;
+    width: 80%;
+    background-color: #414141;
+    display: flex;
+    flex-direction: column;
+    border-radius: 50px;
+    border: 1px solid #414141;
+}
+
+.events-gallery-header {
+    margin-bottom: 0.6%;
+}
+
+    .events-gallery-header .photo {
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+        .events-gallery-header .photo img {
+            width: 100%;
+        }
+
+.events-gallery-images {
+    margin: 0 auto 40px auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+    .events-gallery-images .photo {
+        width: 49.7%;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+        max-height: 311.750px;
+        border-radius: 10px;
+    }
+
+        .events-gallery-images .photo img {
+            width: 100%;
+        }
+
+#photo1 {
+    margin: 0 0.3% 0.3% 0;
+}
+
+#photo2 {
+    margin: 0 0 0.3% 0.3%;
+}
+
+#photo3 {
+    margin: 0.3% 0.3% 0 0;
+}
+
+#photo4 {
+    margin: 0.3% 0 0 0.3%;
+}
+
+.oculto {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.356);
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    text-align: center;
+    display: none;
+}
+
+.agrandar {
+    transform: scale(1.2);
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Contact */
+#contact {
+    background: #000;
+    text-align: center;
+    color: #fff;
+    padding: 60px 0;
+    margin-top: 60px;
+}
+
+    #contact h2 {
+        margin: 0;
+    }
+
+    #contact i {
+        color: #f2c60d;
+        margin-right: 10px;
+    }
+
+.info {
+    display: flex;
+    justify-content: center;
+}
+
+    .info p {
+        margin: 20px;
+    }
+
+#contact a.Privacy {
+    background: #f2c60d;
+    color: #000;
+    font-style: italic;
+    padding: 20px 40px;
+    display: inline-block;
+    margin-top: 30px;
+    border: 2px solid transparent;
+    transition: all .2s ease-out !important;
+}
+
+    #contact a.Privacy:hover {
+        border: 2px solid #f2c60d;
+        background: black;
+        color: #f2c60d;
+    }
+
+#contact p, a.mail {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#contact a.mail {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: white;
+    transition: all .2s ease-out !important;
+}
+
+    #contact a.mail:hover {
+        color: #f2c60d;
+    }
