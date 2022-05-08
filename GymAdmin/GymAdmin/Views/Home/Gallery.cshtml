@@ -1,60 +1,13 @@
 ﻿@{
-    Layout = null;
+    ViewData["title"] = "Gallery";
 }
 
-<!DOCTYPE html>
-<html lang="es">
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/Home/Gallery.css" />
+<link rel="stylesheet" type="text/css" href="~/css/big-titles.css" />
 
-<head>
-    <!-- Metadata -->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- View data -->
-    <title>Gallery - GymAdmin</title>
-
-    <!-- Libraries -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="~/lib/font-awesome/css/all.min.css" />
-
-    <!-- GymAdmin style -->
-    <link rel="stylesheet" type="text/css" href="~/css/Home/Gallery.css" />
-
-    <style>
-        .fa-house,
-        .fa-landmark,
-        .fa-user,
-        .fa-users,
-        .fa-arrow-right-from-bracket,
-        .fa-bell-concierge {
-            padding-right: 5px;
-        }
-    </style>
-
-</head>
-
-<body>
-    <!-- Header -->
-    <header>
-        <div class="contenedor">
-            <div class="menu">
-                <nav>
-                    <ul>
-                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a></li>
-                    </ul>
-                </nav>
-                <h2>GALERÍA DE EVENTOS</h2>
-                <nav>
-                    <ul>
-                        <li><a asp-area="" asp-controller="Account" asp-action="Login">Ingresar</a></li>
-                        <li><a asp-area="" asp-controller="Account" asp-action="Register">Registrarse</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
-
+<div class="gallery-container">
+    <h2>GALERÍA DE EVENTOS</h2>
     <!-- Gallery -->
     <section id="gallery">
         <div class="events-gallery">
@@ -71,25 +24,25 @@
                 <!-- Image -->
                 <div id="photo1" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-cardio1.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
                 <!-- Image -->
                 <div id="photo2" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-cardio2.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
                 <!-- Image -->
                 <div id="photo3" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-cardio3.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
                 <!-- Image -->
                 <div id="photo4" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-cardio4.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
             </div>
@@ -108,30 +61,30 @@
                 <!-- Image -->
                 <div id="photo1" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-women1.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
                 <!-- Image -->
                 <div id="photo2" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-women2.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
                 <!-- Image -->
                 <div id="photo3" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-women3.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
                 <!-- Image -->
                 <div id="photo4" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-women4.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
             </div>
         </div>
-        <div class="events-gallery">
+        <div id="last-event-gallery" class="events-gallery">
             <!-- Header 3 -->
             <h3>Yoga</h3>
             <div id="header3" class="events-gallery-header">
@@ -145,47 +98,33 @@
                 <!-- Image -->
                 <div id="photo1" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-yoga1.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
                 <!-- Image -->
                 <div id="photo2" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-yoga2.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
                 <!-- Image -->
                 <div id="photo3" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-yoga3.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
                 <!-- Image -->
                 <div id="photo4" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-yoga4.jpg" alt="" />
-                    <div class="oculto">
+                    <div class="dark-backdrop-hidden">
                     </div>
                 </div>
             </div>
         </div>
     </section>
+</div>
 
-    <!-- Contact -->
-    <section id="contact">
-        <div class="contenedor">
-            <h2>CONTÁCTANOS</h2>
-            <div class="info">
-                <p><i class="fas fa-phone-alt"></i>(+57) 311 456 9860</p>
-                <a href="mailto:soporte@gymadmin.com" class="mail"><i class="fas fa-envelope"></i>soporte@gymadmin.com</a>
-            </div>
-            <a class="Privacy" asp-area="" asp-controller="Home" asp-action="Privacy">PRIVACIDAD</a>
-        </div>
-    </section>
-
-    <!-- Scripts -->
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/font-awesome/js/fontawesome.js"></script>
-    <script src="~/js/jquery-3.6.0.min.js"></script>
-    <script src="~/js/main.js"></script>
-</body>
-</html>
+<!-- Scripts -->
+@section Scripts {
+<script src="~/js/gallery-effect.js"></script>
+}

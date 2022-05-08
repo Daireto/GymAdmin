@@ -1,8 +1,9 @@
-﻿/*
-    Body and Html
-*/
+﻿/* Body and Html */
 html, body {
     height: 100%;
+}
+
+html {
     overflow: auto;
 }
 
@@ -10,22 +11,25 @@ body {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    background-color: black;
     backdrop-filter: blur(6px);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
 }
 
-/*
-    Header
-*/
+/* Header */
 .GymAdminHeader {
     background-color: rgba(0, 0, 0, 0.8);
     border: none;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .GymAdminHeaderBrand {
+    padding: 0 0 0 20px;
     color: white;
-    font-size: 30px;
+    font-size: 23px;
     transition: all .2s ease-out;
+    text-decoration: none;
 }
 
     .GymAdminHeaderBrand:hover {
@@ -33,9 +37,12 @@ body {
     }
 
 .GymAdminHeaderLink {
+    padding: 0 0 5px 0 !important;
+    font-size: 15px;
     color: white;
     border-bottom: 1px solid transparent;
     transition: all .2s ease-out;
+    text-decoration: none;
 }
 
     .GymAdminHeaderLink:hover {
@@ -43,37 +50,23 @@ body {
         border-bottom: 1px solid #f2c60d;
     }
 
-.GymAdminHeaderLoginLink {
-    margin-right: 10px;
+.nav-item {
+    margin: 0 0 0 15px;
+    padding: 0;
 }
 
-/*
-    Content
-*/
+.container-fluid {
+    padding: 0;
+    margin: auto 0;
+}
+
+.right-menu {
+    display: flex;
+    margin: 16px 0;
+    padding: 0 20px;
+}
+
+/* Content */
 .container {
     margin-bottom: 24px;
 }
-
-/*
-    Footer
-*/
-.GymAdminFooter {
-    background-color: rgba(0, 0, 0, 0.4);
-    border: none;
-    height: 24px;
-    margin-top: -24px;
-}
-
-.GymAdminFooterContainer {
-    font-size: 15px;
-    text-align: center;
-}
-
-.GymAdminFooterLink {
-    text-decoration: none;
-    transition: all .2s ease-out;
-}
-
-    .GymAdminFooterLink:hover {
-        color: #f2c60d !important;
-    }
