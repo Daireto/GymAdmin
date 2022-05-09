@@ -124,7 +124,7 @@ header {
 .header-title {
     text-align: center;
     margin-top: 40vh;
-    color: #fff;
+    color: rgba(255,255,255,0.9);
     position: relative;
     z-index: 2;
     display: none;

@@ -31,80 +31,238 @@ namespace GymAdmin.Data
             await CheckUsersAsync("1002", DocumentType.CC, "Lindsey", "Morgan", "lindsey@yopmail.com", "311 456 1885", "image-lindsey.jpg", UserType.Admin);
             await CheckUsersAsync("1003", DocumentType.CC, "Marie", "Avgeropoulos", "marie@yopmail.com", "311 456 9696", "image-marie.jpg", UserType.User);
             await CheckUsersAsync("1004", DocumentType.PAP, "Curtis", "Jackson", "curtis@yopmail.com", "311 456 7589", "image-curtis.jpg", UserType.User);
-            await CheckUsersAsync("1005", DocumentType.PAP, "Dwayne", "Johnson", "dwayne@yopmail.com", "311 456 7898", "image-rock.jpg", UserType.User);
+            await CheckUsersAsync("1005", DocumentType.PAP, "Dwayne", "Johnson", "dwayne@yopmail.com", "311 456 2498", "image-rock.jpg", UserType.User);
+            await CheckUsersAsync("1006", DocumentType.TI, "Millie", "Brown", "millie@yopmail.com", "311 456 7892", "image-millie.jpg", UserType.User);
+            await CheckUsersAsync("1007", DocumentType.TI, "Brett", "Gray", "brett@yopmail.com", "311 456 6498", "image-brett.jpg", UserType.User);
+            await CheckUsersAsync("1008", DocumentType.CE, "Brian", "Henry", "brian@yopmail.com", "311 456 3794", "image-brian.jpg", UserType.User);
+            await CheckUsersAsync("1009", DocumentType.CE, "Andy", "Allo", "andy@yopmail.com", "311 456 8002", "image-andy.jpg", UserType.User);
+            await CheckUsersAsync("1010", DocumentType.CE, "Vanessa", "Hudgens", "vanessa@yopmail.com", "311 456 2841", "image-hudgens.jpg", UserType.User);
+            await CheckUsersAsync("1011", DocumentType.CE, "Rihanna", "Fenty", "rihanna@yopmail.com", "311 456 7945", "image-riri.jpg", UserType.User);
+            await CheckUsersAsync("1012", DocumentType.PAP, "Lamar", "Hill", "lamar@yopmail.com", "311 456 3628", "image-lamar.jpg", UserType.User);
+            await CheckUsersAsync("1013", DocumentType.TI, "Peyton", "List", "peyton@yopmail.com", "311 456 4124", "image-peyton.jpg", UserType.User);
 
             //Services seeds
-            await CheckSchedulesAsync();
-            await CheckProfessionalsAsync();
             await CheckServicesAsync();
-        }
-
-        private async Task CheckSchedulesAsync()
-        {
-            if (!_context.Schedules.Any())
-            {
-                _context.Add(new Schedule
-                {
-                    Day = DayOfWeek.Monday,
-                    StartHour = "07:00",
-                    FinishHour = "12:00",
-                });
-                _context.Add(new Schedule
-                {
-                    Day = DayOfWeek.Tuesday,
-                    StartHour = "07:00",
-                    FinishHour = "12:00",
-                });
-                _context.Add(new Schedule
-                {
-                    Day = DayOfWeek.Wednesday,
-                    StartHour = "07:00",
-                    FinishHour = "12:00",
-                });
-                _context.Add(new Schedule
-                {
-                    Day = DayOfWeek.Thursday,
-                    StartHour = "07:00",
-                    FinishHour = "12:00",
-                });
-                _context.Add(new Schedule
-                {
-                    Day = DayOfWeek.Friday,
-                    StartHour = "07:00",
-                    FinishHour = "12:00",
-                });
-                _context.Add(new Schedule
-                {
-                    Day = DayOfWeek.Saturday,
-                    StartHour = "07:00",
-                    FinishHour = "12:00",
-                });
-            }
-            await _context.SaveChangesAsync();
+            await CheckProfessionalsAsync();
         }
 
         private async Task CheckProfessionalsAsync()
         {
             if (!_context.Professionals.Any())
             {
-                _context.Add(new Professional
-                {
-                    User = await _userHelper.GetUserAsync("lindsey@yopmail.com"),
-                    ProfessionalType = ProfessionalType.Physiotherapist,
-                    Schedule = await _context.Schedules.FindAsync(1)
-                });
-                _context.Add(new Professional
-                {
-                    User = await _userHelper.GetUserAsync("marie@yopmail.com"),
-                    ProfessionalType = ProfessionalType.Nutritionist,
-                    Schedule = await _context.Schedules.FindAsync(2)
-                });
-                _context.Add(new Professional
+                Professional professional = new()
                 {
                     User = await _userHelper.GetUserAsync("dwayne@yopmail.com"),
                     ProfessionalType = ProfessionalType.Instructor,
-                    Schedule = await _context.Schedules.FindAsync(3)
-                });
+                    Service = await _context.Services.FindAsync(1),
+                    ProfessionalSchedules = new List<ProfessionalSchedule>(),
+                };
+
+                professional.ProfessionalSchedules = new List<ProfessionalSchedule>()
+                    {
+                        new ProfessionalSchedule()
+                        {
+                            Professional = professional,
+                            Schedule = new Schedule()
+                            {
+                                Day = DayOfWeek.Monday,
+                                StartHour = new TimeSpan(14, 0, 0),
+                                FinishHour = new TimeSpan(19, 0, 0),
+                            }
+                        },
+                        new ProfessionalSchedule()
+                        {
+                            Professional = professional,
+                            Schedule = new Schedule()
+                            {
+                                Day = DayOfWeek.Wednesday,
+                                StartHour = new TimeSpan(14, 0, 0),
+                                FinishHour = new TimeSpan(19, 0, 0),
+                            }
+                        },
+                        new ProfessionalSchedule()
+                        {
+                            Professional = professional,
+                            Schedule = new Schedule()
+                            {
+                                Day = DayOfWeek.Friday,
+                                StartHour = new TimeSpan(14, 0, 0),
+                                FinishHour = new TimeSpan(19, 0, 0),
+                            }
+                        },
+                        new ProfessionalSchedule()
+                        {
+                            Professional = professional,
+                            Schedule = new Schedule()
+                            {
+                                Day = DayOfWeek.Tuesday,
+                                StartHour = new TimeSpan(7, 0, 0),
+                                FinishHour = new TimeSpan(12, 0, 0),
+                            }
+                        },
+                        new ProfessionalSchedule()
+                        {
+                            Professional = professional,
+                            Schedule = new Schedule()
+                            {
+                                Day = DayOfWeek.Thursday,
+                                StartHour = new TimeSpan(7, 0, 0),
+                                FinishHour = new TimeSpan(12, 0, 0),
+                            }
+                        },
+                        new ProfessionalSchedule()
+                        {
+                            Professional = professional,
+                            Schedule = new Schedule()
+                            {
+                                Day = DayOfWeek.Saturday,
+                                StartHour = new TimeSpan(7, 0, 0),
+                                FinishHour = new TimeSpan(12, 0, 0),
+                            }
+                        }
+                    };
+
+                _context.Add(professional);
+
+                Professional professional2 = new()
+                {
+                    User = await _userHelper.GetUserAsync("lindsey@yopmail.com"),
+                    ProfessionalType = ProfessionalType.Physiotherapist,
+                    Service = await _context.Services.FindAsync(2),
+                    ProfessionalSchedules = new List<ProfessionalSchedule>()
+                };
+
+                professional2.ProfessionalSchedules = new List<ProfessionalSchedule>()
+                {
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional2,
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Monday,
+                            StartHour = new TimeSpan(7, 0, 0),
+                            FinishHour = new TimeSpan(12, 0, 0),
+                        }
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional2,
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Wednesday,
+                            StartHour = new TimeSpan(7, 0, 0),
+                            FinishHour = new TimeSpan(12, 0, 0),
+                        }
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional2,
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Friday,
+                            StartHour = new TimeSpan(7, 0, 0),
+                            FinishHour = new TimeSpan(12, 0, 0),
+                        }
+                    }
+                };
+
+                _context.Add(professional2);
+
+                Professional professional3 = new()
+                {
+                    User = await _userHelper.GetUserAsync("andy@yopmail.com"),
+                    ProfessionalType = ProfessionalType.Nutritionist,
+                    Service = await _context.Services.FindAsync(3),
+                    ProfessionalSchedules = new List<ProfessionalSchedule>()
+                };
+
+                professional3.ProfessionalSchedules = new List<ProfessionalSchedule>()
+                {
+                    new ProfessionalSchedule()
+                    {
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Tuesday,
+                            StartHour = new TimeSpan(14, 0, 0),
+                            FinishHour = new TimeSpan(19, 0, 0),
+                        }
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Thursday,
+                            StartHour = new TimeSpan(14, 0, 0),
+                            FinishHour = new TimeSpan(19, 0, 0),
+                        }
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Saturday,
+                            StartHour = new TimeSpan(14, 0, 0),
+                            FinishHour = new TimeSpan(19, 0, 0),
+                        }
+                    }
+                };
+
+                _context.Add(professional3);
+
+                await _context.SaveChangesAsync();
+
+                Professional professional4 = new()
+                {
+                    User = await _userHelper.GetUserAsync("curtis@yopmail.com"),
+                    ProfessionalType = ProfessionalType.Instructor,
+                    Service = await _context.Services.FindAsync(1),
+                    ProfessionalSchedules = new List<ProfessionalSchedule>(),
+                };
+
+                professional4.ProfessionalSchedules = new List<ProfessionalSchedule>()
+                    {
+                        new ProfessionalSchedule()
+                        {
+                            Professional = professional4,
+                            Schedule = await _context.Schedules.FindAsync(6),
+                        },
+                        new ProfessionalSchedule()
+                        {
+                            Professional = professional4,
+                            Schedule = await _context.Schedules.FindAsync(3),
+                        },
+                    };
+
+                _context.Add(professional4);
+
+                Professional professional5 = new()
+                {
+                    User = await _userHelper.GetUserAsync("marie@yopmail.com"),
+                    ProfessionalType = ProfessionalType.Physiotherapist,
+                    Service = await _context.Services.FindAsync(2),
+                    ProfessionalSchedules = new List<ProfessionalSchedule>()
+                };
+
+                professional5.ProfessionalSchedules = new List<ProfessionalSchedule>()
+                {
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional5,
+                        Schedule = await _context.Schedules.FindAsync(4),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional5,
+                        Schedule = await _context.Schedules.FindAsync(5),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional5,
+                        Schedule = await _context.Schedules.FindAsync(6),
+                    }
+                };
+
+                _context.Add(professional5);
             }
             await _context.SaveChangesAsync();
         }
@@ -115,21 +273,18 @@ namespace GymAdmin.Data
             {
                 _context.Add(new Service
                 {
-                    Name = "Fortalecimiento muscular",
-                    Price = 120000,
-                    Professional = await _context.Professionals.FindAsync(1)
-                });
-                _context.Add(new Service
-                {
-                    Name = "Evaluación física",
-                    Price = 90000,
-                    Professional = await _context.Professionals.FindAsync(2)
-                });
-                _context.Add(new Service
-                {
                     Name = "Instrucción",
                     Price = 140000,
-                    Professional = await _context.Professionals.FindAsync(3)
+                });
+                _context.Add(new Service
+                {
+                    Name = "Fisioterapia",
+                    Price = 120000,
+                });
+                _context.Add(new Service
+                {
+                    Name = "Nutricionismo",
+                    Price = 90000,
                 });
             }
             await _context.SaveChangesAsync();

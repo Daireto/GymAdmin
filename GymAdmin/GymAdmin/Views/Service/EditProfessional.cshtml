@@ -41,6 +41,26 @@
                             </datalist>
                             <span asp-validation-for="Username" class="text-danger"></span>
                         </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                            @if (Model.Id == null)
+                            {
+                                <input type="submit" value="Asignar usuario" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                                <button disabled class="GymAdminFormButton">
+                                <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                            </button>
+                            }
+                            else
+                            {
+                                <input type="submit" value="Guardar cambios" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                                <button disabled class="GymAdminFormButton">
+                                <a asp-action="DetailsProfessional" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                            </button>
+                            }
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
                         <!-- Field -->
                         @{
                             var ProfessionalTypes = Html.GetEnumSelectList<GymAdmin.Enums.ProfessionalType>();
@@ -71,40 +91,6 @@
                                 <select asp-for="ProfessionalType" asp-items="@ProfessionalTypes" value="@Model.ProfessionalType" class="GymAdminFormCombobox"></select>
                             }
                             <span asp-validation-for="ProfessionalType" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <!-- Right column -->
-                    <div class="col-md-6 GymAdminFormColumn">
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label asp-for="ScheduleId" class="control-label GymAdminFormLabel"></label>
-                            @if (Model.Id == null)
-                            {
-                                <select asp-for="ScheduleId" asp-items="@Model.Schedules" class="GymAdminFormCombobox"></select>
-
-                            }
-                            else
-                            {
-                                <select asp-for="ScheduleId" asp-items="@Model.Schedules" value="@Model.ScheduleId" class="GymAdminFormCombobox"></select>
-                            }
-                            <span asp-validation-for="ScheduleId" class="text-danger"></span>
-                        </div>
-                        <!-- Buttons and links -->
-                        <div class="GymAdminRegisterFormButtons form-group mt-2">
-                            @if (Model.Id == null)
-                            {
-                                <input type="submit" value="Asignar usuario" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                                <button disabled class="GymAdminFormButton">
-                                <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
-                            </button>
-                            }
-                            else
-                            {
-                                <input type="submit" value="Guardar cambios" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                                <button disabled class="GymAdminFormButton">
-                                <a asp-action="DetailsProfessional" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
-                            </button>
-                            }
                         </div>
                     </div>
                 </div>

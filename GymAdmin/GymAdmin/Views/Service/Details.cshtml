@@ -9,6 +9,8 @@
 <link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
 
 <style>
     .fa-pen-to-square,
@@ -49,6 +51,14 @@
             .GymAdminDeleteButton a:hover {
                 color: black;
             }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+
+    td {
+        color: white;
+    }
 </style>
 
 <!-- View service page -->
@@ -69,67 +79,16 @@
                     <div class="col-md-6 GymAdminFormColumn">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Profesional</label>
-                            <input value="@Model.Professional.User.FullName" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Horario de inicio</label>
-                            <input value="@Model.Professional.Schedule.StartHour" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        @{
-                            var day = "";
-                            if(Model.Professional.Schedule.Day.ToString() == "Monday")
-                            {
-                                day = "Lunes";
-                            }
-                            if(Model.Professional.Schedule.Day.ToString() == "Tuesday")
-                            {
-                                day = "Martes";
-                            }
-                            if(Model.Professional.Schedule.Day.ToString() == "Wednesday")
-                            {
-                                day = "Miércoles";
-                            }
-                            if(Model.Professional.Schedule.Day.ToString() == "Thursday")
-                            {
-                                day = "Jueves";
-                            }
-                            if(Model.Professional.Schedule.Day.ToString() == "Friday")
-                            {
-                                day = "Viernes";
-                            }
-                            if(Model.Professional.Schedule.Day.ToString() == "Saturday")
-                            {
-                                day = "Sábado";
-                            }
-                            if(Model.Professional.Schedule.Day.ToString() == "Sunday")
-                            {
-                                day = "Domingo";
-                            }
-                        }
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Día de disponibilidad</label>
-                            <input value="@day" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <label class="control-label GymAdminFormLabel">Precio del servicio</label>
+                            <input value="@Model.Price" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                     <!-- Right column -->
                     <div class="col-md-6 GymAdminFormColumn">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Correo electrónico</label>
-                            <input value="@Model.Professional.User.Email" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Horario de salida</label>
-                            <input value="@Model.Professional.Schedule.FinishHour" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Precio del servicio</label>
-                            <input value="@Model.Price" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <label class="control-label GymAdminFormLabel">Cantidad de profesionales</label>
+                            <input value="@Model.ProfessionalsNumber" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                 </div>
@@ -146,6 +105,60 @@
                     </button>
                 </div>
             </form>
+        </div>
+        <hr />
+        <!-- Professionals -->
+        <div class="row" style="padding:0;margin:0 auto;">
+            <div class="col-md-12 GymAdminTableContainer">
+                <div class="panel panel-default">
+                    <div class="panel-heading GymAdminTableHeading" style="justify-content:center;">
+                        <h3 class="panel-title GymAdminTableTitle">Profesionales del servicio</h3>
+                    </div>
+                    <div class="panel-body GymAdminTable">
+                        <table class="table table-hover table-responsive table-striped" id="MyTable">
+                            <!-- Text -->
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Nombre
+                                    </th>
+                                    <th>
+                                        Correo electrónico
+                                    </th>
+                                    <th>
+                                        Cantidad de horarios
+                                    </th>
+                                    <th>
+                                        Opciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <!-- Values -->
+                            <tbody>
+                                @foreach (var item in Model.Professionals)
+                                {
+                                    <tr class="GymAdminTableTr">
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.User.FullName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.User.Email)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ProfessionalSchedulesNumber)
+                                        </td>
+                                        <td class="td_option">
+                                            <a asp-action="DetailsProfessional" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>
+                                            <a asp-action="EditProfessional" asp-route-id="@item.Id" class="btn btn-outline-warning">Editar</a>
+                                            <a asp-action="DeleteProfessional" asp-route-id="@item.Id" class="btn btn-outline-danger">Eliminar</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

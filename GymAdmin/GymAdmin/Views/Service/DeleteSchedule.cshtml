@@ -1,4 +1,4 @@
-﻿@model GymAdmin.Data.Entities.Schedule
+﻿@model GymAdmin.Models.SetScheduleViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -32,6 +32,7 @@
         <div class="col-md-12" id="GymAdminFieldsContainer">
             <form asp-action="DeleteSchedule" id="GymAdminForm">
                 <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="ProfessionalId" />
                 <div class="row">
                     <div class="col-md-12">
                         <!-- Field -->
@@ -96,7 +97,7 @@
                     <!-- Buttons and links -->
                     <div class="GymAdminRegisterFormButtons form-group mt-2">
                         <button disabled class="GymAdminFormButton">
-                            <a asp-action="ShowSchedules" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Cancelar</a>
+                            <a asp-action="DetailsProfessional" asp-route-id="@Model.ProfessionalId" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
                         </button>
                         <input type="submit" value="Eliminar" class="GymAdminFormButton GymAdminDeleteButton" />
                     </div>

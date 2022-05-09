@@ -1,4 +1,4 @@
-﻿@model GymAdmin.Data.Entities.Schedule
+﻿@model GymAdmin.Models.SetScheduleViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -17,7 +17,7 @@
             <form asp-action="EditSchedule" id="GymAdminForm">
                 <!-- Hidden inputs -->
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="Professionals" />
+                <input type="hidden" asp-for="ProfessionalId" />
                 <!-- Validation summary -->
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
@@ -82,7 +82,7 @@
                         <div class="GymAdminRegisterFormButtons form-group">
                             <input type="submit" value="Guardar cambios" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
                             <button disabled class="GymAdminFormButton">
-                                <a asp-action="ShowSchedules" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                                <a asp-action="DetailsProfessional" asp-route-id="@Model.ProfessionalId" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
                             </button>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-﻿@model GymAdmin.Models.AddServiceViewModel
+﻿@model GymAdmin.Data.Entities.Service
 
 @{
     ViewData["Title"] = "Create";
@@ -13,10 +13,8 @@
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-        <h2 style="text-align:center;margin-top: 15px;">Crear servicio</h2>
+            <h2 style="text-align:center;margin-top: 15px;">Crear servicio</h2>
             <form asp-action="Create" id="GymAdminForm">
-                <!-- Hidden inputs -->
-                <input type="hidden" asp-for="Id" />
                 <!-- Validation summary -->
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
@@ -25,20 +23,15 @@
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="Name" class="control-label GymAdminFormLabel"></label>
-                            <input asp-for="Name" value="@Model.Name" class="GymAdminFormInput" />
+                            <input asp-for="Name" class="GymAdminFormInput" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label asp-for="ProfessionalUserName" class="control-label GymAdminFormLabel"></label>
-                            <input id="searchProfessional" type="search" list="professionalsList" asp-for="ProfessionalUserName" class="GymAdminFormInput" />
-                            <datalist id="professionalsList">
-                                @foreach (var pro in Model.Professionals)
-                                {
-                                    <option value="@pro.Value">@pro.Text</option>
-                                }
-                            </datalist>
-                            <span asp-validation-for="ProfessionalUserName" class="text-danger"></span>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                            <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                            <button disabled class="GymAdminFormButton">
+                                <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                            </button>
                         </div>
                     </div>
                     <!-- Right column -->
@@ -46,15 +39,8 @@
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="Price" class="control-label GymAdminFormLabel"></label>
-                            <input asp-for="Price" value="@Model.Price" class="GymAdminFormInput" />
+                            <input asp-for="Price" class="GymAdminFormInput" />
                             <span asp-validation-for="Price" class="text-danger"></span>
-                        </div>
-                        <!-- Buttons and links -->
-                        <div class="GymAdminRegisterFormButtons form-group mt-2">
-                            <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                            <button disabled class="GymAdminFormButton">
-                                <a asp-action="Index" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -68,14 +54,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-<script type="text/javascript">
-    $(document).ready(function (){
-        $("#searchProfessional").attr("value", null);
-    });
-
-    $("#searchProfessional").on("input", function (){
-        var selected = $(this).val();
-        $(this).attr("value", selected);
-    });
-</script>
 }

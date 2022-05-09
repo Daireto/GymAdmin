@@ -33,7 +33,7 @@ namespace GymAdmin.Migrations
                     b.Property<int>("ProfessionalType")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ScheduleId")
+                    b.Property<int?>("ServiceId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -41,13 +41,38 @@ namespace GymAdmin.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ScheduleId");
+                    b.HasIndex("ServiceId");
 
                     b.HasIndex("UserId", "ProfessionalType")
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Professionals");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.ProfessionalSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("ProfessionalId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ScheduleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.HasIndex("ProfessionalId", "ScheduleId")
+                        .IsUnique()
+                        .HasFilter("[ProfessionalId] IS NOT NULL AND [ScheduleId] IS NOT NULL");
+
+                    b.ToTable("ProfessionalSchedules");
                 });
 
             modelBuilder.Entity("GymAdmin.Data.Entities.Schedule", b =>
@@ -61,13 +86,11 @@ namespace GymAdmin.Migrations
                     b.Property<int>("Day")
                         .HasColumnType("int");
 
-                    b.Property<string>("FinishHour")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("FinishHour")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("StartHour")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("StartHour")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -93,15 +116,10 @@ namespace GymAdmin.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ProfessionalId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
-
-                    b.HasIndex("ProfessionalId");
 
                     b.ToTable("Services");
                 });
@@ -114,16 +132,19 @@ namespace GymAdmin.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("AccessDate")
+                    b.Property<int>("AccessDate")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("AccessHour")
-                        .HasColumnType("datetime2");
+                    b.Property<long>("AccessHour")
+                        .HasColumnType("bigint");
 
                     b.Property<double>("Discount")
                         .HasColumnType("float");
 
                     b.Property<int?>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceStatus")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
@@ -368,26 +389,32 @@ namespace GymAdmin.Migrations
 
             modelBuilder.Entity("GymAdmin.Data.Entities.Professional", b =>
                 {
-                    b.HasOne("GymAdmin.Data.Entities.Schedule", "Schedule")
+                    b.HasOne("GymAdmin.Data.Entities.Service", "Service")
                         .WithMany("Professionals")
-                        .HasForeignKey("ScheduleId");
+                        .HasForeignKey("ServiceId");
 
                     b.HasOne("GymAdmin.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Schedule");
+                    b.Navigation("Service");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GymAdmin.Data.Entities.Service", b =>
+            modelBuilder.Entity("GymAdmin.Data.Entities.ProfessionalSchedule", b =>
                 {
                     b.HasOne("GymAdmin.Data.Entities.Professional", "Professional")
-                        .WithMany("Services")
+                        .WithMany("ProfessionalSchedules")
                         .HasForeignKey("ProfessionalId");
 
+                    b.HasOne("GymAdmin.Data.Entities.Schedule", "Schedule")
+                        .WithMany("ProfessionalSchedules")
+                        .HasForeignKey("ScheduleId");
+
                     b.Navigation("Professional");
+
+                    b.Navigation("Schedule");
                 });
 
             modelBuilder.Entity("GymAdmin.Data.Entities.ServiceAccess", b =>
@@ -458,16 +485,18 @@ namespace GymAdmin.Migrations
 
             modelBuilder.Entity("GymAdmin.Data.Entities.Professional", b =>
                 {
-                    b.Navigation("Services");
+                    b.Navigation("ProfessionalSchedules");
                 });
 
             modelBuilder.Entity("GymAdmin.Data.Entities.Schedule", b =>
                 {
-                    b.Navigation("Professionals");
+                    b.Navigation("ProfessionalSchedules");
                 });
 
             modelBuilder.Entity("GymAdmin.Data.Entities.Service", b =>
                 {
+                    b.Navigation("Professionals");
+
                     b.Navigation("ServiceAccesses");
                 });
 

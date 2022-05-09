@@ -70,3 +70,8 @@ body {
 .container {
     margin-bottom: 24px;
 }
+
+/* Corrections */
+tbody tr{
+    background-color: transparent !important;
+}

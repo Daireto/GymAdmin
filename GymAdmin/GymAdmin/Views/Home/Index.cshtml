@@ -63,7 +63,7 @@
                     {
                         <!-- Admin options -->
                         <a class="admin-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
-                        <a class="admin-link" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
+                        <a class="admin-link" asp-area="" asp-controller="Service" asp-action="Index">Servicios y profesionales</a>
                     }
                 </div>
                 <!-- Header right menu -->
@@ -71,11 +71,15 @@
                     <ul>
                         <!-- Services option -->
                         <li><a asp-area="" asp-controller="Home" asp-action="Professionals">Servicios adicionales</a></li>
+                        <!-- Events option -->
+                        <li><a asp-area="" asp-controller="Home" asp-action="Gallery">Galería de eventos</a></li>
                         @if (User.Identity.IsAuthenticated)
                         {
+                            var nombreUsuario = User.Identity.Name.Substring(0, User.Identity.Name.Length - 12);
+                            nombreUsuario = nombreUsuario.Substring(0, 1).ToUpper() + nombreUsuario.Substring(1).ToLower();
                             <!-- View user option -->
                             <li>
-                                <a asp-area="" asp-controller="Account" asp-action="ViewUser"><i class="fa-solid fa-user"></i>@User.Identity.Name</a>
+                                <a asp-area="" asp-controller="Account" asp-action="ViewUser"><i class="fa-solid fa-user"></i>@nombreUsuario</a>
                             </li>
                             <!-- Logout option -->
                             <li class="nav-item">
@@ -84,8 +88,6 @@
                         }
                         else
                         {
-                            <!-- Gallery option -->
-                            <li><a asp-area="" asp-controller="Home" asp-action="Gallery">Galería de eventos</a></li>
                             <!-- Login and register options -->
                             <li><a asp-area="" asp-controller="Account" asp-action="Login">Ingresar</a></li>
                             <li><a asp-area="" asp-controller="Account" asp-action="Register">Registrarse</a></li>

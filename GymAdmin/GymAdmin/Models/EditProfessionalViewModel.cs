@@ -14,12 +14,6 @@ namespace GymAdmin.Models
 
         public IEnumerable<SelectListItem> Users { get; set; }
 
-        [Display(Name = "Horario")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public int ScheduleId { get; set; }
-
-        public IEnumerable<SelectListItem> Schedules { get; set; }
-
         [Display(Name = "Profesión")]
         public ProfessionalType ProfessionalType { get; set; }
     }

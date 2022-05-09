@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using GymAdmin.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GymAdmin.Data.Entities
 {
@@ -10,13 +11,16 @@ namespace GymAdmin.Data.Entities
 
         public Service Service { get; set; }
 
-        public DayOfWeek? AccessDate { get; set; }
+        public DayOfWeek AccessDate { get; set; }
 
-        public DateTime? AccessHour { get; set; }
+        [Column(TypeName = "bigint")]
+        public TimeSpan AccessHour { get; set; }
 
         public double Discount { get; set; }
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalPrice { get; set; }
+
+        public ServiceStatus ServiceStatus { get; set; } //TODO: Add this to events
     }
 }

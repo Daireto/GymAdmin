@@ -20,7 +20,6 @@
     <!-- GymAdmin style -->
     <link rel="stylesheet" type="text/css" href="~/css/layout.css" />
     <link rel="stylesheet" type="text/css" href="~/css/contact.css" />
-    <link rel="stylesheet" type="text/css" href="~/css/big-titles.css" />
 
     <!-- Icons style -->
     <style>
@@ -49,7 +48,7 @@
                                 <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
                             </li>
                             <li class="nav-item">
-                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
+                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Service" asp-action="Index">Servicios y profesionales</a>
                             </li>
                         }
                     </ul>
@@ -59,11 +58,17 @@
                         <li class="nav-item">
                             <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Home" asp-action="Professionals">Servicios adicionales</a>
                         </li>
+                        <!-- Events option -->
+                        <li class="nav-item">
+                            <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Home" asp-action="Gallery">Galería de eventos</a>
+                        </li>
                         @if (User.Identity.IsAuthenticated)
                         {
+                            var nombreUsuario = User.Identity.Name.Substring(0, User.Identity.Name.Length - 12);
+                            nombreUsuario = nombreUsuario.Substring(0, 1).ToUpper() + nombreUsuario.Substring(1).ToLower();
                             <!-- View user option -->
                             <li class="nav-item">
-                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Account" asp-action="ViewUser"><i class="fa-solid fa-user"></i>@User.Identity.Name</a>
+                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Account" asp-action="ViewUser"><i class="fa-solid fa-user"></i>@nombreUsuario</a>
                             </li>
                             <!-- Logout option -->
                             <li class="nav-item">
@@ -72,10 +77,6 @@
                         }
                         else
                         {
-                            <!-- Gallery option -->
-                            <li class="nav-item">
-                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Home" asp-action="Gallery">Galería de eventos</a>
-                            </li>
                             <!-- Login and register options -->
                             <li class="nav-item">
                                 <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Account" asp-action="Login">Ingresar</a>

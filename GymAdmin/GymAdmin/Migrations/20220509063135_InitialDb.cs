@@ -61,12 +61,26 @@ namespace GymAdmin.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Day = table.Column<int>(type: "int", nullable: false),
-                    StartHour = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FinishHour = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    StartHour = table.Column<long>(type: "bigint", nullable: false),
+                    FinishHour = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Schedules", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Services",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Services", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,7 +197,7 @@ namespace GymAdmin.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ProfessionalType = table.Column<int>(type: "int", nullable: false),
-                    ScheduleId = table.Column<int>(type: "int", nullable: true)
+                    ServiceId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -194,29 +208,9 @@ namespace GymAdmin.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Professionals_Schedules_ScheduleId",
-                        column: x => x.ScheduleId,
-                        principalTable: "Schedules",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Services",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProfessionalId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Services", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Services_Professionals_ProfessionalId",
-                        column: x => x.ProfessionalId,
-                        principalTable: "Professionals",
+                        name: "FK_Professionals_Services_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Services",
                         principalColumn: "Id");
                 });
 
@@ -228,10 +222,11 @@ namespace GymAdmin.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ServiceId = table.Column<int>(type: "int", nullable: true),
-                    AccessDate = table.Column<int>(type: "int", nullable: true),
-                    AccessHour = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    AccessDate = table.Column<int>(type: "int", nullable: false),
+                    AccessHour = table.Column<long>(type: "bigint", nullable: false),
                     Discount = table.Column<double>(type: "float", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ServiceStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -245,6 +240,30 @@ namespace GymAdmin.Migrations
                         name: "FK_ServiceAccesses_Services_ServiceId",
                         column: x => x.ServiceId,
                         principalTable: "Services",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProfessionalSchedules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProfessionalId = table.Column<int>(type: "int", nullable: true),
+                    ScheduleId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProfessionalSchedules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProfessionalSchedules_Professionals_ProfessionalId",
+                        column: x => x.ProfessionalId,
+                        principalTable: "Professionals",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProfessionalSchedules_Schedules_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedules",
                         principalColumn: "Id");
                 });
 
@@ -294,14 +313,28 @@ namespace GymAdmin.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Professionals_ScheduleId",
+                name: "IX_Professionals_ServiceId",
                 table: "Professionals",
-                column: "ScheduleId");
+                column: "ServiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Professionals_UserId",
+                name: "IX_Professionals_UserId_ProfessionalType",
                 table: "Professionals",
-                column: "UserId");
+                columns: new[] { "UserId", "ProfessionalType" },
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProfessionalSchedules_ProfessionalId_ScheduleId",
+                table: "ProfessionalSchedules",
+                columns: new[] { "ProfessionalId", "ScheduleId" },
+                unique: true,
+                filter: "[ProfessionalId] IS NOT NULL AND [ScheduleId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProfessionalSchedules_ScheduleId",
+                table: "ProfessionalSchedules",
+                column: "ScheduleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_Day_StartHour_FinishHour",
@@ -324,11 +357,6 @@ namespace GymAdmin.Migrations
                 table: "Services",
                 column: "Name",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Services_ProfessionalId",
-                table: "Services",
-                column: "ProfessionalId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -349,22 +377,25 @@ namespace GymAdmin.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ProfessionalSchedules");
+
+            migrationBuilder.DropTable(
                 name: "ServiceAccesses");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Services");
+                name: "Professionals");
 
             migrationBuilder.DropTable(
-                name: "Professionals");
+                name: "Schedules");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Schedules");
+                name: "Services");
         }
     }
 }

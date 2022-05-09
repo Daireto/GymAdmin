@@ -39,9 +39,6 @@
                     <button disable class="GymAdminFormButton">
                         <a asp-action="EditProfessional" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Asignar usuario como profesional</a>
                     </button>
-                    <button disable class="GymAdminFormButton">
-                        <a asp-action="ShowSchedules" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-calendar"></i>Ver horarios</a>
-                    </button>
                 </div>
             </div>
             <div class="panel-body GymAdminTable">
@@ -53,16 +50,13 @@
                                 @Html.DisplayNameFor(model => model.User.FullName)
                             </th>
                             <th>
+                                Correo electrónico
+                            </th>
+                            <th>
                                 Profesión
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Schedule.Day)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Schedule.StartHour)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Schedule.FinishHour)
+                                Cantidad de horarios
                             </th>
                             <th>Opciones</th>
                         </tr>
@@ -74,6 +68,9 @@
                             <tr class="GymAdminTableTr">
                                 <td>
                                     @Html.DisplayFor(modelItem => item.User.FullName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User.Email)
                                 </td>
                                 <td>
                                     @{
@@ -92,13 +89,7 @@
                                     }
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Schedule.Day)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Schedule.StartHour)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Schedule.FinishHour)
+                                    @Html.DisplayFor(modelItem => item.ProfessionalSchedulesNumber)
                                 </td>
                                 <td class="td_option">
                                     <a asp-action="DetailsProfessional" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>

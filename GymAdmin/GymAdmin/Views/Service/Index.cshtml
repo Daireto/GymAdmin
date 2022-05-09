@@ -53,10 +53,7 @@
                                 @Html.DisplayNameFor(model => model.Price)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Professional.User.FullName)
-                            </th>
-                            <th>
-                                Correo electrónico
+                                Cantidad de profesionales
                             </th>
                             <th>Opciones</th>
                         </tr>
@@ -73,10 +70,7 @@
                                     @Html.DisplayFor(modelItem => item.Price)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Professional.User.FullName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Professional.User.Email)
+                                    @Html.DisplayFor(modelItem => item.ProfessionalsNumber)
                                 </td>
                                 <td class="td_option">
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>

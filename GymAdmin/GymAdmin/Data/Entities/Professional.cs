@@ -10,10 +10,10 @@ namespace GymAdmin.Data.Entities
 
         public ProfessionalType ProfessionalType { get; set; }
 
-        public ICollection<Service> Services { get; set; }
+        public Service Service { get; set; }
 
-        public int ServicesNumber => Services.Count;
+        public ICollection<ProfessionalSchedule> ProfessionalSchedules { get; set; }
 
-        public Schedule Schedule { get; set; }
+        public int ProfessionalSchedulesNumber => ProfessionalSchedules == null ? 0 : ProfessionalSchedules.Count;
     }
 }

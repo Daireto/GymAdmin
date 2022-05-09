@@ -8,6 +8,11 @@
 }
 
     #contact h2 {
+        text-align: center;
+        font-size: 60px;
+        font-style: italic;
+        font-weight: bold;
+        color: white !important;
         margin: 0;
     }
 

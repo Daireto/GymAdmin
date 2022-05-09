@@ -10,6 +10,7 @@ namespace GymAdmin.Data
 
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceAccess> ServiceAccesses { get; set; }
+        public DbSet<ProfessionalSchedule> ProfessionalSchedules { get; set; }
         public DbSet<Professional> Professionals { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
 
@@ -20,6 +21,7 @@ namespace GymAdmin.Data
             modelBuilder.Entity<Service>().HasIndex(s => s.Name).IsUnique();
             modelBuilder.Entity<Schedule>().HasIndex("Day", "StartHour", "FinishHour").IsUnique();
             modelBuilder.Entity<Professional>().HasIndex("UserId", "ProfessionalType").IsUnique();
+            modelBuilder.Entity<ProfessionalSchedule>().HasIndex("ProfessionalId", "ScheduleId").IsUnique();
         }
     }
 }

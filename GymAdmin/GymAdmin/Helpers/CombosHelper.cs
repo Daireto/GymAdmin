@@ -14,13 +14,13 @@ namespace GymAdmin.Helpers
             _context = context;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetComboProfessionalsAsync()
+        public async Task<IEnumerable<SelectListItem>> GetComboServicesAsync()
         {
-            List<SelectListItem> list = await _context.Professionals
-                .Select(p => new SelectListItem
+            List<SelectListItem> list = await _context.Services
+                .Select(s => new SelectListItem
                 {
-                    Text = p.User.FullName,
-                    Value = p.User.UserName
+                    Text = s.Name,
+                    Value = s.Id.ToString(),
                 })
                 .ToListAsync();
 

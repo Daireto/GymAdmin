@@ -16,10 +16,10 @@
 <link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
 
 <style>
-    h3{
+    h3 {
         color: white !important;
     }
-    
+
     .fa-pen-to-square,
     .fa-lock {
         padding-right: 5px;
@@ -109,16 +109,6 @@
                             <label class="control-label GymAdminFormLabel">Profesión</label>
                             <input value="@professionalType" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Horario de inicio</label>
-                            <input value="@Model.Schedule.StartHour" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Cantidad de servicios</label>
-                            <input value="@Model.ServicesNumber" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
                     </div>
                     <!-- Right column -->
                     <div class="col-md-6 GymAdminFormColumn">
@@ -126,47 +116,6 @@
                         <div class="form-group GymAdminFormElement">
                             <label class="control-label GymAdminFormLabel">Correo electrónico</label>
                             <input value="@Model.User.Email" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        @{
-                            var day = "";
-                            if (Model.Schedule.Day.ToString() == "Monday")
-                            {
-                                day = "Lunes";
-                            }
-                            if (Model.Schedule.Day.ToString() == "Tuesday")
-                            {
-                                day = "Martes";
-                            }
-                            if (Model.Schedule.Day.ToString() == "Wednesday")
-                            {
-                                day = "Miércoles";
-                            }
-                            if (Model.Schedule.Day.ToString() == "Thursday")
-                            {
-                                day = "Jueves";
-                            }
-                            if (Model.Schedule.Day.ToString() == "Friday")
-                            {
-                                day = "Viernes";
-                            }
-                            if (Model.Schedule.Day.ToString() == "Saturday")
-                            {
-                                day = "Sábado";
-                            }
-                            if (Model.Schedule.Day.ToString() == "Sunday")
-                            {
-                                day = "Domingo";
-                            }
-                        }
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Día de disponibilidad</label>
-                            <input value="@day" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Horario de salida</label>
-                            <input value="@Model.Schedule.FinishHour" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Buttons and links -->
                         <div class="GymAdminRegisterFormButtons form-group mt-2">
@@ -185,12 +134,17 @@
             </form>
         </div>
         <hr />
-        <!-- Services -->
+        <!-- Schedules -->
         <div class="row" style="padding:0;margin:0 auto;">
             <div class="col-md-12 GymAdminTableContainer">
                 <div class="panel panel-default">
-                    <div class="panel-heading GymAdminTableHeading" style="justify-content:center;">
-                        <h3 class="panel-title GymAdminTableTitle">Servicios del profesional</h3>
+                    <div class="panel-heading GymAdminTableHeading">
+                        <h3 class="panel-title GymAdminTableTitle">Horarios del profesional</h3>
+                        <div class="newScheduleDiv">
+                            <button disable class="GymAdminFormButton">
+                                <a asp-action="CreateSchedule" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel">Asignar horario</a>
+                            </button>
+                        </div>
                     </div>
                     <div class="panel-body GymAdminTable">
                         <table class="table table-hover table-responsive table-striped" id="MyTable">
@@ -198,23 +152,65 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Services.FirstOrDefault().Name)
+                                        Día
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Services.FirstOrDefault().Price)
+                                        Hora de inicio
+                                    </th>
+                                    <th>
+                                        Hora de salida
+                                    </th>
+                                    <th>
+                                        Opciones
                                     </th>
                                 </tr>
                             </thead>
                             <!-- Values -->
                             <tbody>
-                                @foreach (var item in Model.Services)
+                                @foreach (var item in Model.ProfessionalSchedules)
                                 {
+                                    var day = "";
+                                    if (item.Schedule.Day.ToString() == "Monday")
+                                    {
+                                        day = "Lunes";
+                                    }
+                                    if (item.Schedule.Day.ToString() == "Tuesday")
+                                    {
+                                        day = "Martes";
+                                    }
+                                    if (item.Schedule.Day.ToString() == "Wednesday")
+                                    {
+                                        day = "Miércoles";
+                                    }
+                                    if (item.Schedule.Day.ToString() == "Thursday")
+                                    {
+                                        day = "Jueves";
+                                    }
+                                    if (item.Schedule.Day.ToString() == "Friday")
+                                    {
+                                        day = "Viernes";
+                                    }
+                                    if (item.Schedule.Day.ToString() == "Saturday")
+                                    {
+                                        day = "Sábado";
+                                    }
+                                    if (item.Schedule.Day.ToString() == "Sunday")
+                                    {
+                                        day = "Domingo";
+                                    }
                                     <tr class="GymAdminTableTr">
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Name)
+                                            @day
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Price)
+                                            @Html.DisplayFor(modelItem => item.Schedule.StartHour)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Schedule.FinishHour)
+                                        </td>
+                                        <td class="td_option">
+                                            <a asp-action="EditSchedule" asp-route-id="@item.Schedule.Id" asp-route-proId="@Model.Id" class="btn btn-outline-warning">Editar</a>
+                                            <a asp-action="DeleteSchedule" asp-route-id="@item.Schedule.Id" asp-route-proId="@Model.Id" class="btn btn-outline-danger">Eliminar</a>
                                         </td>
                                     </tr>
                                 }

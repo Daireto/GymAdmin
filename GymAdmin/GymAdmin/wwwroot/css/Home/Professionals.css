@@ -89,6 +89,23 @@ h3 {
     color: #f2c60d;
 }
 
+a.serviceLink {
+    text-decoration: none;
+    transition: all .2s ease-out !important;
+    padding: 10px 20px;
+    background: #f2c60d;
+    color: black;
+    border: 1px solid #f2c60d;
+    border-radius: 10px;
+    margin: 0 auto;
+}
+
+    a.serviceLink:hover {
+        background-color: black;
+        color: #f2c60d;
+    }
+
+/* Images */
 .images-container {
     width: 90%;
     margin: 0 auto 40px auto;

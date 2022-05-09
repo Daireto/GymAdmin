@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using GymAdmin.Enums;
+using System.ComponentModel.DataAnnotations;
 
-namespace GymAdmin.Data.Entities
+namespace GymAdmin.Models
 {
-    public class Schedule
+    public class SetScheduleViewModel
     {
         public int Id { get; set; }
 
@@ -13,16 +13,12 @@ namespace GymAdmin.Data.Entities
 
         [Display(Name = "Hora inicial")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [Column(TypeName = "bigint")]
         public TimeSpan StartHour { get; set; }
 
         [Display(Name = "Hora final")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [Column(TypeName = "bigint")]
         public TimeSpan FinishHour { get; set; }
 
-        public ICollection<ProfessionalSchedule> ProfessionalSchedules { get; set; }
-
-        public int ProfessionalSchedulesNumber => ProfessionalSchedules == null ? 0 : ProfessionalSchedules.Count;
+        public int? ProfessionalId { get; set; }
     }
 }
