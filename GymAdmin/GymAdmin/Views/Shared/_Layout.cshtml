@@ -40,18 +40,22 @@
                 <!-- Header menu -->
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <!-- Header left menu -->
-                    <ul class="navbar-nav flex-grow-1">
+                    <div class="left-nav">
+                        <!-- Header brand -->
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <!-- Admin options -->
-                            <li class="nav-item">
-                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Service" asp-action="Index">Servicios y profesionales</a>
-                            </li>
+                            <div class="dropdown">
+                                <span class="admin-link">Administración</span>
+                                <div class="dropdown-content">
+                                    <a class="admin-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
+                                    <a class="admin-link" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
+                                    <a class="admin-link" asp-area="" asp-controller="Service" asp-action="ShowProfessionals">Profesionales</a>
+                                    <a class="admin-link" asp-area="" asp-controller="Contracts" asp-action="Index">Contrataciones</a>
+                                </div>
+                            </div>
                         }
-                    </ul>
+                    </div>
                     <!-- Header right menu -->
                     <ul class="right-menu navbar-nav justify-content-end flex-grow-1">
                         <!-- Services option -->

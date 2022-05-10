@@ -191,7 +191,7 @@ namespace GymAdmin.Controllers
         //View with the error sending email message
         public IActionResult ConfirmEmailErrorMessage()
         {
-            return View(); //TODO: Implement a resend email confirmation option
+            return View();
         }
 
         //Confirm email method

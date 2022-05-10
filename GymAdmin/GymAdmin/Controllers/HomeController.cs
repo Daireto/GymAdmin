@@ -1,5 +1,7 @@
-﻿using GymAdmin.Data;
+﻿using GymAdmin.Common;
+using GymAdmin.Data;
 using GymAdmin.Data.Entities;
+using GymAdmin.Helpers;
 using GymAdmin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +12,14 @@ namespace GymAdmin.Controllers
     public class HomeController : Controller
     {
         private readonly DataContext _context;
+        private readonly ICombosHelper _combosHelper;
+        private readonly IUserHelper _userHelper;
 
-        public HomeController(DataContext context)
+        public HomeController(DataContext context, ICombosHelper combosHelper, IUserHelper userHelper)
         {
             _context = context;
+            _combosHelper = combosHelper;
+            _userHelper = userHelper;
         }
 
         //Principal pages
@@ -37,26 +43,109 @@ namespace GymAdmin.Controllers
             return View();
         }
 
-        //Services, events and plans
-        public async Task<IActionResult> TakeService()
+        public async Task<IActionResult> MyServices()
         {
             if (User.Identity.IsAuthenticated)
             {
-                IEnumerable<Service> services = await _context.Services
-                        .Include(s => s.Professionals)
-                        .ThenInclude(p => p.ProfessionalSchedules)
-                        .ThenInclude(ps => ps.Schedule)
-                        .ToListAsync();
+                return View(await _context.ServiceAccesses.Where(sa => sa.User.Email == User.Identity.Name)
+                    .Include(sa => sa.Service)
+                    .ToListAsync());
+            }
 
-                return View(services);
+            return RedirectToAction("Login", "Account");
+        }
+
+        //Services, events and plans
+        public async Task<IActionResult> TakeService(int? id)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                int Id = id ?? 1;
+
+                //TODO: User plan logic for the discount value
+                double discount = 0.5;
+
+                Service service = await _context.Services.FindAsync(Id);
+
+                TakeServiceViewModel model = new()
+                {
+                    ServiceId = Id,
+                    Services = await _combosHelper.GetComboServicesAsync(),
+                    Discount = discount,
+                    Price = service.Price
+                };
+
+                return View(model);
             }
             else
             {
-                ViewBag.Message = "TakeService";
-                return RedirectToAction("Account", "Login");
+                return RedirectToAction("Login", "Account");
             }
         }
-        
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TakeService(TakeServiceViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                TimeSpan AccessHour = TimeSpan.FromTicks(model.AccessHour);
+                
+                var serviceAccesses = await _context.ServiceAccesses
+                    .Where(sa =>
+                        sa.Service.Id == model.ServiceId &&
+                        sa.AccessDate == model.AccessDate &&
+                        sa.AccessHour == AccessHour &&
+                        sa.ServiceStatus == Enums.ServiceStatus.Pending)
+                    .ToListAsync();
+
+                if (serviceAccesses.Count == 0 || serviceAccesses == null)
+                {
+                    Service service = await _context.Services.FindAsync(model.ServiceId);
+
+                    ServiceAccess serviceAccess = new()
+                    {
+                        User = await _userHelper.GetUserAsync(User.Identity.Name),
+                        Service = service,
+                        AccessDate = model.AccessDate,
+                        AccessHour = AccessHour,
+                        Discount = model.Discount,
+                        TotalPrice = service.Price - (service.Price * (decimal)model.Discount),
+                        ServiceStatus = Enums.ServiceStatus.Pending,
+                    };
+
+                    _context.Add(serviceAccess);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(MyServices), "Home");
+                }
+
+                ModelState.AddModelError(string.Empty, "¡Este horario ya está ocupado, por favor seleccione otro!");
+            }
+
+            return View(model);
+        }
+
+        public async Task<JsonResult> GetHours(int serviceId, DayOfWeek day)
+        {
+            var list = await _combosHelper.GetComboSchedulesAsync(serviceId, day);
+            return Json(list);
+        }
+
+        public JsonResult GetPrice(int serviceId)
+        {
+            //TODO: User plan logic for the discount value
+            double discount = 0.5;
+
+            Service service = _context.Services.Find(serviceId);
+
+            string p = $"{service.Price:C2}";
+
+            decimal totalPrice = (decimal)(Decimal.ToDouble(service.Price) - (Decimal.ToDouble(service.Price) * discount));
+            string tp = $"{totalPrice:C2}";
+
+            return Json(new {priceValue = p, totalPriceValue = tp});
+        }
+
         //TODO: Add events and plans methods
 
         //Error control

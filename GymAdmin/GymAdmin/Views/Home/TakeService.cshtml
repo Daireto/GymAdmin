@@ -1,5 +1,183 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model GymAdmin.Models.TakeServiceViewModel
+
 @{
+    ViewData["Title"] = "TakeService";
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Home/TakeService.css" />
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+
+<!-- Edit form -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <h2 style="text-align:center;margin-top: 15px;">Contratar servicio</h2>
+            <form asp-action="TakeService" asp-controller="Home" id="GymAdminForm">
+                <input type="hidden" asp-for="Discount" />
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="ServiceId" class="control-label GymAdminFormLabel"></label>
+                            <select id="ServiceId" asp-for="ServiceId" asp-items="@Model.Services" class="GymAdminFormCombobox"></select>
+                            <span asp-validation-for="ServiceId" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        @{
+                            var Days = Html.GetEnumSelectList<DayOfWeek>();
+                            foreach (var Day in Days)
+                            {
+                                if (Day.Text == "Monday")
+                                {
+                                    Day.Text = "Lunes";
+                                }
+                                else if (Day.Text == "Tuesday")
+                                {
+                                    Day.Text = "Martes";
+                                }
+                                else if (Day.Text == "Wednesday")
+                                {
+                                    Day.Text = "Miércoles";
+                                }
+                                else if (Day.Text == "Thursday")
+                                {
+                                    Day.Text = "Jueves";
+                                }
+                                else if (Day.Text == "Friday")
+                                {
+                                    Day.Text = "Viernes";
+                                }
+                                else if (Day.Text == "Saturday")
+                                {
+                                    Day.Text = "Sábado";
+                                }
+                                else if (Day.Text == "Sunday")
+                                {
+                                    Day.Text = "Domingo";
+                                }
+                            }
+                        }
+                        @{
+                            //Format for prices and discount
+                            string p = $"{Model.Price:C2}";
+
+                            string d = $"{Model.Discount:P2}";
+
+                            decimal totalPrice = (decimal)(Decimal.ToDouble(Model.Price) - (Decimal.ToDouble(Model.Price) * Model.Discount));
+                            string tp = $"{totalPrice:C2}";
+                        }
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="AccessDate" class="control-label GymAdminFormLabel"></label>
+                            <select asp-for="AccessDate" asp-items="@Days" class="GymAdminFormCombobox"></select>
+                            <span asp-validation-for="AccessDate" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Price" class="control-label GymAdminFormLabel"></label>
+                            <input id="showPrice" value="@p" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                            <input type="submit" value="Contratar servicio" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                            <button disabled class="GymAdminFormButton">
+                                <a asp-action="MyServices" asp-controller="Home" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="AccessHour" class="control-label GymAdminFormLabel"></label>
+                            <select asp-for="AccessHour" class="GymAdminFormCombobox"></select>
+                            <span asp-validation-for="AccessHour" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Discount" class="control-label GymAdminFormLabel"></label>
+                            <input id="discountValue" value="@d" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Precio final</label>
+                            <input id="totalPrice" value="@tp" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#AccessHour").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetHours")',
+                dataType: 'json',
+                data: { serviceId: $("#ServiceId").val(), day: $("#AccessDate").val() },
+                success: function (hours) {
+                    $.each(hours, function (i, hour) {
+                        $("#AccessHour").append('<option value="'
+                            + hour.value + '">'
+                            + hour.text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Failed to retrieve hours.' + ex);
+                }
+            });
+        $("#AccessDate").change(function () {
+            $("#AccessHour").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetHours")',
+                dataType: 'json',
+                data: { serviceId: $("#ServiceId").val(), day: $("#AccessDate").val() },
+                success: function (hours) {
+                    $.each(hours, function (i, hour) {
+                        $("#AccessHour").append('<option value="'
+                            + hour.value + '">'
+                            + hour.text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Failed to retrieve hours.' + ex);
+                }
+            });
+            return false;
+        });
+        $("#ServiceId").change(function () {
+            $("#showPrice").attr("readonly", false);
+            $("#totalPrice").attr("readonly", false);
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPrice")',
+                data: { serviceId: $("#ServiceId").val() },
+                success: function (prices) {
+                    $("#showPrice").val(prices.priceValue);
+                    $("#totalPrice").val(prices.totalPriceValue);
+                },
+                error: function (ex) {
+                    $("#showPrice").attr("readonly", true);
+                    $("#totalPrice").attr("readonly", true);
+                    $("#discountValue").attr("readonly", true);
+                    alert('Failed to retrieve price.' + ex);
+                }
+            });
+            $("#showPrice").attr("readonly", true);
+            $("#totalPrice").attr("readonly", true);
+            return false;
+        });
+    });
+</script>
 }

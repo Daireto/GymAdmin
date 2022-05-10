@@ -21,8 +21,8 @@
         padding-left: 10px;
     }
 
-    #MyTable th, .td_option{
-        text-align:center;
+    #MyTable th, .td_option {
+        text-align: center;
     }
 </style>
 
@@ -35,9 +35,6 @@
                 <div>
                     <button disable class="GymAdminFormButton">
                         <a asp-action="Create" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-bell-concierge"></i>Crear servicio</a>
-                    </button>
-                    <button disable class="GymAdminFormButton">
-                        <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Ver profesionales</a>
                     </button>
                 </div>
             </div>
@@ -66,8 +63,12 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Name)
                                 </td>
+                                @{
+                                    //Format for price
+                                    string p = $"{item.Price:C2}";
+                                }
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Price)
+                                    @p
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ProfessionalsNumber)

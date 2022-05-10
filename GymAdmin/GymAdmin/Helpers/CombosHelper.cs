@@ -1,4 +1,5 @@
-﻿using GymAdmin.Data;
+﻿using GymAdmin.Common;
+using GymAdmin.Data;
 using GymAdmin.Data.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -27,15 +28,36 @@ namespace GymAdmin.Helpers
             return list;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetComboSchedulesAsync()
+        public async Task<IEnumerable<SelectListItem>> GetComboSchedulesAsync(int serviceId, DayOfWeek day)
         {
-            List<SelectListItem> list = await _context.Schedules
+            var allSchedules = GenerateScheduleList().Where(s => s.Day == day);
+
+            List<ServiceDate> resultSchedules = new();
+
+            foreach (var schedule in allSchedules)
+            {
+                var serviceAccesses = await _context.ServiceAccesses
+                    .Where(sa =>
+                        sa.Service.Id == serviceId &&
+                        sa.AccessDate == schedule.Day &&
+                        sa.AccessHour == schedule.AccessHour &&
+                        sa.ServiceStatus == Enums.ServiceStatus.Pending)
+                    .ToListAsync();
+
+                if (serviceAccesses.Count == 0 || serviceAccesses == null)
+                {
+                    resultSchedules.Add(schedule);
+                }
+            }
+
+            List<SelectListItem> list = resultSchedules
                 .Select(s => new SelectListItem
                 {
-                    Text = $"{s.Day}, {s.StartHour} - {s.FinishHour}",
-                    Value = $"{s.Id}"
+                    Text = $"{s.AccessHour}",
+                    Value = $"{s.AccessHour.Ticks}"
                 })
-                .ToListAsync();
+                .OrderBy(s => s.Text)
+                .ToList();
 
             list.Insert(0, new SelectListItem
             {
@@ -46,13 +68,62 @@ namespace GymAdmin.Helpers
             return list;
         }
 
+        public List<ServiceDate> GenerateScheduleList()
+        {
+            List<ServiceDate> allSchedules = new();
+            List<DayOfWeek> days = new()
+            {
+                DayOfWeek.Monday,
+                DayOfWeek.Tuesday,
+                DayOfWeek.Wednesday,
+                DayOfWeek.Thursday,
+                DayOfWeek.Friday,
+                DayOfWeek.Saturday,
+                DayOfWeek.Sunday,
+            };
+
+            foreach (var day in days)
+            {
+                for (int i = 7; i <= 11; i++)
+                {
+                    allSchedules.Add(new ServiceDate
+                    {
+                        Day = day,
+                        AccessHour = new TimeSpan(i, 0, 0)
+                    });
+
+                    allSchedules.Add(new ServiceDate
+                    {
+                        Day = day,
+                        AccessHour = new TimeSpan(i, 30, 0)
+                    });
+                }
+                for (int i = 14; i <= 19; i++)
+                {
+                    allSchedules.Add(new ServiceDate
+                    {
+                        Day = day,
+                        AccessHour = new TimeSpan(i, 0, 0)
+                    });
+
+                    allSchedules.Add(new ServiceDate
+                    {
+                        Day = day,
+                        AccessHour = new TimeSpan(i, 30, 0)
+                    });
+                }
+            }
+
+            return allSchedules;
+        }
+
         public async Task<IEnumerable<SelectListItem>> GetComboUsersAsync()
         {
             List<Professional> professionals = await _context.Professionals
                 .Include(p => p.User)
                 .ToListAsync();
             List<string> userIds = new();
-            foreach(var professional in professionals)
+            foreach (var professional in professionals)
             {
                 userIds.Add(professional.User.Id);
             }

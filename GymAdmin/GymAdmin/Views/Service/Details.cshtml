@@ -78,9 +78,13 @@
                     <!-- Left column -->
                     <div class="col-md-6 GymAdminFormColumn">
                         <!-- Field -->
+                        @{
+                            //Format for price
+                            string p = $"{Model.Price:C2}";
+                        }
                         <div class="form-group GymAdminFormElement">
                             <label class="control-label GymAdminFormLabel">Precio del servicio</label>
-                            <input value="@Model.Price" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <input value="@p" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                     <!-- Right column -->

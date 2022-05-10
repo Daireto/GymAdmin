@@ -1,0 +1,59 @@
+﻿/*
+    Body
+*/
+body {
+    background-image: url("../../images/bg/edituser-body-background.jpg");
+}
+
+/*
+    Containers
+*/
+#GymAdminRegisterFormElementsContainer {
+    margin: 0 auto;
+    padding: 0;
+    width: 100%;
+    background-color: transparent;
+}
+
+/*
+    Fields
+*/
+.GymAdminFormImageInput {
+    border-bottom-color: transparent !important;
+    font-size: 14px;
+}
+
+/*
+    Links
+*/
+.GymAdminRegisterFormButtons {
+    padding-bottom: 10px;
+}
+
+.GymAdminRegisterFormButton {
+    display: inline !important;
+}
+
+.GymAdminRegisterFormLink {
+    display: inline !important;
+}
+
+/*
+    Inputs
+*/
+.GymAdminFormInput {
+    border-bottom-color: transparent !important;
+    text-align: center !important;
+}
+
+.GymAdminFormButton {
+    margin-top: 20px !important;
+}
+
+.GymAdminFormColumn {
+    text-align: center !important;
+}
+
+.GymAdminRegisterFormButtons {
+    text-align: center !important;
+}
