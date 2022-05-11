@@ -47,7 +47,7 @@ namespace GymAdmin.Controllers
 
             Event envet = await _context.Events
                 .Include(e => e.Directors)
-                .ThenInclude(d => d.Schedule)
+                .ThenInclude(d => d.Events)
                 .Include(e => e.Directors)
                 .ThenInclude(d => d.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -212,6 +212,10 @@ namespace GymAdmin.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> ShowEvents()
+        {
+            return View(await _context.Events.ToListAsync());
+        }
 
         //--------------                    Director                -------------------
 
@@ -224,8 +228,8 @@ namespace GymAdmin.Controllers
 
             Director director   = await _context.Directors
                 .Include(p => p.User)
-                .Include(p => p.Schedule)
                 .Include(p => p.Events)
+                .Include(p => p.EventsNumber)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             return View(director);
@@ -283,7 +287,7 @@ namespace GymAdmin.Controllers
                 {
                     User = user,
                     DirectorType = model.DirectorType,
-                    Schedule = await _context.Schedules.FindAsync(model.EventId)
+                    Event = await _context.Events.FindAsync(model.EventId)
                 };
                 _context.Add(director);
                 await _context.SaveChangesAsync();
@@ -337,7 +341,7 @@ namespace GymAdmin.Controllers
             if (id != null)
             {
                 Director director = await _context.Directors
-                    .Include(p => p.Schedule)
+                    .Include(p => p.Event)
                     .FirstOrDefaultAsync(p => p.Id == id);
                 if (director != null)
                 {
@@ -389,7 +393,7 @@ namespace GymAdmin.Controllers
                     director = await _context.Directors.FindAsync(model.Id);
                     director.User = await _userHelper.GetUserAsync(model.Username);
                     director.DirectorType = model.DirectorType;
-                    director.Schedule = await _context.Schedules.FindAsync(model.ScheduleId);
+                    director.Event = await _context.Events.FindAsync(model.EventId);
                     _context.Update(director);
                     await _context.SaveChangesAsync();
                 }
