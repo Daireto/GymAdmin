@@ -248,17 +248,17 @@ namespace GymAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.ScheduleId == 0)
+                if (model.EventId == 0)
                 {
-                    model.Schedules = await _combosHelper.GetComboSchedulesAsync();
-                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un horario!");
+                    model.Events = await _combosHelper.GetComboEventsAsync();
+                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un horario para el evento!");
                     return View(model);
                 }
 
                 User userDocumentExist = await _userHelper.GetUserAsync(model);
                 if (userDocumentExist != null)
                 {
-                    model.Schedules = await _combosHelper.GetComboSchedulesAsync();
+                    model.Events = await _combosHelper.GetComboEventsAsync();
                     ModelState.AddModelError(string.Empty, "¡Ya existe un usuario con este documento!");
                     return View(model);
                 }
@@ -273,19 +273,19 @@ namespace GymAdmin.Controllers
                 if (user == null)
                 {
                     await _blobHelper.DeleteBlobAsync(imageId, "users");
-                    model.Schedules = await _combosHelper.GetComboSchedulesAsync();
+                    model.Events = await _combosHelper.GetComboEventsAsync();
                     ModelState.AddModelError(string.Empty, "¡Este correo ya está en uso!");
                     return View(model);
                 }
 
-                //Relation user - professional
-                Professional professional = new()
+                //Relation user - Director
+                Director director = new()
                 {
                     User = user,
-                    ProfessionalType = model.ProfessionalType,
-                    Schedule = await _context.Schedules.FindAsync(model.ScheduleId)
+                    DirectorType = model.DirectorType,
+                    Schedule = await _context.Schedules.FindAsync(model.EventId)
                 };
-                _context.Add(professional);
+                _context.Add(director);
                 await _context.SaveChangesAsync();
 
                 //Email confirmation
@@ -323,9 +323,149 @@ namespace GymAdmin.Controllers
                 }
             }
 
-            model.Schedules = await _combosHelper.GetComboSchedulesAsync();
+            model.Events = await _combosHelper.GetComboSchedulesAsync();
+            return View(model);
+        }
+        public async Task<IActionResult> EditDirector(int? id)
+        {
+            EditDirectorViewModel model = new()
+            {
+                Users = await _combosHelper.GetComboUsersAsync(),
+                Events = await _combosHelper.GetComboEventsAsync(),
+            };
+
+            if (id != null)
+            {
+                Director director = await _context.Directors
+                    .Include(p => p.Schedule)
+                    .FirstOrDefaultAsync(p => p.Id == id);
+                if (director != null)
+                {
+                    model.Id = director.Id;
+                    model.Username = director.User.UserName;
+                    model.EventId= director.Event.Id;
+                    model.DirectorType = director.DirectorType;
+                }
+            }
+
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfessional(EditDirectorViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Username == null || model.Username == "")
+                {
+                    model.Users = await _combosHelper.GetComboUsersAsync();
+                    model.Events = await _combosHelper.GetComboEventsAsync();
+                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un usuario!");
+                    return View(model);
+                }
+
+                if (model.ScheduleId == 0)
+                {
+                    model.Users = await _combosHelper.GetComboUsersAsync();
+                    model.Events = await _combosHelper.GetComboEventsAsync();
+                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un horario para el evento!");
+                    return View(model);
+                }
+
+                User user = await _userHelper.GetUserAsync(model.Username);
+                if (user == null)
+                {
+                    model.Users = await _combosHelper.GetComboUsersAsync();
+                    model.Events = await _combosHelper.GetComboEventsAsync();
+                    ModelState.AddModelError(string.Empty, "¡Este usuario no existe en el sistema!");
+                    return View(model);
+                }
+
+                Director director= new();
+
+                if (model.Id != null)
+                {
+                    director = await _context.Directors.FindAsync(model.Id);
+                    director.User = await _userHelper.GetUserAsync(model.Username);
+                    director.DirectorType = model.DirectorType;
+                    director.Schedule = await _context.Schedules.FindAsync(model.ScheduleId);
+                    _context.Update(director);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    try
+                    {
+                        director = new()
+                        {
+                            User = await _userHelper.GetUserAsync(model.Username),
+                            DirectorType = model.DirectorType,
+                            Event = await _context.Events.FindAsync(model.EventId)
+                        };
+                        _context.Add(director);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception)
+                    {
+                        ModelState.AddModelError(string.Empty, "¡Este usuario ya tiene este evento!");
+                        model.Users = await _combosHelper.GetComboUsersAsync();
+                        model.Events= await _combosHelper.GetComboEventsAsync();
+                        return View(model);
+                    }
+                }
+
+                return RedirectToAction(nameof(DetailsDirector), new { id = director.Id });
+            }
+
+            model.Users = await _combosHelper.GetComboUsersAsync();
+            model.Events = await _combosHelper.GetComboEventsAsync();
+            return View(model);
+        }
+        public async Task<IActionResult> DeleteProfessional(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Professional professional = await _context.Professionals
+                .Include(p => p.User)
+                .Include(p => p.Services)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (professional == null)
+            {
+                return NotFound();
+            }
+
+            return View(professional);
+        }
+
+        [HttpPost, ActionName("DeleteDirector")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteDirectorConfirmed(int id)
+        {
+            Director director = await _context.Directors
+                .Include(d => d.Events)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            foreach (var evento in director.Events)
+            {
+                _context.Events.Remove(evento);
+            }
+
+            _context.Directors.Remove(director);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ShowDirectors));
+        }
+        public async Task<IActionResult> ShowDirectors()
+        {
+            return View(await _context.Directors
+                .Include(d => d.Events)
+                .Include(p => p.User)
+                .ToListAsync());
+        }
     }
 }

@@ -56,6 +56,24 @@ namespace GymAdmin.Helpers
 
             return list;
         }
+        public async Task<IEnumerable<SelectListItem>> GetComboEventAsync()
+        {
+            List<SelectListItem> list = await _context.Events
+                .Select(s => new SelectListItem
+                {
+                    Text = $"{s.Day}, {s.StartHour} - {s.FinishHour}",
+                    Value = $"{s.Id}"
+                })
+                .ToListAsync();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "Seleccione un horario para el evento",
+                Value = "0"
+            });
+
+            return list;
+        }
 
         public async Task<IEnumerable<SelectListItem>> GetComboUsersAsync()
         {

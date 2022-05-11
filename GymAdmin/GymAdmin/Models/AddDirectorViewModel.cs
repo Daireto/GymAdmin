@@ -13,6 +13,7 @@ namespace GymAdmin.Models
 
         [Display(Name = "Tipo de evento")]
         public EventType EventType { get; set; }
-    
+        public DirectorType DirectorType { get; set; }
+
     }
 }
