@@ -28,9 +28,9 @@ namespace GymAdmin.Helpers
             return list;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetComboSchedulesAsync(int serviceId, DayOfWeek day)
+        public async Task<IEnumerable<SelectListItem>> GetComboSchedulesAsync(int serviceId, DateTime day)
         {
-            var allSchedules = GenerateScheduleList().Where(s => s.Day == day);
+            var allSchedules = GenerateScheduleList(day).Where(s => s.Day.ToString("yyyy-MM-dd") == day.ToString("yyyy-MM-dd"));
 
             List<ServiceDate> resultSchedules = new();
 
@@ -40,7 +40,6 @@ namespace GymAdmin.Helpers
                     .Where(sa =>
                         sa.Service.Id == serviceId &&
                         sa.AccessDate == schedule.Day &&
-                        sa.AccessHour == schedule.AccessHour &&
                         sa.ServiceStatus == Enums.ServiceStatus.Pending)
                     .ToListAsync();
 
@@ -53,8 +52,8 @@ namespace GymAdmin.Helpers
             List<SelectListItem> list = resultSchedules
                 .Select(s => new SelectListItem
                 {
-                    Text = $"{s.AccessHour}",
-                    Value = $"{s.AccessHour.Ticks}"
+                    Text = $"{s.Day.TimeOfDay}",
+                    Value = $"{s.Day.TimeOfDay.Ticks}"
                 })
                 .OrderBy(s => s.Text)
                 .ToList();
@@ -68,18 +67,25 @@ namespace GymAdmin.Helpers
             return list;
         }
 
-        public List<ServiceDate> GenerateScheduleList()
+        public List<ServiceDate> GenerateScheduleList(DateTime dayTime)
         {
             List<ServiceDate> allSchedules = new();
-            List<DayOfWeek> days = new()
+            List<DateTime> days = new()
             {
-                DayOfWeek.Monday,
-                DayOfWeek.Tuesday,
-                DayOfWeek.Wednesday,
-                DayOfWeek.Thursday,
-                DayOfWeek.Friday,
-                DayOfWeek.Saturday,
-                DayOfWeek.Sunday,
+                dayTime,
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
+                dayTime.AddDays(1),
             };
 
             foreach (var day in days)
@@ -88,28 +94,24 @@ namespace GymAdmin.Helpers
                 {
                     allSchedules.Add(new ServiceDate
                     {
-                        Day = day,
-                        AccessHour = new TimeSpan(i, 0, 0)
+                        Day = day + new TimeSpan(i, 0, 0)
                     });
 
                     allSchedules.Add(new ServiceDate
                     {
-                        Day = day,
-                        AccessHour = new TimeSpan(i, 30, 0)
+                        Day = day + new TimeSpan(i, 30, 0)
                     });
                 }
                 for (int i = 14; i <= 19; i++)
                 {
                     allSchedules.Add(new ServiceDate
                     {
-                        Day = day,
-                        AccessHour = new TimeSpan(i, 0, 0)
+                        Day = day + new TimeSpan(i, 0, 0)
                     });
 
                     allSchedules.Add(new ServiceDate
                     {
-                        Day = day,
-                        AccessHour = new TimeSpan(i, 30, 0)
+                        Day = day + new TimeSpan(i, 30, 0)
                     });
                 }
             }

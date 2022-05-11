@@ -62,16 +62,13 @@ namespace GymAdmin.Controllers
             {
                 int Id = id ?? 1;
 
-                //TODO: User plan logic for the discount value
-                double discount = 0.5;
-
                 Service service = await _context.Services.FindAsync(Id);
 
                 TakeServiceViewModel model = new()
                 {
                     ServiceId = Id,
                     Services = await _combosHelper.GetComboServicesAsync(),
-                    Discount = discount,
+                    Discount = DiscountValues.GetDiscountValue("Regular"),
                     Price = service.Price
                 };
 
@@ -89,13 +86,18 @@ namespace GymAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (model.AccessHour == 0)
+                {
+                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un horario!");
+                    return View(model);
+                }
+
                 TimeSpan AccessHour = TimeSpan.FromTicks(model.AccessHour);
-                
+
                 var serviceAccesses = await _context.ServiceAccesses
                     .Where(sa =>
                         sa.Service.Id == model.ServiceId &&
-                        sa.AccessDate == model.AccessDate &&
-                        sa.AccessHour == AccessHour &&
+                        sa.AccessDate == model.AccessDate + AccessHour &&
                         sa.ServiceStatus == Enums.ServiceStatus.Pending)
                     .ToListAsync();
 
@@ -107,8 +109,7 @@ namespace GymAdmin.Controllers
                     {
                         User = await _userHelper.GetUserAsync(User.Identity.Name),
                         Service = service,
-                        AccessDate = model.AccessDate,
-                        AccessHour = AccessHour,
+                        AccessDate = model.AccessDate + AccessHour,
                         Discount = model.Discount,
                         TotalPrice = service.Price - (service.Price * (decimal)model.Discount),
                         ServiceStatus = Enums.ServiceStatus.Pending,
@@ -125,7 +126,7 @@ namespace GymAdmin.Controllers
             return View(model);
         }
 
-        public async Task<JsonResult> GetHours(int serviceId, DayOfWeek day)
+        public async Task<JsonResult> GetHours(int serviceId, DateTime day)
         {
             var list = await _combosHelper.GetComboSchedulesAsync(serviceId, day);
             return Json(list);
@@ -133,17 +134,14 @@ namespace GymAdmin.Controllers
 
         public JsonResult GetPrice(int serviceId)
         {
-            //TODO: User plan logic for the discount value
-            double discount = 0.5;
-
             Service service = _context.Services.Find(serviceId);
 
             string p = $"{service.Price:C2}";
 
-            decimal totalPrice = (decimal)(Decimal.ToDouble(service.Price) - (Decimal.ToDouble(service.Price) * discount));
+            decimal totalPrice = (decimal)(Decimal.ToDouble(service.Price) - (Decimal.ToDouble(service.Price) * DiscountValues.GetDiscountValue("Regular")));
             string tp = $"{totalPrice:C2}";
 
-            return Json(new {priceValue = p, totalPriceValue = tp});
+            return Json(new { priceValue = p, totalPriceValue = tp });
         }
 
         //TODO: Add events and plans methods

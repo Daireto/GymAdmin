@@ -118,39 +118,11 @@
                         </div>
                         <!-- Field -->
                         @{
-                            var day = "";
-                            if (Model.AccessDate.ToString() == "Monday")
-                            {
-                                day = "Lunes";
-                            }
-                            if (Model.AccessDate.ToString() == "Tuesday")
-                            {
-                                day = "Martes";
-                            }
-                            if (Model.AccessDate.ToString() == "Wednesday")
-                            {
-                                day = "Miércoles";
-                            }
-                            if (Model.AccessDate.ToString() == "Thursday")
-                            {
-                                day = "Jueves";
-                            }
-                            if (Model.AccessDate.ToString() == "Friday")
-                            {
-                                day = "Viernes";
-                            }
-                            if (Model.AccessDate.ToString() == "Saturday")
-                            {
-                                day = "Sábado";
-                            }
-                            if (Model.AccessDate.ToString() == "Sunday")
-                            {
-                                day = "Domingo";
-                            }
+                            var ContractDay = Model.AccessDate.ToString(@"dd/MM/yyyy");
                         }
                         <div class="form-group GymAdminFormElement">
                             <label class="control-label GymAdminFormLabel">Fecha del contrato</label>
-                            <input value="@day" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <input value="@ContractDay" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                     <!-- Right column -->
@@ -171,9 +143,12 @@
                             <input value="@d" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
+                        @{
+                            var ContractHour = Model.AccessDate.ToString("h:mm tt");
+                        }
                         <div class="form-group GymAdminFormElement">
                             <label class="control-label GymAdminFormLabel">Hora del contrato</label>
-                            <input value="@Model.AccessHour" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <input value="@ContractHour" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                 </div>

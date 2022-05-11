@@ -1,7 +1,8 @@
-﻿using GymAdmin.Data;
+﻿using GymAdmin.Common;
 using GymAdmin.Data.Entities;
 using GymAdmin.Enums;
 using GymAdmin.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymAdmin.Data
 {
@@ -20,8 +21,14 @@ namespace GymAdmin.Data
 
         public async Task SeedAsync()
         {
+
             //Database creation and migrations execution
-            await _context.Database.EnsureCreatedAsync();
+            bool result = await _context.Database.EnsureCreatedAsync();
+            if (result == true)
+            {
+                //Get Azure blob empty
+                await _blobHelper.DeleteBlobsAsync("users");
+            }
 
             //Roles seed
             await CheckRolesAsync();
@@ -44,6 +51,7 @@ namespace GymAdmin.Data
             //Services seeds
             await CheckServicesAsync();
             await CheckProfessionalsAsync();
+            await CheckServicesAccessesAsync();
         }
 
         private async Task CheckProfessionalsAsync()
@@ -288,6 +296,225 @@ namespace GymAdmin.Data
                 });
             }
             await _context.SaveChangesAsync();
+        }
+
+        private async Task CheckServicesAccessesAsync()
+        {
+            if (!_context.ServiceAccesses.Any())
+            {
+                Service instru = await _context.Services.FindAsync(1);
+                Service physio = await _context.Services.FindAsync(2);
+                Service nutri = await _context.Services.FindAsync(3);
+
+                List<Service> ServicesList = new() { instru, physio, nutri };
+
+                List<string> EmailsList = new()
+                {
+                    "dairo@yopmail.com",
+                    "millie@yopmail.com",
+                    "brett@yopmail.com",
+                    "brian@yopmail.com",
+                    "vanessa@yopmail.com",
+                    "rihanna@yopmail.com",
+                    "lamar@yopmail.com",
+                    "peyton@yopmail.com",
+                };
+
+                int randomHour = 1;
+                int randomDay = 1;
+                bool notExist = false;
+
+                Enums.ServiceStatus status = Enums.ServiceStatus.Pending;
+                foreach (string email in EmailsList)
+                {
+                    foreach (Service service in ServicesList)
+                    {
+                        notExist = false;
+                        while (notExist == false)
+                        {
+                            while (randomHour == 12 || randomHour == 1)
+                            {
+                                randomHour = new Random().Next(7, 19);
+                            }
+                            randomDay = new Random().Next(1, 12);
+
+                            DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour);
+
+                            var serviceAccesses = await _context.ServiceAccesses
+                                .Where(sa =>
+                                    sa.Service.Id == service.Id &&
+                                    sa.AccessDate == searchDate &&
+                                    sa.ServiceStatus == status)
+                                .ToListAsync();
+
+                            if (serviceAccesses.Count == 0 || serviceAccesses == null)
+                            {
+                                _context.Add(new ServiceAccess
+                                {
+                                    User = await _userHelper.GetUserAsync(email),
+                                    Service = service,
+                                    AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
+                                    ServiceStatus = status,
+                                    Discount = DiscountValues.GetDiscountValue("Regular"),
+                                    TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                                });
+                                await _context.SaveChangesAsync();
+                                notExist = true;
+                            }
+                        }
+
+                        notExist = false;
+                        while (notExist == false)
+                        {
+                            while (randomHour == 12 || randomHour == 1)
+                            {
+                                randomHour = new Random().Next(7, 19);
+                            }
+                            randomDay = new Random().Next(1, 12);
+
+                            DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour).AddMinutes(30);
+
+                            var serviceAccesses = await _context.ServiceAccesses
+                                .Where(sa =>
+                                    sa.Service.Id == service.Id &&
+                                    sa.AccessDate == searchDate &&
+                                    sa.ServiceStatus == status)
+                                .ToListAsync();
+
+                            if (serviceAccesses.Count == 0 || serviceAccesses == null)
+                            {
+                                _context.Add(new ServiceAccess
+                                {
+                                    User = await _userHelper.GetUserAsync(email),
+                                    Service = service,
+                                    AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour).AddMinutes(30),
+                                    ServiceStatus = status,
+                                    Discount = DiscountValues.GetDiscountValue("Regular"),
+                                    TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                                });
+                                await _context.SaveChangesAsync();
+                                notExist = true;
+                            }
+                        }
+                    }
+                }
+
+                status = Enums.ServiceStatus.Taken;
+                foreach (string email in EmailsList)
+                {
+                    foreach (Service service in ServicesList)
+                    {
+                        notExist = false;
+                        while (notExist == false)
+                        {
+                            while (randomHour == 12 || randomHour == 1)
+                            {
+                                randomHour = new Random().Next(7, 19);
+                            }
+                            randomDay = new Random().Next(1, 12);
+
+                            DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour);
+
+                            var serviceAccesses = await _context.ServiceAccesses
+                                .Where(sa =>
+                                    sa.Service.Id == service.Id &&
+                                    sa.AccessDate == searchDate &&
+                                    sa.ServiceStatus == status)
+                                .ToListAsync();
+
+                            if (serviceAccesses.Count == 0 || serviceAccesses == null)
+                            {
+                                _context.Add(new ServiceAccess
+                                {
+                                    User = await _userHelper.GetUserAsync(email),
+                                    Service = service,
+                                    AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
+                                    ServiceStatus = status,
+                                    Discount = DiscountValues.GetDiscountValue("Regular"),
+                                    TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                                });
+                                await _context.SaveChangesAsync();
+                                notExist = true;
+                            }
+                        }
+
+                        notExist = false;
+                        while (notExist == false)
+                        {
+                            while (randomHour == 12 || randomHour == 1)
+                            {
+                                randomHour = new Random().Next(7, 19);
+                            }
+                            randomDay = new Random().Next(1, 12);
+
+                            DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour).AddMinutes(30);
+
+                            var serviceAccesses = await _context.ServiceAccesses
+                                .Where(sa =>
+                                    sa.Service.Id == service.Id &&
+                                    sa.AccessDate == searchDate &&
+                                    sa.ServiceStatus == status)
+                                .ToListAsync();
+
+                            if (serviceAccesses.Count == 0 || serviceAccesses == null)
+                            {
+                                _context.Add(new ServiceAccess
+                                {
+                                    User = await _userHelper.GetUserAsync(email),
+                                    Service = service,
+                                    AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour).AddMinutes(30),
+                                    ServiceStatus = status,
+                                    Discount = DiscountValues.GetDiscountValue("Regular"),
+                                    TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                                });
+                                await _context.SaveChangesAsync();
+                                notExist = true;
+                            }
+                        }
+                    }
+                }
+
+                status = Enums.ServiceStatus.Cancelled;
+                foreach (string email in EmailsList)
+                {
+                    foreach (Service service in ServicesList)
+                    {
+                        notExist = false;
+                        while (notExist == false)
+                        {
+                            while (randomHour == 12 || randomHour == 1)
+                            {
+                                randomHour = new Random().Next(7, 19);
+                            }
+                            randomDay = new Random().Next(1, 12);
+
+                            DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour);
+
+                            var serviceAccesses = await _context.ServiceAccesses
+                                .Where(sa =>
+                                    sa.Service.Id == service.Id &&
+                                    sa.AccessDate == searchDate &&
+                                    sa.ServiceStatus == status)
+                                .ToListAsync();
+
+                            if (serviceAccesses.Count == 0 || serviceAccesses == null)
+                            {
+                                _context.Add(new ServiceAccess
+                                {
+                                    User = await _userHelper.GetUserAsync(email),
+                                    Service = service,
+                                    AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
+                                    ServiceStatus = status,
+                                    Discount = DiscountValues.GetDiscountValue("Regular"),
+                                    TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                                });
+                                await _context.SaveChangesAsync();
+                                notExist = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private async Task<User> CheckUsersAsync(

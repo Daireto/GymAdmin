@@ -17,7 +17,7 @@ namespace GymAdmin.Models
 
         [Display(Name = "Día")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public DayOfWeek AccessDate { get; set; }
+        public DateTime AccessDate { get; set; }
 
         [Display(Name = "Horarios disponibles")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]

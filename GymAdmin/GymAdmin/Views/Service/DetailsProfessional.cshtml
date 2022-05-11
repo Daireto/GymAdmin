@@ -202,10 +202,16 @@
                                             @day
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Schedule.StartHour)
+                                            @{
+                                                var StartHourDateTime = new DateTime(item.Schedule.StartHour.Ticks);
+                                                var FinishHourDateTime = new DateTime(item.Schedule.FinishHour.Ticks);
+                                                var StartHour12HoursFormated = StartHourDateTime.ToString("h:mm tt");
+                                                var FinishHour12HoursFormated = FinishHourDateTime.ToString("h:mm tt");
+                                            }
+                                            @StartHour12HoursFormated
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Schedule.FinishHour)
+                                            @FinishHour12HoursFormated
                                         </td>
                                         <td class="td_option">
                                             <a asp-action="EditSchedule" asp-route-id="@item.Schedule.Id" asp-route-proId="@Model.Id" class="btn btn-outline-warning">Editar</a>

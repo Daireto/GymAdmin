@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymAdmin.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220509063135_InitialDb")]
-    partial class InitialDb
+    [Migration("20220511010341_DbUntilServicesManagement")]
+    partial class DbUntilServicesManagement
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -134,11 +134,8 @@ namespace GymAdmin.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AccessDate")
-                        .HasColumnType("int");
-
-                    b.Property<long>("AccessHour")
-                        .HasColumnType("bigint");
+                    b.Property<DateTime>("AccessDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("Discount")
                         .HasColumnType("float");

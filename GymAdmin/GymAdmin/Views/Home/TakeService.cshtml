@@ -28,40 +28,6 @@
                         </div>
                         <!-- Field -->
                         @{
-                            var Days = Html.GetEnumSelectList<DayOfWeek>();
-                            foreach (var Day in Days)
-                            {
-                                if (Day.Text == "Monday")
-                                {
-                                    Day.Text = "Lunes";
-                                }
-                                else if (Day.Text == "Tuesday")
-                                {
-                                    Day.Text = "Martes";
-                                }
-                                else if (Day.Text == "Wednesday")
-                                {
-                                    Day.Text = "Miércoles";
-                                }
-                                else if (Day.Text == "Thursday")
-                                {
-                                    Day.Text = "Jueves";
-                                }
-                                else if (Day.Text == "Friday")
-                                {
-                                    Day.Text = "Viernes";
-                                }
-                                else if (Day.Text == "Saturday")
-                                {
-                                    Day.Text = "Sábado";
-                                }
-                                else if (Day.Text == "Sunday")
-                                {
-                                    Day.Text = "Domingo";
-                                }
-                            }
-                        }
-                        @{
                             //Format for prices and discount
                             string p = $"{Model.Price:C2}";
 
@@ -72,7 +38,7 @@
                         }
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="AccessDate" class="control-label GymAdminFormLabel"></label>
-                            <select asp-for="AccessDate" asp-items="@Days" class="GymAdminFormCombobox"></select>
+                            <input type="date" asp-for="AccessDate" class="GymAdminFormInput" />
                             <span asp-validation-for="AccessDate" class="text-danger"></span>
                         </div>
                         <!-- Field -->
@@ -119,23 +85,42 @@
 }
 <script type="text/javascript">
     $(document).ready(function () {
+        var today = new Date();
+        if(today.getHours() > 19)
+        {
+            var startDate = new Date();
+            startDate.setDate(today.getDate() + 1);
+            document.getElementById("AccessDate").value = startDate.toLocaleString("fr-CA").split(",")[0];
+            document.getElementById("AccessDate").min = startDate.toLocaleString("fr-CA").split(",")[0];
+            var endDate = new Date();
+            endDate.setDate(startDate.getDate() + 13);
+            document.getElementById("AccessDate").max = endDate.toLocaleString("fr-CA").split(",")[0];
+        }
+        else
+        {
+            document.getElementById("AccessDate").value = today.toLocaleString("fr-CA").split(",")[0];
+            document.getElementById("AccessDate").min = today.toLocaleString("fr-CA").split(",")[0];
+            var endDate = new Date();
+            endDate.setDate(today.getDate() + 13);
+            document.getElementById("AccessDate").max = endDate.toLocaleString("fr-CA").split(",")[0];
+        }
         $("#AccessHour").empty();
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetHours")',
-                dataType: 'json',
-                data: { serviceId: $("#ServiceId").val(), day: $("#AccessDate").val() },
-                success: function (hours) {
-                    $.each(hours, function (i, hour) {
-                        $("#AccessHour").append('<option value="'
-                            + hour.value + '">'
-                            + hour.text + '</option>');
-                    });
-                },
-                error: function (ex) {
-                    alert('Failed to retrieve hours.' + ex);
-                }
-            });
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetHours")',
+            dataType: 'json',
+            data: { serviceId: $("#ServiceId").val(), day: $("#AccessDate").val() },
+            success: function (hours) {
+                $.each(hours, function (i, hour) {
+                    $("#AccessHour").append('<option value="'
+                        + hour.value + '">'
+                        + hour.text + '</option>');
+                });
+            },
+            error: function (ex) {
+                alert('Failed to retrieve hours.' + ex);
+            }
+        });
         $("#AccessDate").change(function () {
             $("#AccessHour").empty();
             $.ajax({
@@ -170,12 +155,28 @@
                 error: function (ex) {
                     $("#showPrice").attr("readonly", true);
                     $("#totalPrice").attr("readonly", true);
-                    $("#discountValue").attr("readonly", true);
                     alert('Failed to retrieve price.' + ex);
                 }
             });
             $("#showPrice").attr("readonly", true);
             $("#totalPrice").attr("readonly", true);
+            $("#AccessHour").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetHours")',
+                dataType: 'json',
+                data: { serviceId: $("#ServiceId").val(), day: $("#AccessDate").val() },
+                success: function (hours) {
+                    $.each(hours, function (i, hour) {
+                        $("#AccessHour").append('<option value="'
+                            + hour.value + '">'
+                            + hour.text + '</option>');
+                    });
+                },
+                error: function (ex) {
+                    alert('Failed to retrieve hours.' + ex);
+                }
+            });
             return false;
         });
     });

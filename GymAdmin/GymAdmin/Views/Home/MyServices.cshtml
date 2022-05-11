@@ -89,10 +89,7 @@
                                         Servicio
                                     </th>
                                     <th>
-                                        Fecha
-                                    </th>
-                                    <th>
-                                        Hora
+                                        Horario programado
                                     </th>
                                     <th>
                                         Precio
@@ -116,42 +113,8 @@
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Service.Name)
                                             </td>
-                                            @{
-                                                var day = "";
-                                                if (item.AccessDate.ToString() == "Monday")
-                                                {
-                                                    day = "Lunes";
-                                                }
-                                                if (item.AccessDate.ToString() == "Tuesday")
-                                                {
-                                                    day = "Martes";
-                                                }
-                                                if (item.AccessDate.ToString() == "Wednesday")
-                                                {
-                                                    day = "Miércoles";
-                                                }
-                                                if (item.AccessDate.ToString() == "Thursday")
-                                                {
-                                                    day = "Jueves";
-                                                }
-                                                if (item.AccessDate.ToString() == "Friday")
-                                                {
-                                                    day = "Viernes";
-                                                }
-                                                if (item.AccessDate.ToString() == "Saturday")
-                                                {
-                                                    day = "Sábado";
-                                                }
-                                                if (item.AccessDate.ToString() == "Sunday")
-                                                {
-                                                    day = "Domingo";
-                                                }
-                                            }
                                             <td>
-                                                @day
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.AccessHour)
+                                                @Html.DisplayFor(modelItem => item.AccessDate)
                                             </td>
                                             @{
                                                 //Format for prices and discount
@@ -231,42 +194,11 @@
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Service.Name)
                                             </td>
-                                            @{
-                                                var day = "";
-                                                if (item.AccessDate.ToString() == "Monday")
-                                                {
-                                                    day = "Lunes";
-                                                }
-                                                if (item.AccessDate.ToString() == "Tuesday")
-                                                {
-                                                    day = "Martes";
-                                                }
-                                                if (item.AccessDate.ToString() == "Wednesday")
-                                                {
-                                                    day = "Miércoles";
-                                                }
-                                                if (item.AccessDate.ToString() == "Thursday")
-                                                {
-                                                    day = "Jueves";
-                                                }
-                                                if (item.AccessDate.ToString() == "Friday")
-                                                {
-                                                    day = "Viernes";
-                                                }
-                                                if (item.AccessDate.ToString() == "Saturday")
-                                                {
-                                                    day = "Sábado";
-                                                }
-                                                if (item.AccessDate.ToString() == "Sunday")
-                                                {
-                                                    day = "Domingo";
-                                                }
-                                            }
                                             <td>
-                                                @day
+                                                @Html.DisplayFor(modelItem => item.AccessDate)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.AccessHour)
+                                                @Html.DisplayFor(modelItem => item.AccessDate.TimeOfDay)
                                             </td>
                                             @{
                                                 //Format for prices and discount

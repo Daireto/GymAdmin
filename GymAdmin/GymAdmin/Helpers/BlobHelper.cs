@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿using Azure.Storage.Blobs;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace GymAdmin.Helpers
@@ -6,12 +7,16 @@ namespace GymAdmin.Helpers
     public class BlobHelper :IBlobHelper
     {
         private readonly CloudBlobClient _blobClient;
+        private readonly BlobServiceClient _blobServiceClient;
 
         public BlobHelper(IConfiguration configuration)
         {
             string keys = configuration["Blob:ConnectionString"];
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(keys);
             _blobClient = storageAccount.CreateCloudBlobClient();
+
+            //To delete images
+            _blobServiceClient = new BlobServiceClient(keys);
         }
 
         public async Task DeleteBlobAsync(Guid id, string containerName)
@@ -40,6 +45,15 @@ namespace GymAdmin.Helpers
             CloudBlockBlob blockBlob = container.GetBlockBlobReference($"{name}");
             await blockBlob.UploadFromStreamAsync(stream);
             return name;
+        }
+
+        public async Task DeleteBlobsAsync(string containerName)
+        {
+            BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+            await foreach (var blobItem in containerClient.GetBlobsAsync())
+            {
+                await containerClient.DeleteBlobIfExistsAsync(blobItem.Name);
+            }
         }
     }
 }

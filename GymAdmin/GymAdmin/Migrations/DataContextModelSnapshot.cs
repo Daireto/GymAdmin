@@ -132,11 +132,8 @@ namespace GymAdmin.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AccessDate")
-                        .HasColumnType("int");
-
-                    b.Property<long>("AccessHour")
-                        .HasColumnType("bigint");
+                    b.Property<DateTime>("AccessDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("Discount")
                         .HasColumnType("float");

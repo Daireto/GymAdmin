@@ -11,16 +11,13 @@ namespace GymAdmin.Data.Entities
 
         public Service Service { get; set; }
 
-        public DayOfWeek AccessDate { get; set; }
-
-        [Column(TypeName = "bigint")]
-        public TimeSpan AccessHour { get; set; }
+        public DateTime AccessDate { get; set; }
 
         public double Discount { get; set; }
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalPrice { get; set; }
 
-        public ServiceStatus ServiceStatus { get; set; } //TODO: Add this to events
+        public ServiceStatus ServiceStatus { get; set; }
     }
 }

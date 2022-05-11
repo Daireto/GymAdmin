@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GymAdmin.Migrations
 {
-    public partial class InitialDb : Migration
+    public partial class DbUntilServicesManagement : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -222,8 +222,7 @@ namespace GymAdmin.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ServiceId = table.Column<int>(type: "int", nullable: true),
-                    AccessDate = table.Column<int>(type: "int", nullable: false),
-                    AccessHour = table.Column<long>(type: "bigint", nullable: false),
+                    AccessDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Discount = table.Column<double>(type: "float", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ServiceStatus = table.Column<int>(type: "int", nullable: false)
