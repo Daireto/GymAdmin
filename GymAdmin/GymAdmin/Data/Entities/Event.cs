@@ -22,7 +22,7 @@ namespace GymAdmin.Data.Entities
 
         [Display(Name = "Nombre del evento")]
         public string NameEveneto { get; set; }
-        public ICollection<EventAccess> Directors { get; set; }
+        //public ICollection<EventAcces> EventAcces { get; set; }
 
         public Director Director { get; set; }
     }

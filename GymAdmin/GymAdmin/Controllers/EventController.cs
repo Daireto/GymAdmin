@@ -33,7 +33,7 @@ namespace GymAdmin.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Events
-               .Include(d => d.Directors)
+               .Include(d => d.Director)
                .ThenInclude(p => p.User)
                .ToListAsync());
             //return View();
@@ -46,9 +46,9 @@ namespace GymAdmin.Controllers
             }
 
             Event envet = await _context.Events
-                .Include(e => e.Directors)
+                .Include(e => e.Director)
                 .ThenInclude(d => d.Events)
-                .Include(e => e.Directors)
+                .Include(e => e.Director)
                 .ThenInclude(d => d.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -123,7 +123,7 @@ namespace GymAdmin.Controllers
             }
 
             Event evento = await _context.Events
-                .Include(d => d.Directors)
+                .Include(d => d.Director)
                 .ThenInclude(p => p.User)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
@@ -234,13 +234,13 @@ namespace GymAdmin.Controllers
 
             return View(director);
         }
-        public async Task<IActionResult> CreateProfessional()
+        public async Task<IActionResult> CreateDirector()
         {
-            AddProfessionalViewModel model = new()
+            AddDirectorViewModel model = new()
             {
                 Id = Guid.Empty.ToString(),
                 UserType = UserType.User,
-                Schedules = await _combosHelper.GetComboSchedulesAsync()
+                Events = await _combosHelper.GetComboEventsAsync(),
             };
 
             return View(model);
@@ -287,7 +287,8 @@ namespace GymAdmin.Controllers
                 {
                     User = user,
                     DirectorType = model.DirectorType,
-                    Event = await _context.Events.FindAsync(model.EventId)
+                   // Event = await _context.Events.FindAsync(model.EventId)
+                   Events = (ICollection<Event>)await _context.Events.FindAsync(model.EventId)
                 };
                 _context.Add(director);
                 await _context.SaveChangesAsync();
@@ -341,13 +342,14 @@ namespace GymAdmin.Controllers
             if (id != null)
             {
                 Director director = await _context.Directors
-                    .Include(p => p.Event)
-                    .FirstOrDefaultAsync(p => p.Id == id);
+                    .Include(d => d.Events)
+                    .FirstOrDefaultAsync(d => d.Id == id);
                 if (director != null)
                 {
                     model.Id = director.Id;
                     model.Username = director.User.UserName;
-                    model.EventId= director.Event.Id;
+                    //model.EventId= director.Event.Id;
+                    model.EventId = director.Events.FirstOrDefault(e => e.Id == id);
                     model.DirectorType = director.DirectorType;
                 }
             }
@@ -405,7 +407,7 @@ namespace GymAdmin.Controllers
                         {
                             User = await _userHelper.GetUserAsync(model.Username),
                             DirectorType = model.DirectorType,
-                            Events = await _context.Events.FindAsync(model.EventId)
+                            Event = await _context.Events.FindAsync(model.EventId)
                         };
                         _context.Add(director);
                         await _context.SaveChangesAsync();

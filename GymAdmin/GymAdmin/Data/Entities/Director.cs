@@ -13,6 +13,6 @@ namespace GymAdmin.Data.Entities
         public ICollection<Event> Events { get; set; }
 
         public int EventsNumber => Events.Count;
-        public Event Event { get; set; }
+       // public Event Event { get; set; }
     }
 }
