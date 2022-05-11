@@ -320,7 +320,7 @@ namespace GymAdmin.Data
                     "peyton@yopmail.com",
                 };
 
-                int randomHour = 1;
+                int randomHour = 13;
                 int randomDay = 1;
                 bool notExist = false;
 
@@ -332,9 +332,10 @@ namespace GymAdmin.Data
                         notExist = false;
                         while (notExist == false)
                         {
-                            while (randomHour == 12 || randomHour == 1)
+                            randomHour = 13;
+                            while (randomHour == 12 || randomHour == 13)
                             {
-                                randomHour = new Random().Next(7, 19);
+                                randomHour = new Random().Next(7, 18);
                             }
                             randomDay = new Random().Next(1, 12);
 
@@ -354,40 +355,6 @@ namespace GymAdmin.Data
                                     User = await _userHelper.GetUserAsync(email),
                                     Service = service,
                                     AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
-                                    ServiceStatus = status,
-                                    Discount = DiscountValues.GetDiscountValue("Regular"),
-                                    TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
-                                });
-                                await _context.SaveChangesAsync();
-                                notExist = true;
-                            }
-                        }
-
-                        notExist = false;
-                        while (notExist == false)
-                        {
-                            while (randomHour == 12 || randomHour == 1)
-                            {
-                                randomHour = new Random().Next(7, 19);
-                            }
-                            randomDay = new Random().Next(1, 12);
-
-                            DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour).AddMinutes(30);
-
-                            var serviceAccesses = await _context.ServiceAccesses
-                                .Where(sa =>
-                                    sa.Service.Id == service.Id &&
-                                    sa.AccessDate == searchDate &&
-                                    sa.ServiceStatus == status)
-                                .ToListAsync();
-
-                            if (serviceAccesses.Count == 0 || serviceAccesses == null)
-                            {
-                                _context.Add(new ServiceAccess
-                                {
-                                    User = await _userHelper.GetUserAsync(email),
-                                    Service = service,
-                                    AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour).AddMinutes(30),
                                     ServiceStatus = status,
                                     Discount = DiscountValues.GetDiscountValue("Regular"),
                                     TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
@@ -407,9 +374,10 @@ namespace GymAdmin.Data
                         notExist = false;
                         while (notExist == false)
                         {
-                            while (randomHour == 12 || randomHour == 1)
+                            randomHour = 13;
+                            while (randomHour == 12 || randomHour == 13)
                             {
-                                randomHour = new Random().Next(7, 19);
+                                randomHour = new Random().Next(7, 18);
                             }
                             randomDay = new Random().Next(1, 12);
 
@@ -437,40 +405,6 @@ namespace GymAdmin.Data
                                 notExist = true;
                             }
                         }
-
-                        notExist = false;
-                        while (notExist == false)
-                        {
-                            while (randomHour == 12 || randomHour == 1)
-                            {
-                                randomHour = new Random().Next(7, 19);
-                            }
-                            randomDay = new Random().Next(1, 12);
-
-                            DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour).AddMinutes(30);
-
-                            var serviceAccesses = await _context.ServiceAccesses
-                                .Where(sa =>
-                                    sa.Service.Id == service.Id &&
-                                    sa.AccessDate == searchDate &&
-                                    sa.ServiceStatus == status)
-                                .ToListAsync();
-
-                            if (serviceAccesses.Count == 0 || serviceAccesses == null)
-                            {
-                                _context.Add(new ServiceAccess
-                                {
-                                    User = await _userHelper.GetUserAsync(email),
-                                    Service = service,
-                                    AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour).AddMinutes(30),
-                                    ServiceStatus = status,
-                                    Discount = DiscountValues.GetDiscountValue("Regular"),
-                                    TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
-                                });
-                                await _context.SaveChangesAsync();
-                                notExist = true;
-                            }
-                        }
                     }
                 }
 
@@ -482,9 +416,10 @@ namespace GymAdmin.Data
                         notExist = false;
                         while (notExist == false)
                         {
-                            while (randomHour == 12 || randomHour == 1)
+                            randomHour = 13;
+                            while (randomHour == 12 || randomHour == 13)
                             {
-                                randomHour = new Random().Next(7, 19);
+                                randomHour = new Random().Next(7, 18);
                             }
                             randomDay = new Random().Next(1, 12);
 

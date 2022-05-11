@@ -45,7 +45,22 @@ namespace GymAdmin.Helpers
 
                 if (serviceAccesses.Count == 0 || serviceAccesses == null)
                 {
-                    resultSchedules.Add(schedule);
+                    var professionals = await _context.Professionals
+                        .Include(p => p.Service)
+                        .Include(p => p.ProfessionalSchedules)
+                        .ThenInclude(ps => ps.Schedule)
+                        .Where(p => p.Service.Id == serviceId)
+                        .ToListAsync();
+
+                    bool result = professionals.Any(p => p.ProfessionalSchedules.Any(ps =>
+                        ps.Schedule.Day == schedule.Day.DayOfWeek &&
+                        ps.Schedule.StartHour.Ticks <= schedule.Day.TimeOfDay.Ticks &&
+                        ps.Schedule.FinishHour.Ticks > schedule.Day.TimeOfDay.Ticks));
+
+                    if (result)
+                    {
+                        resultSchedules.Add(schedule);
+                    }
                 }
             }
 
@@ -58,11 +73,22 @@ namespace GymAdmin.Helpers
                 .OrderBy(s => s.Text)
                 .ToList();
 
-            list.Insert(0, new SelectListItem
+            if (list.Count != 0)
             {
-                Text = "Seleccione un horario",
-                Value = "0"
-            });
+                list.Insert(0, new SelectListItem
+                {
+                    Text = "Seleccione un horario",
+                    Value = "0"
+                });
+            }
+            else
+            {
+                list.Insert(0, new SelectListItem
+                {
+                    Text = "No hay profesionales disponibles en este día",
+                    Value = "0"
+                });
+            }
 
             return list;
         }
@@ -96,22 +122,12 @@ namespace GymAdmin.Helpers
                     {
                         Day = day + new TimeSpan(i, 0, 0)
                     });
-
-                    allSchedules.Add(new ServiceDate
-                    {
-                        Day = day + new TimeSpan(i, 30, 0)
-                    });
                 }
                 for (int i = 14; i <= 19; i++)
                 {
                     allSchedules.Add(new ServiceDate
                     {
                         Day = day + new TimeSpan(i, 0, 0)
-                    });
-
-                    allSchedules.Add(new ServiceDate
-                    {
-                        Day = day + new TimeSpan(i, 30, 0)
                     });
                 }
             }
