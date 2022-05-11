@@ -405,7 +405,7 @@ namespace GymAdmin.Controllers
                         {
                             User = await _userHelper.GetUserAsync(model.Username),
                             DirectorType = model.DirectorType,
-                            Event = await _context.Events.FindAsync(model.EventId)
+                            Events = await _context.Events.FindAsync(model.EventId)
                         };
                         _context.Add(director);
                         await _context.SaveChangesAsync();
