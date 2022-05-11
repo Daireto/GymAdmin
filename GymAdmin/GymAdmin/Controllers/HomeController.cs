@@ -28,7 +28,7 @@ namespace GymAdmin.Controllers
             return View();
         }
 
-        public IActionResult Gallery()
+        public IActionResult Events()
         {
             return View();
         }
@@ -94,33 +94,21 @@ namespace GymAdmin.Controllers
 
                 TimeSpan AccessHour = TimeSpan.FromTicks(model.AccessHour);
 
-                var serviceAccesses = await _context.ServiceAccesses
-                    .Where(sa =>
-                        sa.Service.Id == model.ServiceId &&
-                        sa.AccessDate == model.AccessDate + AccessHour &&
-                        sa.ServiceStatus == Enums.ServiceStatus.Pending)
-                    .ToListAsync();
+                Service service = await _context.Services.FindAsync(model.ServiceId);
 
-                if (serviceAccesses.Count == 0 || serviceAccesses == null)
+                ServiceAccess serviceAccess = new()
                 {
-                    Service service = await _context.Services.FindAsync(model.ServiceId);
+                    User = await _userHelper.GetUserAsync(User.Identity.Name),
+                    Service = service,
+                    AccessDate = model.AccessDate + AccessHour,
+                    Discount = model.Discount,
+                    TotalPrice = service.Price - (service.Price * (decimal)model.Discount),
+                    ServiceStatus = Enums.ServiceStatus.Pending,
+                };
 
-                    ServiceAccess serviceAccess = new()
-                    {
-                        User = await _userHelper.GetUserAsync(User.Identity.Name),
-                        Service = service,
-                        AccessDate = model.AccessDate + AccessHour,
-                        Discount = model.Discount,
-                        TotalPrice = service.Price - (service.Price * (decimal)model.Discount),
-                        ServiceStatus = Enums.ServiceStatus.Pending,
-                    };
-
-                    _context.Add(serviceAccess);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(MyServices), "Home");
-                }
-
-                ModelState.AddModelError(string.Empty, "¡Este horario ya está ocupado, por favor seleccione otro!");
+                _context.Add(serviceAccess);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(MyServices), "Home");
             }
 
             return View(model);

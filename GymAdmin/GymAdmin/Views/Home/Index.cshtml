@@ -79,7 +79,7 @@
                         <!-- Services option -->
                         <li><a asp-area="" asp-controller="Home" asp-action="Professionals">Servicios adicionales</a></li>
                         <!-- Events option -->
-                        <li><a asp-area="" asp-controller="Home" asp-action="Gallery">Galería de eventos</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Events">Eventos grupales</a></li>
                         @if (User.Identity.IsAuthenticated)
                         {
                             var nombreUsuario = User.Identity.Name.Substring(0, User.Identity.Name.Length - 12);
@@ -205,7 +205,7 @@
     <!-- Events -->
     <section id="classes">
         <div class="container">
-            <h2>EVENTOS INCREÍBLES</h2>
+            <h2>EVENTOS GRUPALES</h2>
             <table>
                 <tr>
                     <th>DÍAS</th>
@@ -299,8 +299,8 @@
                 <!-- Links -->
                 <div class="events-gallery-links">
                     <div class="flex-links">
+                        <a asp-area="" asp-controller="Home" asp-action="Events">Ver eventos grupales</a>
                         <a href="#">Quiero inscribirme a un evento</a>
-                        <a asp-area="" asp-controller="Home" asp-action="Gallery">Ver toda la galería de eventos</a>
                     </div>
                 </div>
             </div>

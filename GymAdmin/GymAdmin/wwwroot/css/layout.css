@@ -12,8 +12,21 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     backdrop-filter: blur(6px);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
     overflow-x: hidden;
+}
+
+div.col-md-12{
+    border-radius:10px;
+}
+
+/* Webkit */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(75%) sepia(92%) saturate(711%) hue-rotate(354deg) brightness(98%) contrast(94%);
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(75%) sepia(92%) saturate(711%) hue-rotate(354deg) brightness(98%) contrast(94%);
 }
 
 /* Header */
@@ -106,9 +119,14 @@ body {
 
         .left-nav span.admin-link {
             position: relative;
+            top: 2px !important;
             padding-bottom: 5px;
             margin-left: 10px;
         }
+
+header a {
+    font-weight: 400;
+}
 
 .dropdown {
     display: block;

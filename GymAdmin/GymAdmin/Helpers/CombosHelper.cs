@@ -30,16 +30,24 @@ namespace GymAdmin.Helpers
 
         public async Task<IEnumerable<SelectListItem>> GetComboSchedulesAsync(int serviceId, DateTime day)
         {
-            var allSchedules = GenerateScheduleList(day).Where(s => s.Day.ToString("yyyy-MM-dd") == day.ToString("yyyy-MM-dd"));
+            List<DateTime> allSchedules = new List<DateTime>();
 
-            List<ServiceDate> resultSchedules = new();
+            for(int i=7; i<=18; i++)
+            {
+                if(i != 12 && i != 13)
+                {
+                    allSchedules.Add(day + new TimeSpan(i, 0, 0));
+                }
+            }
+
+            List<DateTime> resultSchedules = new();
 
             foreach (var schedule in allSchedules)
             {
                 var serviceAccesses = await _context.ServiceAccesses
                     .Where(sa =>
                         sa.Service.Id == serviceId &&
-                        sa.AccessDate == schedule.Day &&
+                        sa.AccessDate == schedule &&
                         sa.ServiceStatus == Enums.ServiceStatus.Pending)
                     .ToListAsync();
 
@@ -53,9 +61,9 @@ namespace GymAdmin.Helpers
                         .ToListAsync();
 
                     bool result = professionals.Any(p => p.ProfessionalSchedules.Any(ps =>
-                        ps.Schedule.Day == schedule.Day.DayOfWeek &&
-                        ps.Schedule.StartHour.Ticks <= schedule.Day.TimeOfDay.Ticks &&
-                        ps.Schedule.FinishHour.Ticks > schedule.Day.TimeOfDay.Ticks));
+                        ps.Schedule.Day == schedule.DayOfWeek &&
+                        ps.Schedule.StartHour.Ticks <= schedule.TimeOfDay.Ticks &&
+                        ps.Schedule.FinishHour.Ticks > schedule.TimeOfDay.Ticks));
 
                     if (result)
                     {
@@ -67,10 +75,11 @@ namespace GymAdmin.Helpers
             List<SelectListItem> list = resultSchedules
                 .Select(s => new SelectListItem
                 {
-                    Text = $"{s.Day.TimeOfDay}",
-                    Value = $"{s.Day.TimeOfDay.Ticks}"
+                    Text = $"{s.ToString("hh:mm tt")}",
+                    Value = $"{s.TimeOfDay.Ticks}"
                 })
                 .OrderBy(s => s.Text)
+                .OrderBy(s => s.Text.Substring(s.Text.Length - 5, 5))
                 .ToList();
 
             if (list.Count != 0)
@@ -91,48 +100,6 @@ namespace GymAdmin.Helpers
             }
 
             return list;
-        }
-
-        public List<ServiceDate> GenerateScheduleList(DateTime dayTime)
-        {
-            List<ServiceDate> allSchedules = new();
-            List<DateTime> days = new()
-            {
-                dayTime,
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-                dayTime.AddDays(1),
-            };
-
-            foreach (var day in days)
-            {
-                for (int i = 7; i <= 11; i++)
-                {
-                    allSchedules.Add(new ServiceDate
-                    {
-                        Day = day + new TimeSpan(i, 0, 0)
-                    });
-                }
-                for (int i = 14; i <= 19; i++)
-                {
-                    allSchedules.Add(new ServiceDate
-                    {
-                        Day = day + new TimeSpan(i, 0, 0)
-                    });
-                }
-            }
-
-            return allSchedules;
         }
 
         public async Task<IEnumerable<SelectListItem>> GetComboUsersAsync()

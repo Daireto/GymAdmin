@@ -65,72 +65,71 @@ namespace GymAdmin.Data
                     Service = await _context.Services.FindAsync(1),
                     ProfessionalSchedules = new List<ProfessionalSchedule>(),
                 };
-
                 professional.ProfessionalSchedules = new List<ProfessionalSchedule>()
+                {
+                    new ProfessionalSchedule()
                     {
-                        new ProfessionalSchedule()
+                        Professional = professional,
+                        Schedule = new Schedule()
                         {
-                            Professional = professional,
-                            Schedule = new Schedule()
-                            {
-                                Day = DayOfWeek.Monday,
-                                StartHour = new TimeSpan(14, 0, 0),
-                                FinishHour = new TimeSpan(19, 0, 0),
-                            }
-                        },
-                        new ProfessionalSchedule()
-                        {
-                            Professional = professional,
-                            Schedule = new Schedule()
-                            {
-                                Day = DayOfWeek.Wednesday,
-                                StartHour = new TimeSpan(14, 0, 0),
-                                FinishHour = new TimeSpan(19, 0, 0),
-                            }
-                        },
-                        new ProfessionalSchedule()
-                        {
-                            Professional = professional,
-                            Schedule = new Schedule()
-                            {
-                                Day = DayOfWeek.Friday,
-                                StartHour = new TimeSpan(14, 0, 0),
-                                FinishHour = new TimeSpan(19, 0, 0),
-                            }
-                        },
-                        new ProfessionalSchedule()
-                        {
-                            Professional = professional,
-                            Schedule = new Schedule()
-                            {
-                                Day = DayOfWeek.Tuesday,
-                                StartHour = new TimeSpan(7, 0, 0),
-                                FinishHour = new TimeSpan(12, 0, 0),
-                            }
-                        },
-                        new ProfessionalSchedule()
-                        {
-                            Professional = professional,
-                            Schedule = new Schedule()
-                            {
-                                Day = DayOfWeek.Thursday,
-                                StartHour = new TimeSpan(7, 0, 0),
-                                FinishHour = new TimeSpan(12, 0, 0),
-                            }
-                        },
-                        new ProfessionalSchedule()
-                        {
-                            Professional = professional,
-                            Schedule = new Schedule()
-                            {
-                                Day = DayOfWeek.Saturday,
-                                StartHour = new TimeSpan(7, 0, 0),
-                                FinishHour = new TimeSpan(12, 0, 0),
-                            }
+                            Day = DayOfWeek.Monday,
+                            StartHour = new TimeSpan(14, 0, 0),
+                            FinishHour = new TimeSpan(19, 0, 0),
                         }
-                    };
-
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional,
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Wednesday,
+                            StartHour = new TimeSpan(14, 0, 0),
+                            FinishHour = new TimeSpan(19, 0, 0),
+                        }
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional,
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Friday,
+                            StartHour = new TimeSpan(14, 0, 0),
+                            FinishHour = new TimeSpan(19, 0, 0),
+                        }
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional,
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Tuesday,
+                            StartHour = new TimeSpan(7, 0, 0),
+                            FinishHour = new TimeSpan(12, 0, 0),
+                        }
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional,
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Thursday,
+                            StartHour = new TimeSpan(7, 0, 0),
+                            FinishHour = new TimeSpan(12, 0, 0),
+                        }
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional,
+                        Schedule = new Schedule()
+                        {
+                            Day = DayOfWeek.Saturday,
+                            StartHour = new TimeSpan(7, 0, 0),
+                            FinishHour = new TimeSpan(12, 0, 0),
+                        }
+                    }
+                };
                 _context.Add(professional);
+                await _context.SaveChangesAsync();
 
                 Professional professional2 = new()
                 {
@@ -139,7 +138,6 @@ namespace GymAdmin.Data
                     Service = await _context.Services.FindAsync(2),
                     ProfessionalSchedules = new List<ProfessionalSchedule>()
                 };
-
                 professional2.ProfessionalSchedules = new List<ProfessionalSchedule>()
                 {
                     new ProfessionalSchedule()
@@ -173,8 +171,8 @@ namespace GymAdmin.Data
                         }
                     }
                 };
-
                 _context.Add(professional2);
+                await _context.SaveChangesAsync();
 
                 Professional professional3 = new()
                 {
@@ -183,11 +181,11 @@ namespace GymAdmin.Data
                     Service = await _context.Services.FindAsync(3),
                     ProfessionalSchedules = new List<ProfessionalSchedule>()
                 };
-
                 professional3.ProfessionalSchedules = new List<ProfessionalSchedule>()
                 {
                     new ProfessionalSchedule()
                     {
+                        Professional = professional3,
                         Schedule = new Schedule()
                         {
                             Day = DayOfWeek.Tuesday,
@@ -197,6 +195,7 @@ namespace GymAdmin.Data
                     },
                     new ProfessionalSchedule()
                     {
+                        Professional = professional3,
                         Schedule = new Schedule()
                         {
                             Day = DayOfWeek.Thursday,
@@ -206,17 +205,31 @@ namespace GymAdmin.Data
                     },
                     new ProfessionalSchedule()
                     {
+                        Professional = professional3,
                         Schedule = new Schedule()
                         {
                             Day = DayOfWeek.Saturday,
                             StartHour = new TimeSpan(14, 0, 0),
                             FinishHour = new TimeSpan(19, 0, 0),
                         }
-                    }
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional3,
+                        Schedule = await _context.Schedules.FindAsync(7),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional3,
+                        Schedule = await _context.Schedules.FindAsync(8),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional3,
+                        Schedule = await _context.Schedules.FindAsync(9),
+                    },
                 };
-
                 _context.Add(professional3);
-
                 await _context.SaveChangesAsync();
 
                 Professional professional4 = new()
@@ -226,22 +239,41 @@ namespace GymAdmin.Data
                     Service = await _context.Services.FindAsync(1),
                     ProfessionalSchedules = new List<ProfessionalSchedule>(),
                 };
-
                 professional4.ProfessionalSchedules = new List<ProfessionalSchedule>()
+                {
+                    new ProfessionalSchedule()
                     {
-                        new ProfessionalSchedule()
-                        {
-                            Professional = professional4,
-                            Schedule = await _context.Schedules.FindAsync(6),
-                        },
-                        new ProfessionalSchedule()
-                        {
-                            Professional = professional4,
-                            Schedule = await _context.Schedules.FindAsync(3),
-                        },
-                    };
-
+                        Professional = professional4,
+                        Schedule = await _context.Schedules.FindAsync(7),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional4,
+                        Schedule = await _context.Schedules.FindAsync(8),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional4,
+                        Schedule = await _context.Schedules.FindAsync(9),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional4,
+                        Schedule = await _context.Schedules.FindAsync(10),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional4,
+                        Schedule = await _context.Schedules.FindAsync(11),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional4,
+                        Schedule = await _context.Schedules.FindAsync(12),
+                    },
+                };
                 _context.Add(professional4);
+                await _context.SaveChangesAsync();
 
                 Professional professional5 = new()
                 {
@@ -250,7 +282,6 @@ namespace GymAdmin.Data
                     Service = await _context.Services.FindAsync(2),
                     ProfessionalSchedules = new List<ProfessionalSchedule>()
                 };
-
                 professional5.ProfessionalSchedules = new List<ProfessionalSchedule>()
                 {
                     new ProfessionalSchedule()
@@ -269,10 +300,9 @@ namespace GymAdmin.Data
                         Schedule = await _context.Schedules.FindAsync(6),
                     }
                 };
-
                 _context.Add(professional5);
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
         }
 
         private async Task CheckServicesAsync()
@@ -314,8 +344,6 @@ namespace GymAdmin.Data
                     "millie@yopmail.com",
                     "brett@yopmail.com",
                     "brian@yopmail.com",
-                    "vanessa@yopmail.com",
-                    "rihanna@yopmail.com",
                     "lamar@yopmail.com",
                     "peyton@yopmail.com",
                 };
@@ -350,17 +378,32 @@ namespace GymAdmin.Data
 
                             if (serviceAccesses.Count == 0 || serviceAccesses == null)
                             {
-                                _context.Add(new ServiceAccess
+                                var professionals = await _context.Professionals
+                                    .Include(p => p.Service)
+                                    .Include(p => p.ProfessionalSchedules)
+                                    .ThenInclude(ps => ps.Schedule)
+                                    .Where(p => p.Service.Id == service.Id)
+                                    .ToListAsync();
+
+                                bool result = professionals.Any(p => p.ProfessionalSchedules.Any(ps =>
+                                    ps.Schedule.Day == searchDate.DayOfWeek &&
+                                    ps.Schedule.StartHour.Ticks <= searchDate.TimeOfDay.Ticks &&
+                                    ps.Schedule.FinishHour.Ticks > searchDate.TimeOfDay.Ticks));
+
+                                if (result)
                                 {
-                                    User = await _userHelper.GetUserAsync(email),
-                                    Service = service,
-                                    AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
-                                    ServiceStatus = status,
-                                    Discount = DiscountValues.GetDiscountValue("Regular"),
-                                    TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
-                                });
-                                await _context.SaveChangesAsync();
-                                notExist = true;
+                                    _context.Add(new ServiceAccess
+                                    {
+                                        User = await _userHelper.GetUserAsync(email),
+                                        Service = service,
+                                        AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
+                                        ServiceStatus = status,
+                                        Discount = DiscountValues.GetDiscountValue("Regular"),
+                                        TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                                    });
+                                    await _context.SaveChangesAsync();
+                                    notExist = true;
+                                }
                             }
                         }
                     }
@@ -379,7 +422,7 @@ namespace GymAdmin.Data
                             {
                                 randomHour = new Random().Next(7, 18);
                             }
-                            randomDay = new Random().Next(1, 12);
+                            randomDay = new Random().Next(-12, -1);
 
                             DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour);
 
@@ -392,59 +435,32 @@ namespace GymAdmin.Data
 
                             if (serviceAccesses.Count == 0 || serviceAccesses == null)
                             {
-                                _context.Add(new ServiceAccess
+                                var professionals = await _context.Professionals
+                                    .Include(p => p.Service)
+                                    .Include(p => p.ProfessionalSchedules)
+                                    .ThenInclude(ps => ps.Schedule)
+                                    .Where(p => p.Service.Id == service.Id)
+                                    .ToListAsync();
+
+                                bool result = professionals.Any(p => p.ProfessionalSchedules.Any(ps =>
+                                    ps.Schedule.Day == searchDate.DayOfWeek &&
+                                    ps.Schedule.StartHour.Ticks <= searchDate.TimeOfDay.Ticks &&
+                                    ps.Schedule.FinishHour.Ticks > searchDate.TimeOfDay.Ticks));
+
+                                if (result)
                                 {
-                                    User = await _userHelper.GetUserAsync(email),
-                                    Service = service,
-                                    AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
-                                    ServiceStatus = status,
-                                    Discount = DiscountValues.GetDiscountValue("Regular"),
-                                    TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
-                                });
-                                await _context.SaveChangesAsync();
-                                notExist = true;
-                            }
-                        }
-                    }
-                }
-
-                status = Enums.ServiceStatus.Cancelled;
-                foreach (string email in EmailsList)
-                {
-                    foreach (Service service in ServicesList)
-                    {
-                        notExist = false;
-                        while (notExist == false)
-                        {
-                            randomHour = 13;
-                            while (randomHour == 12 || randomHour == 13)
-                            {
-                                randomHour = new Random().Next(7, 18);
-                            }
-                            randomDay = new Random().Next(1, 12);
-
-                            DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour);
-
-                            var serviceAccesses = await _context.ServiceAccesses
-                                .Where(sa =>
-                                    sa.Service.Id == service.Id &&
-                                    sa.AccessDate == searchDate &&
-                                    sa.ServiceStatus == status)
-                                .ToListAsync();
-
-                            if (serviceAccesses.Count == 0 || serviceAccesses == null)
-                            {
-                                _context.Add(new ServiceAccess
-                                {
-                                    User = await _userHelper.GetUserAsync(email),
-                                    Service = service,
-                                    AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
-                                    ServiceStatus = status,
-                                    Discount = DiscountValues.GetDiscountValue("Regular"),
-                                    TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
-                                });
-                                await _context.SaveChangesAsync();
-                                notExist = true;
+                                    _context.Add(new ServiceAccess
+                                    {
+                                        User = await _userHelper.GetUserAsync(email),
+                                        Service = service,
+                                        AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
+                                        ServiceStatus = status,
+                                        Discount = DiscountValues.GetDiscountValue("Regular"),
+                                        TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                                    });
+                                    await _context.SaveChangesAsync();
+                                    notExist = true;
+                                }
                             }
                         }
                     }

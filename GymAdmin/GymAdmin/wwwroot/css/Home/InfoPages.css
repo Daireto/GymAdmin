@@ -117,26 +117,21 @@ a.serviceLink {
 }
 
 .image-container {
+    border-radius: 10px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
     width: auto;
 }
 
     .image-container img {
         width: 100%;
-        box-sizing: border-box;
+        transition: transform 0.5s ease-in;
     }
 
 .image-container-medium {
     margin: 0 5px;
 }
-
-.photo {
-    position: relative;
-    overflow: hidden;
-}
-
-    .photo img {
-        transition: transform 0.5s ease-in;
-    }
 
 .dark-backdrop-hidden {
     position: absolute;
