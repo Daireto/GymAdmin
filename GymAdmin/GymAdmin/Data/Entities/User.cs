@@ -39,5 +39,10 @@ namespace GymAdmin.Data.Entities
         public string FullName => $"{FirstName} {LastName}";
 
         public ICollection<ServiceAccess> ServiceAccesses { get; set; }
+
+        public ICollection<Attendance> Attendances { get; set; }
+
+        public ICollection<PlanInscription> PlanInscriptions { get; set; }
+        //One user just have a plan at the time
     }
 }

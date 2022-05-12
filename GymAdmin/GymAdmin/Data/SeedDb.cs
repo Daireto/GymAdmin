@@ -506,7 +506,6 @@ namespace GymAdmin.Data
         {
             await _userHelper.CheckRoleAsync(UserType.Admin.ToString());
             await _userHelper.CheckRoleAsync(UserType.User.ToString());
-            await _userHelper.CheckRoleAsync(UserType.Professional.ToString());
         }
     }
 }
