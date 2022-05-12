@@ -1,4 +1,5 @@
 ﻿using GymAdmin.Common;
+using GymAdmin.Data;
 using GymAdmin.Data.Entities;
 using GymAdmin.Enums;
 using GymAdmin.Helpers;
@@ -10,12 +11,14 @@ namespace GymAdmin.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly DataContext _context;
         private readonly IUserHelper _userHelper;
         private readonly IBlobHelper _blobHelper;
         private readonly IMailHelper _mailHelper;
 
-        public AccountController(IUserHelper userHelper, IBlobHelper blobHelper, IMailHelper mailHelper)
+        public AccountController(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper, IMailHelper mailHelper)
         {
+            _context = context;
             _userHelper = userHelper;
             _blobHelper = blobHelper;
             _mailHelper = mailHelper;
@@ -123,7 +126,7 @@ namespace GymAdmin.Controllers
             if (ModelState.IsValid)
             {
                 User userDocumentExist = await _userHelper.GetUserAsync(model);
-                if(userDocumentExist != null)
+                if (userDocumentExist != null)
                 {
                     ModelState.AddModelError(string.Empty, "¡Ya existe un usuario con este documento!");
                     return View(model);
@@ -138,7 +141,6 @@ namespace GymAdmin.Controllers
                 User user = await _userHelper.AddUserAsync(model, imageId);
                 if (user == null)
                 {
-                    await _blobHelper.DeleteBlobAsync(imageId, "users");
                     ModelState.AddModelError(string.Empty, "¡Este correo ya está en uso!");
                     return View(model);
                 }
@@ -189,7 +191,7 @@ namespace GymAdmin.Controllers
         //View with the error sending email message
         public IActionResult ConfirmEmailErrorMessage()
         {
-            return View(); //TODO: Implement a resend email confirmation option
+            return View();
         }
 
         //Confirm email method

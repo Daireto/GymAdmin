@@ -1,0 +1,117 @@
+﻿@model GymAdmin.Models.EditProfessionalViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+
+<!-- Edit form -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            @if (Model.Id == null)
+            {
+                <h2 style="text-align:center;margin-top: 15px;">Asignar usuario como profesional</h2>
+            }
+            else
+            {
+                <h2 style="text-align:center;margin-top: 15px;">Editar profesional</h2>
+            }
+            <form asp-action="EditProfessional" id="GymAdminForm">
+                <!-- Hidden inputs -->
+                <input type="hidden" asp-for="Id" />
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Username" class="control-label GymAdminFormLabel"></label>
+                            <input id="searchUser" type="search" list="usersList" asp-for="Username" class="GymAdminFormInput" autocomplete="off" />
+                            <datalist id="usersList">
+                                @foreach (var pro in Model.Users)
+                                {
+                                    <option value="@pro.Value">@pro.Text</option>
+                                }
+                            </datalist>
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                            @if (Model.Id == null)
+                            {
+                                <input type="submit" value="Asignar usuario" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                                <button disabled class="GymAdminFormButton">
+                                <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                            </button>
+                            }
+                            else
+                            {
+                                <input type="submit" value="Guardar cambios" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                                <button disabled class="GymAdminFormButton">
+                                <a asp-action="DetailsProfessional" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                            </button>
+                            }
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        @{
+                            var ProfessionalTypes = Html.GetEnumSelectList<GymAdmin.Enums.ProfessionalType>();
+                            foreach (var professionalType in ProfessionalTypes)
+                            {
+                                if (professionalType.Text == "Physiotherapist")
+                                {
+                                    professionalType.Text = "Fisioterapeuta";
+                                }
+                                else if (professionalType.Text == "Nutritionist")
+                                {
+                                    professionalType.Text = "Nutricionista";
+                                }
+                                else if (professionalType.Text == "Instructor")
+                                {
+                                    professionalType.Text = "Instructor";
+                                }
+                            }
+                        }
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="ProfessionalType" class="control-label GymAdminFormLabel"></label>
+                            @if (Model.Id == null)
+                            {
+                                <select asp-for="ProfessionalType" asp-items="@ProfessionalTypes" class="GymAdminFormCombobox"></select>
+                            }
+                            else
+                            {
+                                <select asp-for="ProfessionalType" asp-items="@ProfessionalTypes" value="@Model.ProfessionalType" class="GymAdminFormCombobox"></select>
+                            }
+                            <span asp-validation-for="ProfessionalType" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+<script type="text/javascript">
+    $(document).ready(function (){
+        $("#searchUser").attr("value", @Model.Username);
+    });
+
+    $("#searchUser").on("input", function (){
+        var selected = $(this).val();
+        $(this).attr("value", selected);
+    });
+</script>
+}

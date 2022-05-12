@@ -1,26 +1,27 @@
-﻿@model GymAdmin.Models.AddUserViewModel
+﻿@model GymAdmin.Models.AddProfessionalViewModel
 
 @{
-    ViewData["Title"] = "Create user";
+    ViewData["Title"] = "Create";
 }
 
 <!-- GymAdmin style -->
 <link rel="stylesheet" type="text/css" href="~/css/forms.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
 
-<!-- Create admin form -->
+<!-- Create form -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
+                <h2 style="text-align:center;margin-top: 15px;">Crear profesional</h2>
             <form asp-action="CreateProfessional" id="GymAdminForm" enctype="multipart/form-data">
                 <!-- Hidden inputs -->
-                <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="UserType" />
                 <!-- Validation summary -->
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
                     <!-- Left column -->
-                    <div class="col-md-6">
+                        <div class="col-md-6 GymAdminFormColumn">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="Username" class="control-label GymAdminFormLabel"></label>
@@ -73,9 +74,16 @@
                             <select asp-for="DocumentType" asp-items="@DocumentTypes" class="GymAdminFormCombobox"></select>
                             <span asp-validation-for="DocumentType" class="text-danger"></span>
                         </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                                <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                                <button disabled class="GymAdminFormButton">
+                                <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                            </button>
+                        </div>
                     </div>
                     <!-- Right column -->
-                    <div class="col-md-6">
+                    <div class="col-md-6 GymAdminFormColumn">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="ImageFile" class="control-label GymAdminFormLabel"></label>
@@ -100,10 +108,30 @@
                             <input asp-for="PhoneNumber" class="GymAdminFormInput" autocomplete="off" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
-                        <!-- Buttons and links -->
-                        <div class="GymAdminRegisterFormButtons form-group mt-2">
-                            <input type="submit" value="Crear Profesional" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                        </div>
+                        <!-- Field -->
+                        @{
+                            var ProfessionalTypes = Html.GetEnumSelectList<GymAdmin.Enums.ProfessionalType>();
+                            foreach (var professionalType in ProfessionalTypes)
+                            {
+                                if (professionalType.Text == "Physiotherapist")
+                                {
+                                    professionalType.Text = "Fisioterapeuta";
+                                }
+                                else if (professionalType.Text == "Nutritionist")
+                                {
+                                    professionalType.Text = "Nutricionista";
+                                }
+                                else if (professionalType.Text == "Instructor")
+                                {
+                                    professionalType.Text = "Instructor";
+                                }
+                            }
+                        }
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="ProfessionalType" class="control-label GymAdminFormLabel"></label>
+                                <select asp-for="ProfessionalType" asp-items="@ProfessionalTypes" class="GymAdminFormCombobox"></select>
+                            <span asp-validation-for="ProfessionalType" class="text-danger"></span>
+                        </div
                     </div>
                 </div>
             </form>
@@ -116,4 +144,14 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+<script type="text/javascript">
+    $(document).ready(function (){
+        $("#searchUser").attr("value", @Model.Username);
+    });
+
+    $("#searchUser").on("input", function (){
+        var selected = $(this).val();
+        $(this).attr("value", selected);
+    });
+</script>
 }

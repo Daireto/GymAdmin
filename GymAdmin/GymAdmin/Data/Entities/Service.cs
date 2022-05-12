@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GymAdmin.Data.Entities
 {
@@ -6,13 +7,20 @@ namespace GymAdmin.Data.Entities
     {
         public int Id { get; set; }
 
-        [Display(Name = "Nombre")]
+        [Display(Name = "Servicio")]
+        [MaxLength(100, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Name { get; set; }
 
         [Display(Name = "Precio")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
 
-        public ICollection<UserProfessional> Professionals { get; set; } //the idea is to make a list of the professionals avialable on certain time 
-        //Remember to hitch the professionals 
+        public ICollection<ServiceAccess> ServiceAccesses { get; set; }
+
+        public ICollection<Professional> Professionals { get; set; }
+
+        public int ProfessionalsNumber => Professionals == null ? 0 : Professionals.Count;
     }
 }

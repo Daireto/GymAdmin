@@ -1,0 +1,119 @@
+﻿@model IEnumerable<GymAdmin.Data.Entities.ServiceAccess>
+
+@{
+    ViewData["Title"] = "Contracts";
+}
+
+<!-- Libraries -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
+
+<style>
+    a .fa-users, a .fa-bell-concierge {
+        padding-right: 5px;
+    }
+
+    h3 .fa-address-book {
+        padding-right: 0;
+        padding-left: 10px;
+    }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+</style>
+
+<!-- Contracts -->
+<div class="row">
+    <div class="col-md-12 GymAdminTableContainer">
+        <div class="panel panel-default">
+            <div class="panel-heading GymAdminTableHeading">
+                <h3 class="panel-title GymAdminTableTitle">Contrataciones de servicios<i class="fa-solid fa-address-book"></i></h3>
+            </div>
+            <div class="panel-body GymAdminTable">
+                <table class="table table-hover table-responsive table-striped" id="MyTable">
+                    <!-- Text -->
+                    <thead>
+                        <tr>
+                            <th>
+                                Servicio
+                            </th>
+                            <th>
+                                Usuario
+                            </th>
+                            <th>
+                                Horario programado
+                            </th>
+                            <th>
+                                Estado
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <!-- Values -->
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="GymAdminTableTr">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Service.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User.Email)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AccessDate)
+                                </td>
+                                @{
+                                    var Status = "";
+                                    if (item.ServiceStatus == GymAdmin.Enums.ServiceStatus.Pending)
+                                    {
+                                        Status = "Pendiente";
+                                    }
+                                    if (item.ServiceStatus == GymAdmin.Enums.ServiceStatus.Taken)
+                                    {
+                                        Status = "Tomado";
+                                    }
+                                    if (item.ServiceStatus == GymAdmin.Enums.ServiceStatus.Cancelled)
+                                    {
+                                        Status = "Cancelado";
+                                    }
+                                }
+                                <td>
+                                    @Status
+                                </td>
+                                <td class="td_option">
+                                    <a asp-action="DetailsServiceAccess" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#MyTable').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+            },
+            "aLengthMenu": [
+                [25, 50, 100, 200, -1],
+                [25, 50, 100, 200, "Todos"]
+            ]
+        });
+    });
+</script>
+}

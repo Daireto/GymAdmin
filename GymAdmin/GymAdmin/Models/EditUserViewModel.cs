@@ -39,8 +39,6 @@ namespace GymAdmin.Models
             : $"https://gymadmin1.blob.core.windows.net/users/{ImageId}";
 
         [Display(Name = "Foto")]
-#pragma warning disable CS8632 //Disable the warning because the "?"
         public IFormFile? ImageFile { get; set; }
-#pragma warning restore CS8632
     }
 }

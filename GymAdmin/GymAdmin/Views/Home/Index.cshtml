@@ -1,11 +1,366 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    Layout = null;
 }
 
-<!-- GymAdmin style -->
-<link rel="stylesheet" type="text/css" href="~/css/Home/Index.css" />
+<!DOCTYPE html>
+<html lang="es">
 
-<div class="home-container text-center text-white">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<head>
+    <!-- Metadata -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- View data -->
+    <title>GymAdmin</title>
+
+    <!-- Libraries -->
+    <link rel="stylesheet" type="text/css" href="~/lib/font-awesome/css/all.min.css" />
+
+    <!-- GymAdmin style -->
+    <link rel="stylesheet" type="text/css" href="~/css/Home/Index.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/contact.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/big-titles.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/scrollbar.css" />
+
+    <!-- Icons style -->
+    <style>
+        .fa-user,
+        .fa-arrow-right-from-bracket {
+            padding-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Position absolute elements -->
+    <div id="Unete">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-area="" asp-controller="Account" asp-action="ViewUser">VER MI PERFIL</a>
+        }
+        else
+        {
+            <a asp-area="" asp-controller="Account" asp-action="Register">ÚNETE A GYMADMIN</a>
+        }
+    </div>
+    <div class="video-container">
+        <div class="video">
+            <video id="background-video" autoplay loop muted poster="~/vids/poster.png">
+                <source src="~/vids/video.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="menu">
+                <!-- Header left menu -->
+                <div class="left-nav">
+                    <!-- Header brand -->
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="brand">GymAdmin</a>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <!-- Admin options -->
+                        <div class="dropdown">
+                            <span class="admin-link">Administración</span>
+                            <div class="dropdown-content">
+                                <a class="admin-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
+                                <a class="admin-link" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
+                                <a class="admin-link" asp-area="" asp-controller="Service" asp-action="ShowProfessionals">Profesionales</a>
+                                <a class="admin-link" asp-area="" asp-controller="Contracts" asp-action="Index">Contrataciones</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <!-- Header right menu -->
+                <nav>
+                    <ul>
+                        <!-- Services option -->
+                        <li><a asp-area="" asp-controller="Home" asp-action="Professionals">Servicios adicionales</a></li>
+                        <!-- Events option -->
+                        <li><a asp-area="" asp-controller="Home" asp-action="Events">Eventos grupales</a></li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var nombreUsuario = User.Identity.Name.Substring(0, User.Identity.Name.Length - 12);
+                            nombreUsuario = nombreUsuario.Substring(0, 1).ToUpper() + nombreUsuario.Substring(1).ToLower();
+                            <!-- View user option -->
+                            <li>
+                                <a asp-area="" asp-controller="Account" asp-action="ViewUser"><i class="fa-solid fa-user"></i>@nombreUsuario</a>
+                            </li>
+                            <!-- Logout option -->
+                            <li class="nav-item">
+                                <a asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i>Cerrar sesión</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- Login and register options -->
+                            <li><a asp-area="" asp-controller="Account" asp-action="Login">Ingresar</a></li>
+                            <li><a asp-area="" asp-controller="Account" asp-action="Register">Registrarse</a></li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div class="header-title">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <h1>¿QUÉ VAMOS A ENTRENAR<br />EL DÍA DE HOY?</h1>
+            }
+            else
+            {
+                <h1>COMIENZA A ENTRENAR<br />CON NOSOTROS</h1>
+            }
+        </div>
+    </header>
+
+    <!-- Info cards -->
+    <section id="cards">
+        <div class="container">
+            <div class="container-cards">
+                <div class="card" id="card1">
+                    <img src="~/images/home/index/card-icon1.png" width="100" alt="" />
+                    <h3>MEJORA TU RESISTENCIA</h3>
+                    <p>Prepara tu rutina de ejercicios para mejorar tu resistencia muscular.</p>
+                </div>
+                <div class="card" id="card2">
+                    <img src="~/images/home/index/card-icon2.png" width="100" alt="" />
+                    <h3>RECUPERA TU FUERZA</h3>
+                    <p>Recupera tu fuerza muscular con apoyo de nuestros profesionales.</p>
+                </div>
+                <div class="card" id="card3">
+                    <img src="~/images/home/index/card-icon3.png" width="100" alt="" />
+                    <h3>TRABAJA EN TU PESO</h3>
+                    <p>Baja tu peso realizando ejercicios seguros adaptados a tu capacidad.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Plans -->
+    <section id="plans">
+        <h2 class="plans-title">ELIGE TU <span>PLAN</span></h2>
+        <div class="container">
+            <div class="plan">
+                <div class="plan-head plan-head-div">
+                    <p>PLAN</p>
+                    <h3>TIQUETERA</h3>
+                </div>
+                <div class="plan-price">
+                    <p>DESDE</p>
+                    <h3>$ 5.900</h3>
+                    <hr />
+                </div>
+                <div class="plan-description">
+                    <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Ingresa al gimnasio el día que prefieras</p>
+                    <p><i class="fa-solid fa-xmark"></i>&nbsp;&nbsp;&nbsp;&nbsp;Acceso a clases grupales y eventos</p>
+                    <p><i class="fa-solid fa-xmark"></i>&nbsp;&nbsp;&nbsp;&nbsp;Acceso a servicios adicionales</p>
+                    <p><i class="fa-solid fa-xmark"></i>&nbsp;&nbsp;&nbsp;&nbsp;Posibilidad de llevar a un acompañante</p>
+                    <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Tiempo ilimitado para el uso de las máquinas</p>
+                </div>
+                <a href="#">Inscríbete</a>
+            </div>
+            <div class="plan">
+                <div class="plan-black-head plan-head-div">
+                    <p>PLAN</p>
+                    <h3>BLACK</h3>
+                </div>
+                <div class="plan-price">
+                    <p>DESDE</p>
+                    <h3>$ 69.900</h3>
+                    <hr />
+                </div>
+                <div class="plan-description">
+                    <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Ingreso ilimitado durante la vigencia del plan</p>
+                    <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Acceso a clases grupales y eventos</p>
+                    <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Acceso a servicios adicionales</p>
+                    <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Posibilidad de llevar a un acompañante</p>
+                    <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Tiempo ilimitado para el uso de las máquinas</p>
+                </div>
+                <a href="#">Inscríbete</a>
+            </div>
+            <div class="plan">
+                <div class="plan-head plan-head-div">
+                    <p>PLAN</p>
+                    <h3>REGULAR</h3>
+                </div>
+                <div class="plan-price">
+                    <p>DESDE</p>
+                    <h3>$ 49.000</h3>
+                    <hr />
+                </div>
+                <div class="plan-description">
+                    <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Ingreso ilimitado durante la vigencia del plan</p>
+                    <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Acceso a clases grupales y eventos</p>
+                    <p><i class="fa-solid fa-xmark"></i>&nbsp;&nbsp;&nbsp;&nbsp;Acceso a servicios adicionales</p>
+                    <p><i class="fa-solid fa-xmark"></i>&nbsp;&nbsp;&nbsp;&nbsp;Posibilidad de llevar a un acompañante</p>
+                    <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Tiempo ilimitado para el uso de las máquinas</p>
+                </div>
+                <a href="#">Inscríbete</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events -->
+    <section id="classes">
+        <div class="container">
+            <h2>EVENTOS GRUPALES</h2>
+            <table>
+                <tr>
+                    <th>DÍAS</th>
+                    <th>LUNES</th>
+                    <th>MARTES</th>
+                    <th>MIÉRCOLES</th>
+                    <th>JUEVES</th>
+                    <th>VIERNES</th>
+                </tr>
+                <tr class="row1">
+                    <td>09:00 - 10:00</td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <p>Yoga</p>
+                        <p>Michael Lewis</p>
+                    </td>
+                    <td>
+                        <p>Cardio</p>
+                        <p>Donald Cox</p>
+                    </td>
+                    <td>
+                        <p>Body Balance</p>
+                        <p>Gloria Parker</p>
+                    </td>
+                </tr>
+                <tr class="row2">
+                    <td>10:00 - 12:00</td>
+                    <td>
+                        <p>Cardio</p>
+                        <p>Donald Cox</p>
+                    </td>
+                    <td>
+                        <p>Body Balance</p>
+                        <p>Gloria Parker</p>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <p>Yoga</p>
+                        <p>Michael Lewis</p>
+                    </td>
+                </tr>
+                <tr class="row3">
+                    <td>12:00 - 02:00</td>
+                    <td>
+                        <p>Body Balance</p>
+                        <p>Gloria Parker</p>
+                    </td>
+                    <td>
+                        <p>Cardio</p>
+                        <p>Donald Cox</p>
+                    </td>
+                    <td></td>
+                    <td>
+                        <p>Yoga</p>
+                        <p>Michael Lewis</p>
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery">
+        <div class="events-gallery">
+            <!-- Images -->
+            <div class="events-gallery-images">
+                <!-- Image -->
+                <div id="photo1" class="photo">
+                    <img class="img-hover" src="~/images/home/events/events-cardio1.jpg" alt="" />
+                    <div class="dark-backdrop-hidden">
+                        <p>Cardio</p>
+                    </div>
+                </div>
+                <!-- Image -->
+                <div id="photo2" class="photo">
+                    <img class="img-hover" src="~/images/home/events/events-women1.jpg" alt="" />
+                    <div class="dark-backdrop-hidden">
+                        <p>Body Balance</p>
+                    </div>
+                </div>
+                <!-- Image -->
+                <div id="photo3" class="photo">
+                    <img class="img-hover" src="~/images/home/events/events-yoga1.jpg" alt="" />
+                    <div class="dark-backdrop-hidden">
+                        <p>Yoga</p>
+                    </div>
+                </div>
+                <!-- Links -->
+                <div class="events-gallery-links">
+                    <div class="flex-links">
+                        <a asp-area="" asp-controller="Home" asp-action="Events">Ver eventos grupales</a>
+                        <a href="#">Quiero inscribirme a un evento</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services">
+        <div class="container">
+            <h2>SERVICIOS ADICIONALES</h2>
+            <div class="service">
+                <div class="service-image">
+                    <img id="instructorImg" src="~/images/home/professionals/professional-instructor-header.jpg" width="500" alt="" />
+                </div>
+                <div class="service-text">
+                    <h3>INSTRUCTORES</h3>
+                    <p>Recibirás apoyo de nuestros instructores profesionales para que <br /> alcances tus objetivos de forma garantizada.</p>
+                    <a asp-area="" asp-controller="Home" asp-action="Professionals">Leer más</a>
+                </div>
+            </div>
+            <div class="service">
+                <div class="service-text">
+                    <h3>FISIOTERAPEUTAS</h3>
+                    <p>Podrás trabajar en la recuperación de tu salud muscular con apoyo <br /> de nuestros fisioterapeutas profesionales.</p>
+                    <a asp-area="" asp-controller="Home" asp-action="Professionals">Leer más</a>
+                </div>
+                <div class="service-image">
+                    <img id="physioImg" src="~/images/home/professionals/professional-physiotherapist-header.jpg" width="500" alt="" />
+                </div>
+            </div>
+            <div class="service">
+                <div class="service-image">
+                    <img id="nutriImg" src="~/images/home/professionals/professional-nutritionist-header.jpg" width="500" alt="" />
+                </div>
+                <div class="service-text">
+                    <h3>NUTRICIONISTAS</h3>
+                    <p>Tendrás asesorías sobre dietas y rutinas alimentarias saludables <br /> que más se adapten a tu forma de vida.</p>
+                    <a asp-area="" asp-controller="Home" asp-action="Professionals">Leer más</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+        <div class="container">
+            <h2>CONTÁCTANOS</h2>
+            <div class="info">
+                <p><i class="fas fa-phone-alt"></i>(+57) 311 456 9860</p>
+                <a href="mailto:soporte@gymadmin.com" class="mail"><i class="fas fa-envelope"></i>soporte@gymadmin.com</a>
+            </div>
+            <a class="Privacy" asp-area="" asp-controller="Home" asp-action="Privacy">PRIVACIDAD</a>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/font-awesome/js/fontawesome.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/gallery-effect.js"></script>
+</body>
+</html>

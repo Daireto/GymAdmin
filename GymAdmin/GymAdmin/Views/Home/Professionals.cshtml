@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["title"] = "Profesionals";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/Home/InfoPages.css" />
+<link rel="stylesheet" type="text/css" href="~/css/big-titles.css" />
+
+<div class="professionals-container">
+    <h2>SERVICIOS ADICIONALES</h2>
+    <section id="professionals-description">
+        <!-- Instructor -->
+        <div class="description-container">
+            <div class="description-header">
+                <img src="~/images/home/professionals/professional-instructor-header.jpg" alt="" />
+            </div>
+            <div class="description-text">
+                <h3>Instrucción</h3>
+                <p>Sabemos lo difícil que puede ser tomar una decisión con respecto a qué ejercicios debemos realizar para poder alcanzar nuestros objetivos, en especial cuando es nuestra primera vez en el gimnasio.<br /><br />Es por eso que tenemos a tu disposición nuestros servicios de instrucción, en los cuales recibirás apoyo y serás supervisado por uno de nuestros instructores profesionales.<br /><br /><span class="info-final">Si tienes el Plan Black puedes acceder de forma gratuita a este servicio.</span></p>
+                <a class="serviceLink" asp-area="" asp-controller="Home" asp-action="TakeService" asp-route-id="1">Quiero tomar este servicio</a>
+            </div>
+        </div>
+        <div class="images-container">
+            <div class="image-container photo">
+                <img class="img-hover" src="~/images/home/professionals/professional-instructor1.jpg" alt="" />
+                <div class="dark-backdrop-hidden">
+                </div>
+            </div>
+            <div class="image-container photo image-container-medium">
+                <img class="img-hover" src="~/images/home/professionals/professional-instructor2.jpg" alt="" />
+                <div class="dark-backdrop-hidden">
+                </div>
+            </div>
+            <div class="image-container photo">
+                <img class="img-hover" src="~/images/home/professionals/professional-instructor3.jpg" alt="" />
+                <div class="dark-backdrop-hidden">
+                </div>
+            </div>
+        </div>
+        <!-- Physiotherapist -->
+        <div class="description-container">
+            <div class="description-header">
+                <img src="~/images/home/professionals/professional-physiotherapist-header.jpg" alt="" />
+            </div>
+            <div class="description-text">
+                <h3>Fisioterapia</h3>
+                <p>Si la salud de tus músculos está comprometida o necesitas recuperar la fuerza y resistencia que en algún momento tuviste, nosotros te ofrecemos el servicio de fisioterapia con nuestros profesionales más experimentados.<br /><br />La pérdida de masa muscular tiene varias causas, entre ellas la falta de ejercicio, la edad o traumatismos, por lo tanto, es importante tomar medidas para mejorar nuestra salud y recuperar nuestra motricidad.<br /><br /><span class="info-final">Si tienes el Plan Black puedes acceder de forma gratuita a este servicio.</span></p>
+                <a class="serviceLink" asp-area="" asp-controller="Home" asp-action="TakeService" asp-route-id="2">Quiero tomar este servicio</a>
+            </div>
+        </div>
+        <div class="images-container">
+            <div class="image-container photo">
+                <img class="img-hover" src="~/images/home/professionals/professional-physiotherapist1.jpg" alt="" />
+                <div class="dark-backdrop-hidden">
+                </div>
+            </div>
+            <div class="image-container photo image-container-medium">
+                <img class="img-hover" src="~/images/home/professionals/professional-physiotherapist2.jpg" alt="" />
+                <div class="dark-backdrop-hidden">
+                </div>
+            </div>
+            <div class="image-container photo">
+                <img class="img-hover" src="~/images/home/professionals/professional-physiotherapist3.jpg" alt="" />
+                <div class="dark-backdrop-hidden">
+                </div>
+            </div>
+        </div>
+        <!-- Nutritionist -->
+        <div class="description-container">
+            <div class="description-header">
+                <img src="~/images/home/professionals/professional-nutritionist-header.jpg" alt="" />
+            </div>
+            <div class="description-text">
+                <h3>Nutricionismo</h3>
+                <p>La alimentación es el factor más importante y determinante de nuestra salud muscular y ósea, en especial para personas que dedican su vida al deporte o trabajos de mucho esfuerzo físico.<br /><br />Si tienes problemas alimenticios, no sabes como alimentarte de forma saludable o quieres disminuir tu peso y mejorar tu salud física, podrás recibir asesorías por parte de nuestros nutricionistas profesionales.<br /><br /><span class="info-final">Si tienes el Plan Black puedes acceder de forma gratuita a este servicio.</span></p>
+                <a class="serviceLink" asp-area="" asp-controller="Home" asp-action="TakeService" asp-route-id="3">Quiero tomar este servicio</a>
+            </div>
+        </div>
+        <div class="images-container">
+            <div class="image-container photo">
+                <img class="img-hover" src="~/images/home/professionals/professional-nutritionist1.jpg" alt="" />
+                <div class="dark-backdrop-hidden">
+                </div>
+            </div>
+            <div class="image-container photo image-container-medium">
+                <img class="img-hover" src="~/images/home/professionals/professional-nutritionist2.jpg" alt="" />
+                <div class="dark-backdrop-hidden">
+                </div>
+            </div>
+            <div class="image-container photo">
+                <img class="img-hover" src="~/images/home/professionals/professional-nutritionist3.jpg" alt="" />
+                <div class="dark-backdrop-hidden">
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+<script src="~/js/gallery-effect.js"></script>
+}

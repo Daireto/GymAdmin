@@ -12,7 +12,8 @@
 
 <style>
     .fa-pen-to-square,
-    .fa-lock {
+    .fa-lock,
+    .fa-bell-concierge {
         padding-right: 5px;
     }
 </style>
@@ -90,6 +91,9 @@
                 </div>
                 <!-- Buttons and links -->
                 <div class="GymAdminRegisterFormButtons form-group mt-2">
+                    <button disabled class="GymAdminFormButton">
+                        <a asp-action="MyServices" asp-controller="Home" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-bell-concierge"></i>Mis servicios</a>
+                    </button>
                     <button disabled class="GymAdminFormButton">
                         <a asp-action="EditUser" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-pen-to-square"></i>Editar</a>
                     </button>
