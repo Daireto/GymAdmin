@@ -52,6 +52,11 @@ namespace GymAdmin.Data
             await CheckServicesAsync();
             await CheckProfessionalsAsync();
             await CheckServicesAccessesAsync();
+
+            //Plan Seeds
+
+            await CheckPlansAsync();
+            await CheckPlanInscription();
         }
 
         private async Task CheckProfessionalsAsync()
@@ -506,6 +511,118 @@ namespace GymAdmin.Data
         {
             await _userHelper.CheckRoleAsync(UserType.Admin.ToString());
             await _userHelper.CheckRoleAsync(UserType.User.ToString());
+        }
+
+        private async Task CheckPlansAsync()
+        {
+            if (!_context.Plans.Any())
+            {
+                _context.Add(new Plan
+                {
+                    Name = "TicketHolder",
+                    PlanType = PlanType.TicketHolder,
+                    Price = 5900
+
+                });
+
+                _context.Add(new Plan
+                {
+                    Name = "Simple",
+                    PlanType = PlanType.Simple,
+                    Price = 49000
+                });
+
+
+                _context.Add(new Plan
+                {
+                    Name = "Black",
+                    PlanType = PlanType.Black,
+                    Price = 69900
+                });
+
+                await _context.SaveChangesAsync();
+            }
+        }//There are just 3 types of plans, ticketholder,simple and black
+
+
+        private async Task CheckPlanInscription() 
+        {
+            //i will create a plan inscription for every type of plan to make the methods
+            if (!_context.PlanInscriptions.Any())     
+            {
+                User user = await _userHelper.GetUserAsync("lindsey@yopmail.com");
+                User user2 = await _userHelper.GetUserAsync("marie@yopmail.com");
+                User user3 = await _userHelper.GetUserAsync("curtis@yopmail.com");
+                Plan plan = await _context.Plans.FindAsync(1);
+                Plan plan2 = await _context.Plans.FindAsync(2);
+                Plan plan3 = await _context.Plans.FindAsync(3);
+                PlanInscription pl1 = new PlanInscription 
+                {
+                    InscriptionDate = DateTime.Today,
+                    ActivationDate = DateTime.Today,
+                    User = user,
+                    Plan = plan, // the user will have the plan ticketholder
+                    Duration = 5,
+                    ExpirationDate = DateTime.Today.AddDays(5),
+                    PlanStatus = PlanStatus.Paid,
+                    TotalPrice = plan.Price * 5,
+                    RemainingDays = 5,
+                    Discount = DiscountValues.GetDiscountValue("TicketHolder")
+                };
+                plan.PlansInscriptions = new List<PlanInscription>();
+                plan.PlansInscriptions.Add(pl1);
+                _context.Add(pl1);
+                user.PlanInscriptions = new List<PlanInscription>();
+                user.PlanInscriptions.Add(pl1);
+
+
+                PlanInscription pl2 = new PlanInscription
+                {
+                    InscriptionDate = DateTime.Today,
+                    ActivationDate = DateTime.Today,
+                    User = user2,
+                    Plan = plan2, // the user will have the plan ticketholder
+                    Duration = 30,
+                    ExpirationDate = DateTime.Today.AddDays(30),
+                    PlanStatus = PlanStatus.Paid,
+                    TotalPrice = plan2.Price,
+                    RemainingDays = 30,
+                    Discount = DiscountValues.GetDiscountValue("Regular")
+                };
+                plan2.PlansInscriptions = new List<PlanInscription>();
+                plan2.PlansInscriptions.Add(pl2);
+                _context.Add(pl2);
+                user2.PlanInscriptions = new List<PlanInscription>();
+                user2.PlanInscriptions.Add(pl2);
+
+                PlanInscription pl3 = new PlanInscription
+                {
+                    InscriptionDate = DateTime.Today,
+                    ActivationDate = DateTime.Today,
+                    User = user3,
+                    Plan = plan3, // the user will have the plan ticketholder
+                    Duration = 30,
+                    ExpirationDate = DateTime.Today.AddDays(30),
+                    PlanStatus = PlanStatus.Paid,
+                    TotalPrice = plan3.Price,
+                    RemainingDays = 30,
+                    Discount = DiscountValues.GetDiscountValue("Black")
+
+                };
+                plan3.PlansInscriptions = new List<PlanInscription>();
+                plan3.PlansInscriptions.Add(pl3);
+                _context.Add(pl3);
+                user3.PlanInscriptions = new List<PlanInscription>();
+                user3.PlanInscriptions.Add(pl3);
+
+                _context.Update(user);
+                _context.Update(user2);
+                _context.Update(user3);
+                _context.Update(plan);
+                _context.Update(plan2);
+                _context.Update(plan3);
+                await _context.SaveChangesAsync();
+            } 
         }
     }
 }

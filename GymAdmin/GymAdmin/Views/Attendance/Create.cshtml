@@ -1,0 +1,96 @@
+﻿@model GymAdmin.Data.Entities.Attendance
+@{
+
+
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
+
+<style>
+    .fa-ban,
+    .fa-circle-check {
+        padding-right: 5px;
+    }
+
+    .GymAdminEditButton {
+        border-color: #FFC107;
+    }
+
+        .GymAdminEditButton:hover {
+            color: black;
+        }
+
+        .GymAdminEditButton a {
+            color: #FFC107;
+        }
+
+            .GymAdminEditButton a:hover {
+                color: black;
+            }
+
+    .GymAdminDeleteButton {
+        border-color: #DC3545;
+        color: #DC3545;
+    }
+
+        .GymAdminDeleteButton:hover {
+            background-color: #DC3545;
+            color: black;
+        }
+
+        .GymAdminDeleteButton a {
+            color: #DC3545;
+        }
+
+            .GymAdminDeleteButton a:hover {
+                color: black;
+            }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+
+    td {
+        color: white;
+    }
+</style>
+
+<!-- View contract page -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="" id="GymAdminForm">
+                <div class="row">
+                    <input type="hidden" asp-for="User" >
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Usuario</label>
+                            <input value="@Model.User.FullName" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Fecha y hora de ingreso</label>
+                            <input value="@Model." class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Dias faltantes</label>
+                            <input value="@Model.User.PlanInscriptions.LastOrDefault().RemainingDays" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        
+                <!-- Buttons and links -->
+                    <button disabled class="GymAdminFormButton">
+                        <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Regresar</a>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
