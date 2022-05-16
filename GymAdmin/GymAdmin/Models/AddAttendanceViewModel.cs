@@ -1,8 +1,12 @@
-﻿namespace GymAdmin.Models
-{
-    public class AddAttendanceViewModel 
-    {
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-        public int? UserId { get; set; }
+namespace GymAdmin.Models
+{
+    public class AddAttendanceViewModel
+    {
+        public int Id { get; set; }
+        public IEnumerable<SelectListItem> Users { get; set; }
+
+        public string Username { get; set;}
     }
 }

@@ -581,7 +581,7 @@ namespace GymAdmin.Data
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
                     User = user2,
-                    Plan = plan2, // the user will have the plan ticketholder
+                    Plan = plan2, 
                     Duration = 30,
                     ExpirationDate = DateTime.Today.AddDays(30),
                     PlanStatus = PlanStatus.Paid,
@@ -600,7 +600,7 @@ namespace GymAdmin.Data
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
                     User = user3,
-                    Plan = plan3, // the user will have the plan ticketholder
+                    Plan = plan3, 
                     Duration = 30,
                     ExpirationDate = DateTime.Today.AddDays(30),
                     PlanStatus = PlanStatus.Paid,

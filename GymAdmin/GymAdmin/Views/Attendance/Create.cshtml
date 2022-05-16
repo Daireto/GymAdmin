@@ -1,4 +1,4 @@
-﻿@model GymAdmin.Data.Entities.Attendance
+﻿@model GymAdmin.Models.AddAttendanceViewModel 
 @{
 
 
@@ -65,32 +65,57 @@
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-            <form asp-action="" id="GymAdminForm">
+            <input type="hidden" asp-for="Id" >
+            <input type="hidden" asp-for="Users">
+             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <form asp-action="Create" id="GymAdminForm">
                 <div class="row">
-                    <input type="hidden" asp-for="User" >
                         <!-- Field -->
+                      
+                    
+           
+                    @if (Model.Username == null)
+                    {
                         <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Usuario</label>
-                            <input value="@Model.User.FullName" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <label asp-for="Username" class="control-label GymAdminFormLabel"></label>
+                            <input id="searchUser" type="search" list="usersList" asp-for="Username" class="GymAdminFormInput" autocomplete="off" />
+                            <datalist id="usersList">
+                                @foreach (var pro in Model.Users)
+                                {
+                                    <option value="@pro.Value">@pro.Text</option>
+                                }
+                            </datalist>
+                            <span asp-validation-for="Username" class="text-danger"></span>
                         </div>
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Fecha y hora de ingreso</label>
-                            <input value="@Model." class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Dias faltantes</label>
-                            <input value="@Model.User.PlanInscriptions.LastOrDefault().RemainingDays" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        
-                <!-- Buttons and links -->
-                    <button disabled class="GymAdminFormButton">
-                        <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Regresar</a>
+                         <button type="submit" class="GymAdminFormButton">
+                       Registrar
                     </button>
+                    } else
+                    {
+                    
+                    }
+
+                <!-- Buttons and links -->
+                   
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+<script type="text/javascript">
+    $(document).ready(function (){
+        $("#searchUser").attr("value", @Model.Username);
+    });
+
+    $("#searchUser").on("input", function (){
+        var selected = $(this).val();
+        $(this).attr("value", selected);
+    });
+</script>
+}
+

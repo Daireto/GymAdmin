@@ -5,6 +5,7 @@ using GymAdmin.Helpers;
 using GymAdmin.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymAdmin.Controllers
 {
@@ -12,57 +13,82 @@ namespace GymAdmin.Controllers
     public class AttendanceController : Controller
     {
         private readonly DataContext _context;
-        private readonly IUserHelper _userHelper;
-        public AttendanceController(DataContext context, IUserHelper userHelper)
+        private readonly ICombosHelper _combosHelper;
+
+        public AttendanceController(DataContext context,ICombosHelper combosHelper)
         {
             _context= context;
-            _userHelper = userHelper;
+            _combosHelper= combosHelper;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create() 
+        {
+            AddAttendanceViewModel model = new AddAttendanceViewModel
+            {
+                Users = await _combosHelper.GetComboUsersWithPlanAsync()
+            };
+
+            return View(model);
+        
         }
 
 
-      
-        public async Task<IActionResult> Create()
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(AddAttendanceViewModel model)
         {
-
-            User user = await _userHelper.GetUserAsync(User.Identity.Name);
-            PlanInscription pI = await _context.PlanInscriptions.FindAsync(1);
-            Plan pl = await _context.Plans.FindAsync(1);
-            Attendance at = new Attendance();
-            if (pI != null) //the last position is always the last plan that the user bought to access the gym, so we first comprobate if the user has already a plan, then if it is ticketholder and is still active to make the operations
+            string n = model.Username;
+            if (ModelState.IsValid)
             {
-                if (pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.TicketHolder) 
+                User user = await _context.Users.Include(u => u.PlanInscriptions).FirstOrDefaultAsync(u => u.Email == model.Username);
+                if (user != null)
                 {
+                    PlanInscription pI = await _context.PlanInscriptions.Include(pI => pI.Plan).FirstOrDefaultAsync(pI => pI.Id == user.PlanInscriptions.Last().Id);
 
-                    at.AttendanceDate = DateTime.Now;
-                    at.User = user;
-                   
-                     pI.RemainingDays -= 1;
-                      if (pI.RemainingDays==0) 
-                      {
-                        pI.PlanStatus = PlanStatus.Cancelled;
-                      }
-                    
-                }
-                if (pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.Simple || pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.Black)
-                {
-
-                    at.AttendanceDate = DateTime.Now;
-                    at.User = user;
-                    
-                    DateTime fech = DateTime.Now;
-                    if (fech.Date == pI.ExpirationDate.Date) 
+                    Attendance at = new Attendance();
+                    if (pI != null) //the last position is always the last plan that the user bought to access the gym, so we first comprobate if the user has already a plan, then if it is ticketholder and is still active to make the operations
                     {
-                        pI.PlanStatus= PlanStatus.Cancelled;
-                        
+                        if (pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.TicketHolder)
+                        {
+
+                            at.AttendanceDate = DateTime.Now;
+                            at.User = user;
+
+                            pI.RemainingDays -= 1;
+                            if (pI.RemainingDays == 0)
+                            {
+                                pI.PlanStatus = PlanStatus.Cancelled;
+                            }
+
+                        }
+                        if (pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.Simple || pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.Black)
+                        {
+
+                            at.AttendanceDate = DateTime.Now;
+                            at.User = user;
+
+                            DateTime fech = DateTime.Now;
+                            if (fech.Date == pI.ExpirationDate.Date)
+                            {
+                                pI.PlanStatus = PlanStatus.Cancelled;
+
+                            }
+                        }
+                        _context.Add(at);
+                        _context.Update(pI);
+                        await _context.SaveChangesAsync();
+                        return View(model);
                     }
+                    ModelState.AddModelError(String.Empty, "¡El usuario no cuenta con algun plan activo en el momento!");
+                    return RedirectToAction("Index", "Home");
                 }
-                _context.Add(at);
-                _context.Update(pI);
-                await _context.SaveChangesAsync();
-                return View(at);
+                ModelState.AddModelError(String.Empty, "¡Este usuario no existe en nuestra base de datos!");
+                return RedirectToAction("Index", "Home");
             }
-             ModelState.AddModelError(String.Empty,"¡El usuario no cuenta con algun plan activo en el momento!");
-            return RedirectToAction("Index", "Home");
+
+            return NotFound();
         }
     }
 }
