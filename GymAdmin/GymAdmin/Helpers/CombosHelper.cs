@@ -124,5 +124,20 @@ namespace GymAdmin.Helpers
 
             return list;
         }
+
+        public async Task<IEnumerable<SelectListItem>> GetComboUsersWithPlanAsync()
+        {
+            List<SelectListItem> list = await _context.Users
+                .Where(u => u.PlanInscriptions.LastOrDefault() != null)
+                .Select(u => new SelectListItem
+                {
+                    Text = u.FullName,
+                    Value = u.UserName
+                })
+                .ToListAsync();
+
+            return list;
+        }
+
     }
 }
