@@ -280,5 +280,147 @@ namespace GymAdmin.Controllers
                 .ToListAsync());
         }
         //---------------------------- Events -----------------
+        public async Task<IActionResult> ShowEvents()
+        {
+            return View(await _context.Events.ToListAsync());
+        }
+
+        //DetailsSchedule
+        public async Task<IActionResult> DetailsEvent(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Event evento = await _context.Events
+                .Include(d => d.Director)
+                .ThenInclude(d => d.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            return View(evento);
+        }
+
+        public IActionResult CreateEvent()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateEvent(Schedule model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Add(model);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(ShowEvents));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "¡Este Evento ya existe!");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> EditEvent(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Event evento = await _context.Events
+                .Include(d => d.Director)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (evento == null)
+            {
+                return NotFound();
+            }
+
+            return View(evento);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditEvento(int id, Event model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(ShowEvents));
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "¡Este Evento ya existe!");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> DeleteEvent(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Event evento = await _context.Events
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (evento == null)
+            {
+                return NotFound();
+            }
+
+            return View(evento);
+        }
+
+        [HttpPost, ActionName("DeleteEvent")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteEventConfirmed(int id)
+        {
+            Event evento = await _context.Events.FindAsync(id);
+            _context.Events.Remove(evento);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ShowEvents));
+        }
     }
 }
+
