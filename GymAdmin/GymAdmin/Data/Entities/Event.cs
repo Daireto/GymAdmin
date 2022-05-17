@@ -12,13 +12,13 @@ namespace GymAdmin.Data.Entities
 
         [Display(Name = "Hora del evento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        //[Column(TypeName="bigint")]
-        public string StartHour { get; set; }
+        [Column(TypeName="bigint")]
+        public TimeSpan StartHour { get; set; }
 
         [Display(Name = "Hora final del evento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        //[Column(TypeName = "bigint")]
-        public string FinishHour { get; set; }
+        [Column(TypeName = "bigint")]
+        public TimeSpan FinishHour { get; set; }
 
         [Display(Name = "Nombre del evento")]
         public string NameEveneto { get; set; }

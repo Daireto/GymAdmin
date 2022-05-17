@@ -14,6 +14,7 @@ namespace GymAdmin.Data
         public DbSet<ServiceAccess> ServiceAccesses { get; set; }
         public DbSet<Professional> Professionals { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<EventAcces> EventAcces { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
