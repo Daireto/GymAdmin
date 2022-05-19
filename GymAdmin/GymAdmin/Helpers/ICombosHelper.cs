@@ -9,5 +9,6 @@ namespace GymAdmin.Helpers
         Task<IEnumerable<SelectListItem>> GetComboDirectorsAsync();
         Task<IEnumerable<SelectListItem>> GetComboSchedulesAsync();
         Task<IEnumerable<SelectListItem>> GetComboUsersAsync();
+        Task<IEnumerable<SelectListItem>> GetComboUsersWithEventAsync();
     }
 }

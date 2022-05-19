@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using GymAdmin.Enums;
 namespace GymAdmin.Data.Entities
 {
     public class Event
@@ -25,5 +25,6 @@ namespace GymAdmin.Data.Entities
         //public ICollection<EventAcces> EventAcces { get; set; }
 
         public Director Director { get; set; }
+        public EventType EventType { get; set; }
     }
 }
