@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = null;
 }
 
 <!-- GymAdmin style -->
@@ -13,8 +14,7 @@
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-            <h2 style="text-align:center;margin-top: 15px;">Editar servicio</h2>
-            <form asp-action="Edit" id="GymAdminForm">
+            <form asp-action="Edit" id="GymAdminForm" onsubmit="return jQueryAjaxPost(this);">
                 <!-- Hidden inputs -->
                 <input type="hidden" asp-for="Id" />
                 <!-- Validation summary -->
@@ -31,9 +31,6 @@
                         <!-- Buttons and links -->
                         <div class="GymAdminRegisterFormButtons form-group mt-2">
                             <input type="submit" value="Guardar cambios" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                            <button disabled class="GymAdminFormButton">
-                                <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
-                            </button>
                         </div>
                     </div>
                     <!-- Right column -->
@@ -56,4 +53,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+    }

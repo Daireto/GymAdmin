@@ -1,0 +1,90 @@
+﻿.modal-content {
+    background-image: url("../../images/bg/edituser-body-background.jpg") !important;
+    background-size: cover;
+    border-radius: 10px;
+}
+
+.modal-header {
+    background-color: rgb(0, 0, 0);
+    border-top: 1px solid #f2c60d;
+    border-left: 1px solid #f2c60d;
+    border-right: 1px solid #f2c60d;
+    border-bottom: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+    .modal-header h5 {
+        font-size: 30px;
+        color: #f2c60d;
+    }
+
+    .modal-header .btn-close {
+        background-color: #f2c60d;
+        margin: -.5rem -.20rem -.5rem auto !important;
+    }
+
+.modal-body {
+    backdrop-filter: blur(6px);
+    border-top: none;
+    border-left: 1px solid #f2c60d;
+    border-right: 1px solid #f2c60d;
+    border-bottom: 1px solid #f2c60d;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#delete-modal-dialog .modal-body {
+    backdrop-filter: blur(6px);
+    border-top: none;
+    border-left: 1px solid #f2c60d;
+    border-right: 1px solid #f2c60d;
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+    #delete-modal-dialog .modal-body .deleteMessage {
+        text-align: center;
+        font-size: 21px;
+        font-weight: 400;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        color: white;
+    }
+
+#delete-modal-dialog .modal-footer {
+    background-color: rgba(0,0,0,0.8);
+    backdrop-filter: blur(6px);
+    border-top: none;
+    border-left: 1px solid #f2c60d;
+    border-right: 1px solid #f2c60d;
+    border-bottom: 1px solid #f2c60d;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+    #delete-modal-dialog .modal-footer button.cancelButton {
+        background-color: transparent;
+        color: white;
+        border: 1px solid white;
+    }
+
+        #delete-modal-dialog .modal-footer button.cancelButton:hover {
+            background-color: #f2c60d;
+            color: black;
+            border: 1px solid white;
+        }
+
+    #delete-modal-dialog .modal-footer button.deleteButton {
+        background-color: transparent;
+        color: rgb(154, 0, 0);
+        border: 1px solid rgb(154, 0, 0);
+        padding: 7px 14px;
+    }
+
+        #delete-modal-dialog .modal-footer button.deleteButton:hover {
+            background-color: rgb(154, 0, 0);
+            color: black;
+            border: 1px solid rgb(154, 0, 0);
+        }

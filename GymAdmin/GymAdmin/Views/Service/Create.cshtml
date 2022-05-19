@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
+    Layout = null;
 }
 
 <!-- GymAdmin style -->
@@ -13,8 +14,7 @@
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-            <h2 style="text-align:center;margin-top: 15px;">Crear servicio</h2>
-            <form asp-action="Create" id="GymAdminForm">
+            <form asp-action="Create" id="GymAdminForm" onsubmit="return jQueryAjaxPost(this);">
                 <!-- Validation summary -->
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
@@ -29,9 +29,6 @@
                         <!-- Buttons and links -->
                         <div class="GymAdminRegisterFormButtons form-group mt-2">
                             <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                            <button disabled class="GymAdminFormButton">
-                                <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
-                            </button>
                         </div>
                     </div>
                     <!-- Right column -->

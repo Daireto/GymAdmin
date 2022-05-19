@@ -31,75 +31,40 @@
                 <h3 class="panel-title GymAdminTableTitle">Servicios<i class="fa-solid fa-hand-fist"></i></h3>
                 <div>
                     <button disable class="GymAdminFormButton">
-                        <a asp-action="Create" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-bell-concierge"></i>Crear servicio</a>
+                        <a onclick="showInPopup('@Url.Action("Create", "Service", new{}, Context.Request.Scheme)' , 'Crear servicio')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-bell-concierge"></i>Crear servicio</a>
                     </button>
                 </div>
             </div>
             <div class="panel-body GymAdminTable">
-                <table class="table table-hover table-responsive table-striped" id="MyTable">
-                    <!-- Text -->
-                    <thead>
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Name)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Price)
-                            </th>
-                            <th>
-                                Cantidad de profesionales
-                            </th>
-                            <th>Opciones</th>
-                        </tr>
-                    </thead>
-                    <!-- Values -->
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr class="GymAdminTableTr">
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                @{
-                                    //Format for price
-                                    string p = $"{item.Price:C2}";
-                                }
-                                <td>
-                                    @p
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ProfessionalsNumber)
-                                </td>
-                                <td class="td_option">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Editar</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Eliminar</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <div id="view-all">
+                    @await Html.PartialAsync("_ViewAllServices", Model)
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<partial name="_DeleteDialog" />
+
 @section Scripts {
     @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#MyTable').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-            },
-            "aLengthMenu": [
-                [25, 50, 100, 200, -1],
-                [25, 50, 100, 200, "Todos"]
-            ]
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [15, 30, 60, 120, -1],
+                    [15, 30, 60, 120, "Todos"]
+                ]
+            });
         });
-    });
-</script>
+    </script>
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Service/Delete/', false);
+    </script>
 }

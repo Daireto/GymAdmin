@@ -22,6 +22,7 @@
     <!-- GymAdmin style -->
     <link rel="stylesheet" type="text/css" href="~/css/layout.css" />
     <link rel="stylesheet" type="text/css" href="~/css/contact.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/modal.css" />
 
     <!-- Icons style -->
     <style>
@@ -103,6 +104,20 @@
         <main role="main" class="pb-3">
             <partial name="_BusyIndicatorPartial" />
             @RenderBody()
+            <div class="modal fade in" tabindex="-1" role="dialog" data-bs-backdrop="static" id="form-modal">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"></h5>
+                            <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -126,22 +141,24 @@
     <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
     <script src="~/lib/font-awesome/js/all.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/showmodal.js"></script>
+    
     <script>
         function displayBusyIndicator() {
             $('.loading').show();
         }
     </script>
     <script>
-        $(window).on('beforeunload', function () {
+        $(window).on('beforeunload', function() {
             displayBusyIndicator();
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 
     <script type="text/javascript">
-        $(document).ready(function(){
-              var height = $(window).height() - $('#body-header').height() - 40;
-              $('#body-container').css('min-height', height);
+        $(document).ready(function() {
+            var height = $(window).height() - $('#body-header').height() - 40;
+            $('#body-container').css('min-height', height);
         });
     </script>
 </body>

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using static GymAdmin.Helpers.ModalHelper;
 
 namespace GymAdmin.Controllers
 {
@@ -62,6 +63,7 @@ namespace GymAdmin.Controllers
             return View(service);
         }
 
+        [NoDirectAccess]
         public IActionResult Create()
         {
             return View();
@@ -83,7 +85,6 @@ namespace GymAdmin.Controllers
                 {
                     _context.Add(service);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
@@ -100,25 +101,22 @@ namespace GymAdmin.Controllers
                 {
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllServices", _context.Services
+                        .Include(s => s.Professionals)
+                        .ThenInclude(p => p.User)
+                        .ToList())
+                });
             }
-
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Create", new { }) });
         }
 
+        [NoDirectAccess]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             Service service = await _context.Services.FirstOrDefaultAsync(s => s.Id == id);
-
-            if (service == null)
-            {
-                return NotFound();
-            }
-
             return View(service);
         }
 
@@ -126,18 +124,12 @@ namespace GymAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Service model)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(model);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
@@ -154,36 +146,32 @@ namespace GymAdmin.Controllers
                 {
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllServices", _context.Services
+                            .Include(s => s.Professionals)
+                            .ThenInclude(p => p.User)
+                            .ToList())
+                });
             }
-
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Edit", model) });
         }
 
+        [NoDirectAccess]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             Service service = await _context.Services
                 .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (service == null)
+            try
             {
-                return NotFound();
+                _context.Services.Remove(service);
+                await _context.SaveChangesAsync();
             }
-
-            return View(service);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            Service service = await _context.Services.FindAsync(id);
-            _context.Services.Remove(service);
-            await _context.SaveChangesAsync();
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "¡No se puede borrar el servicio porque tiene registros relacionados!");
+            }
             return RedirectToAction(nameof(Index));
         }
 
