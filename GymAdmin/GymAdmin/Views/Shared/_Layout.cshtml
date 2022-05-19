@@ -11,7 +11,9 @@
 
     <!-- Libraries -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="~/lib/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/datatables/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/lib/jqueryui/jquery-ui.min.css" />
 
     <!-- Default style -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -45,13 +47,14 @@
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <!-- Admin options -->
-                            <div class="dropdown">
+                            <div class="dropdown-gymadmin">
                                 <span class="admin-link">Administración</span>
-                                <div class="dropdown-content">
+                                <div class="dropdown-content-gymadmin">
                                     <a class="admin-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
                                     <a class="admin-link" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
                                     <a class="admin-link" asp-area="" asp-controller="Service" asp-action="ShowProfessionals">Profesionales</a>
                                     <a class="admin-link" asp-area="" asp-controller="Contracts" asp-action="Index">Contrataciones</a>
+                                    <a class="admin-link" asp-area="" asp-controller="Attendance" asp-action="Create">Asistencias</a>
                                 </div>
                             </div>
                         }
@@ -78,9 +81,6 @@
                             <li class="nav-item">
                                 <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i>Cerrar sesión</a>
                             </li>
-                             <li class="nav-item">
-                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Attendance" asp-action="Create"><i class="fa-solid fa-arrow-right-from-bracket"></i>Registrar Entrada</a>
-                            </li>
                         }
                         else
                         {
@@ -101,6 +101,7 @@
     <!-- Razor view body -->
     <div class="container" id="body-container">
         <main role="main" class="pb-3">
+            <partial name="_BusyIndicatorPartial" />
             @RenderBody()
         </main>
     </div>
@@ -119,9 +120,22 @@
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/lib/font-awesome/js/all.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/lib/font-awesome/js/fontawesome.js"></script>
+    <script>
+        function displayBusyIndicator() {
+            $('.loading').show();
+        }
+    </script>
+    <script>
+        $(window).on('beforeunload', function () {
+            displayBusyIndicator();
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 
     <script type="text/javascript">

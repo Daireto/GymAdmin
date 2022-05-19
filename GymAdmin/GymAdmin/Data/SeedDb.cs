@@ -54,11 +54,11 @@ namespace GymAdmin.Data
             await CheckServicesAccessesAsync();
 
             //Plan Seeds
-
             await CheckPlansAsync();
-            await CheckPlanInscription();
+            await CheckPlanInscriptionAsync();
         }
 
+        //Professionals
         private async Task CheckProfessionalsAsync()
         {
             if (!_context.Professionals.Any())
@@ -310,6 +310,7 @@ namespace GymAdmin.Data
             }
         }
 
+        //Services
         private async Task CheckServicesAsync()
         {
             if (!_context.Services.Any())
@@ -333,6 +334,7 @@ namespace GymAdmin.Data
             await _context.SaveChangesAsync();
         }
 
+        //ServiceAccesses
         private async Task CheckServicesAccessesAsync()
         {
             if (!_context.ServiceAccesses.Any())
@@ -473,6 +475,7 @@ namespace GymAdmin.Data
             }
         }
 
+        //Users
         private async Task<User> CheckUsersAsync(
             string document,
             DocumentType documentType,
@@ -507,12 +510,14 @@ namespace GymAdmin.Data
             return user;
         }
 
+        //Roles
         private async Task CheckRolesAsync()
         {
             await _userHelper.CheckRoleAsync(UserType.Admin.ToString());
             await _userHelper.CheckRoleAsync(UserType.User.ToString());
         }
 
+        //Plans
         private async Task CheckPlansAsync()
         {
             if (!_context.Plans.Any())
@@ -532,7 +537,6 @@ namespace GymAdmin.Data
                     Price = 49000
                 });
 
-
                 _context.Add(new Plan
                 {
                     Name = "Black",
@@ -542,26 +546,27 @@ namespace GymAdmin.Data
 
                 await _context.SaveChangesAsync();
             }
-        }//There are just 3 types of plans, ticketholder,simple and black
+        }
 
-
-        private async Task CheckPlanInscription() 
+        //PlanInscriptions
+        private async Task CheckPlanInscriptionAsync() 
         {
-            //i will create a plan inscription for every type of plan to make the methods
             if (!_context.PlanInscriptions.Any())     
             {
-                User user = await _userHelper.GetUserAsync("lindsey@yopmail.com");
-                User user2 = await _userHelper.GetUserAsync("marie@yopmail.com");
-                User user3 = await _userHelper.GetUserAsync("curtis@yopmail.com");
-                Plan plan = await _context.Plans.FindAsync(1);
-                Plan plan2 = await _context.Plans.FindAsync(2);
-                Plan plan3 = await _context.Plans.FindAsync(3);
+                User user = await _userHelper.GetUserAsync("brett@yopmail.com");
+                User user2 = await _userHelper.GetUserAsync("brian@yopmail.com");
+                User user3 = await _userHelper.GetUserAsync("millie@yopmail.com");
+                User user4 = await _userHelper.GetUserAsync("lamar@yopmail.com");
+                User user5 = await _userHelper.GetUserAsync("peyton@yopmail.com");
+                Plan plan = await _context.Plans.FindAsync(1); //TicketHolder
+                Plan plan2 = await _context.Plans.FindAsync(2); //Simple
+                Plan plan3 = await _context.Plans.FindAsync(3); //Black
                 PlanInscription pl1 = new PlanInscription 
                 {
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
                     User = user,
-                    Plan = plan, // the user will have the plan ticketholder
+                    Plan = plan,
                     Duration = 5,
                     ExpirationDate = DateTime.Today.AddDays(5),
                     PlanStatus = PlanStatus.Paid,
@@ -569,13 +574,6 @@ namespace GymAdmin.Data
                     RemainingDays = 5,
                     Discount = DiscountValues.GetDiscountValue("TicketHolder")
                 };
-                plan.PlansInscriptions = new List<PlanInscription>();
-                plan.PlansInscriptions.Add(pl1);
-                _context.Add(pl1);
-                user.PlanInscriptions = new List<PlanInscription>();
-                user.PlanInscriptions.Add(pl1);
-
-
                 PlanInscription pl2 = new PlanInscription
                 {
                     InscriptionDate = DateTime.Today,
@@ -585,16 +583,10 @@ namespace GymAdmin.Data
                     Duration = 30,
                     ExpirationDate = DateTime.Today.AddDays(30),
                     PlanStatus = PlanStatus.Paid,
-                    TotalPrice = plan2.Price,
+                    TotalPrice = plan2.Price - (plan2.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
                     RemainingDays = 30,
                     Discount = DiscountValues.GetDiscountValue("Regular")
                 };
-                plan2.PlansInscriptions = new List<PlanInscription>();
-                plan2.PlansInscriptions.Add(pl2);
-                _context.Add(pl2);
-                user2.PlanInscriptions = new List<PlanInscription>();
-                user2.PlanInscriptions.Add(pl2);
-
                 PlanInscription pl3 = new PlanInscription
                 {
                     InscriptionDate = DateTime.Today,
@@ -604,23 +596,41 @@ namespace GymAdmin.Data
                     Duration = 30,
                     ExpirationDate = DateTime.Today.AddDays(30),
                     PlanStatus = PlanStatus.Paid,
-                    TotalPrice = plan3.Price,
+                    TotalPrice = plan3.Price - (plan3.Price * (decimal)DiscountValues.GetDiscountValue("Black")),
                     RemainingDays = 30,
                     Discount = DiscountValues.GetDiscountValue("Black")
-
                 };
-                plan3.PlansInscriptions = new List<PlanInscription>();
-                plan3.PlansInscriptions.Add(pl3);
+                PlanInscription pl4 = new PlanInscription
+                {
+                    InscriptionDate = DateTime.Today,
+                    ActivationDate = DateTime.Today,
+                    User = user4,
+                    Plan = plan2,
+                    Duration = 30,
+                    ExpirationDate = DateTime.Today.AddDays(30),
+                    PlanStatus = PlanStatus.Paid,
+                    TotalPrice = plan2.Price - (plan2.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                    RemainingDays = 30,
+                    Discount = DiscountValues.GetDiscountValue("Regular")
+                };
+                PlanInscription pl5 = new PlanInscription
+                {
+                    InscriptionDate = DateTime.Today,
+                    ActivationDate = DateTime.Today,
+                    User = user5,
+                    Plan = plan3,
+                    Duration = 30,
+                    ExpirationDate = DateTime.Today.AddDays(30),
+                    PlanStatus = PlanStatus.Paid,
+                    TotalPrice = plan3.Price - (plan3.Price * (decimal)DiscountValues.GetDiscountValue("Black")),
+                    RemainingDays = 30,
+                    Discount = DiscountValues.GetDiscountValue("Black")
+                };
+                _context.Add(pl1);
+                _context.Add(pl2);
                 _context.Add(pl3);
-                user3.PlanInscriptions = new List<PlanInscription>();
-                user3.PlanInscriptions.Add(pl3);
-
-                _context.Update(user);
-                _context.Update(user2);
-                _context.Update(user3);
-                _context.Update(plan);
-                _context.Update(plan2);
-                _context.Update(plan3);
+                _context.Add(pl4);
+                _context.Add(pl5);
                 await _context.SaveChangesAsync();
             } 
         }

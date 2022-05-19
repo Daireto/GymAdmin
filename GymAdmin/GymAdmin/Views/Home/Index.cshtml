@@ -31,6 +31,7 @@
     </style>
 </head>
 
+<partial name="_BusyIndicatorPartial" />
 <body>
     <!-- Position absolute elements -->
     <div id="Unete">
@@ -69,6 +70,7 @@
                                 <a class="admin-link" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
                                 <a class="admin-link" asp-area="" asp-controller="Service" asp-action="ShowProfessionals">Profesionales</a>
                                 <a class="admin-link" asp-area="" asp-controller="Contracts" asp-action="Index">Contrataciones</a>
+                                <a class="admin-link" asp-area="" asp-controller="Attendance" asp-action="Create">Asistencias</a>
                             </div>
                         </div>
                     }
@@ -358,9 +360,19 @@
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/font-awesome/js/fontawesome.js"></script>
+    <script src="~/lib/font-awesome/js/all.min.js"></script>
+    <script src="~/lib/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>
     <script src="~/js/main.js"></script>
     <script src="~/js/gallery-effect.js"></script>
+    <script>
+        function displayBusyIndicator() {
+            $('.loading').show();
+        }
+    </script>
+    <script>
+        $(window).on('beforeunload', function () {
+            displayBusyIndicator();
+        });
+    </script>
 </body>
 </html>

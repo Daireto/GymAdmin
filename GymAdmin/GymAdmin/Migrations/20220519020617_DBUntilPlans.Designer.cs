@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymAdmin.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220511010341_DbUntilServicesManagement")]
-    partial class DbUntilServicesManagement
+    [Migration("20220519020617_DBUntilPlans")]
+    partial class DBUntilPlans
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,102 @@ namespace GymAdmin.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.Attendance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("AttendanceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Attendance");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.Plan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("PlanType")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasMaxLength(100)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("Plans");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.PlanInscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("ActivationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Discount")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("InscriptionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("PlanId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlanStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RemainingDays")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlanId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PlanInscriptions");
+                });
 
             modelBuilder.Entity("GymAdmin.Data.Entities.Professional", b =>
                 {
@@ -386,6 +482,30 @@ namespace GymAdmin.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("GymAdmin.Data.Entities.Attendance", b =>
+                {
+                    b.HasOne("GymAdmin.Data.Entities.User", "User")
+                        .WithMany("Attendances")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.PlanInscription", b =>
+                {
+                    b.HasOne("GymAdmin.Data.Entities.Plan", "Plan")
+                        .WithMany("PlansInscriptions")
+                        .HasForeignKey("PlanId");
+
+                    b.HasOne("GymAdmin.Data.Entities.User", "User")
+                        .WithMany("PlanInscriptions")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Plan");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("GymAdmin.Data.Entities.Professional", b =>
                 {
                     b.HasOne("GymAdmin.Data.Entities.Service", "Service")
@@ -482,6 +602,11 @@ namespace GymAdmin.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GymAdmin.Data.Entities.Plan", b =>
+                {
+                    b.Navigation("PlansInscriptions");
+                });
+
             modelBuilder.Entity("GymAdmin.Data.Entities.Professional", b =>
                 {
                     b.Navigation("ProfessionalSchedules");
@@ -501,6 +626,10 @@ namespace GymAdmin.Migrations
 
             modelBuilder.Entity("GymAdmin.Data.Entities.User", b =>
                 {
+                    b.Navigation("Attendances");
+
+                    b.Navigation("PlanInscriptions");
+
                     b.Navigation("ServiceAccesses");
                 });
 #pragma warning restore 612, 618

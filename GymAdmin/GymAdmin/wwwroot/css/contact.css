@@ -16,9 +16,8 @@
         margin: 0;
     }
 
-    #contact i {
-        color: #f2c60d;
-        margin-right: 10px;
+    #contact svg {
+        margin-right: 4px !important;
     }
 
 .info {

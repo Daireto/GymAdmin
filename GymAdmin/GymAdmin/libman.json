@@ -9,6 +9,14 @@
     {
       "library": "jqueryui@1.12.1",
       "destination": "wwwroot/lib/jqueryui/"
+    },
+    {
+      "library": "datatables@1.10.21",
+      "destination": "wwwroot/lib/datatables/"
+    },
+    {
+      "library": "jasny-bootstrap@4.0.0",
+      "destination": "wwwroot/lib/jasny-bootstrap/"
     }
   ]
 }

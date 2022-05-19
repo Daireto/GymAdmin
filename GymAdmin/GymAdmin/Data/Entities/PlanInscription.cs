@@ -1,4 +1,5 @@
 ﻿using GymAdmin.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GymAdmin.Data.Entities
 {
@@ -7,6 +8,7 @@ namespace GymAdmin.Data.Entities
         public int Id { get; set; }
 
         public User User { get; set; }
+
         public Plan Plan { get; set; }
 
         public PlanStatus PlanStatus { get; set; }
@@ -23,8 +25,7 @@ namespace GymAdmin.Data.Entities
 
         public double Discount { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalPrice { get; set; }
-
-       
     }
 }

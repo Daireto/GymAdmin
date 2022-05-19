@@ -43,6 +43,5 @@ namespace GymAdmin.Data.Entities
         public ICollection<Attendance> Attendances { get; set; }
 
         public ICollection<PlanInscription> PlanInscriptions { get; set; }
-        //One user just have a plan at the time
     }
 }
