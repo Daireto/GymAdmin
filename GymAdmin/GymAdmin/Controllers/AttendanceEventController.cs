@@ -20,7 +20,7 @@ namespace GymAdmin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> CreateEvent()
         {
             AddAttendanceViewModel model = new AddAttendanceViewModel
             {
@@ -32,10 +32,9 @@ namespace GymAdmin.Controllers
         }
 
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AddAttendanceViewModel model)
+        public async Task<IActionResult> CreateEvent(AddAttendanceViewModel model)
         {
             string n = model.Username;
             if (ModelState.IsValid)
@@ -89,15 +88,19 @@ namespace GymAdmin.Controllers
                             await _context.SaveChangesAsync();
                             return View(model);
                         }
-                        ModelState.AddModelError(String.Empty, "¡El usuario no cuenta en la inscripcion de un eveneto activo en el momento!");
-                        return RedirectToAction("Index", "Home");
+                        _context.Add(at);
+                        _context.Update(evento);
+                        await _context.SaveChangesAsync();
+                        return View(model);
                     }
-                    ModelState.AddModelError(String.Empty, "¡Este usuario no existe en nuestra base de datos!");
+                    ModelState.AddModelError(String.Empty, "¡El usuario no cuenta con algun plan activo en el momento!");
                     return RedirectToAction("Index", "Home");
                 }
-
-                return NotFound();
+                ModelState.AddModelError(String.Empty, "¡Este usuario no existe en nuestra base de datos!");
+                return RedirectToAction("Index", "Home");
             }
+
+            return NotFound();
         }
     }
 }
