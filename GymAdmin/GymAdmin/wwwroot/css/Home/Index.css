@@ -27,6 +27,10 @@ a {
     text-decoration: none;
 }
 
+a, .GymAdminFormButton {
+    cursor: pointer !important;
+}
+
 /* Position absolute elements */
 #Unete {
     position: absolute;

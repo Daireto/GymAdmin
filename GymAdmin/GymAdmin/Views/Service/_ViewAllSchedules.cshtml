@@ -69,7 +69,7 @@
                 </td>
                 <td class="td_option">
                     <a onclick="showInPopup('@Url.Action("EditSchedule", "Service", new { id=item.Schedule.Id, proId=Model.Id }, Context.Request.Scheme)' , 'Editar horario')" class="btn btn-outline-warning">Editar</a>
-                    <a asp-action="DeleteSchedule" asp-route-id="@item.Schedule.Id" asp-route-proId="@Model.Id" class="btn btn-outline-danger">Eliminar</a>
+                    <a asp-action="DeleteSchedule" asp-route-id="@item.Schedule.Id" asp-route-proId="@item.Professional.Id" class="btn btn-outline-danger">Eliminar</a>
                 </td>
             </tr>
         }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymAdmin.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220520051326_DbUntilAttendance")]
-    partial class DbUntilAttendance
+    [Migration("20220520173052_DatabaseUntilPlans")]
+    partial class DatabaseUntilPlans
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

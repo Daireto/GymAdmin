@@ -20,6 +20,10 @@ div.col-md-12{
     border-radius:10px;
 }
 
+a, .GymAdminFormButton {
+    cursor: pointer !important;
+}
+
 /* Webkit */
 input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(75%) sepia(92%) saturate(711%) hue-rotate(354deg) brightness(98%) contrast(94%);

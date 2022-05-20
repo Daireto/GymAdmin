@@ -123,13 +123,13 @@ input.GymAdminFormButton {
     transition: all .2s ease-out;
 }
 
-.GymAdminFormButton a {
+.GymAdminFormButton a, .GymAdminFormButton span {
     display: block !important;
     margin: 0;
     padding: 10px 20px;
 }
 
-.GymAdminFormButton a {
+.GymAdminFormButton a, .GymAdminFormButton span {
     color: white;
     text-decoration: none;
 }
@@ -140,6 +140,10 @@ input.GymAdminFormButton {
 }
 
     .GymAdminFormButton:hover a {
+        color: black;
+    }
+
+    .GymAdminFormButton:hover span {
         color: black;
     }
 

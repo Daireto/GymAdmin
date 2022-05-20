@@ -41,16 +41,10 @@
                             @if (Model.Id == null)
                             {
                                 <input type="submit" value="Asignar usuario" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                                <button disabled class="GymAdminFormButton">
-                                    <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
-                                </button>
                             }
                             else
                             {
                                 <input type="submit" value="Guardar cambios" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                                <button disabled class="GymAdminFormButton">
-                                    <a asp-action="DetailsProfessional" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
-                                </button>
                             }
                         </div>
                     </div>

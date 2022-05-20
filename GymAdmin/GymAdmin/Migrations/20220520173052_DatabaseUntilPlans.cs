@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GymAdmin.Migrations
 {
-    public partial class DbUntilAttendance : Migration
+    public partial class DatabaseUntilPlans : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

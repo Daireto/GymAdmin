@@ -51,6 +51,13 @@ namespace GymAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
+                User userDocumentExist = await _userHelper.GetUserAsync(model);
+                if (userDocumentExist != null)
+                {
+                    _flashMessage.Danger("Ya existe un usuario con este documento, por favor ingrese otro", "Error:");
+                    return View(model);
+                }
+
                 Guid imageId = Guid.Empty;
 
                 if (model.ImageFile != null)
@@ -65,7 +72,6 @@ namespace GymAdmin.Controllers
                     return View(model);
                 }
 
-                //Email confirmation
                 string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 string tokenLink = Url.Action(
                     "ConfirmEmail",
@@ -73,13 +79,14 @@ namespace GymAdmin.Controllers
                     new
                     {
                         UserId = user.Id,
-                        Token = token
+                        Token = token,
+                        Route = "admin"
                     },
                     protocol: HttpContext.Request.Scheme);
 
                 string body = "<style>body{text-align:center;font-family:Verdana,Arial;}</style>" +
                     $"<h1>Soporte GymAdmin</h1>" +
-                    $"<h3>Estás a un solo paso de ser parte de nuestra comunidad</h3>" +
+                    $"<h3>Estás a un solo paso de ser administrador de GymAdmin</h3>" +
                     $"<h4>Sólo debes hacer click en el siguiente botón para confirmar tu email</h4>" +
                     $"<br/>" +
                     $"<a style=\"padding:15px;background-color:#f1b00e;text-decoration:none;color:black;border: 5px solid #000;border-radius:10px;\" href=\"{tokenLink}\">Confirmar email</a>";
@@ -98,7 +105,7 @@ namespace GymAdmin.Controllers
                 {
                     _flashMessage.Danger("Si el problema persiste comunicate con soporte técnico", "Ha ocurrido un error:");
                 }
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction(nameof(Index));
             }
             return View(model);
         }

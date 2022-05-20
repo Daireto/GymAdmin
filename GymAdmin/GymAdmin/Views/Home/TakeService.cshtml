@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "TakeService";
-    Layout = null;
 }
 
 <link rel="stylesheet" type="text/css" href="~/css/forms.css" />
@@ -83,104 +82,102 @@
 
 @section Scripts {
     @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
-<script type="text/javascript">
-    $(document).ready(function () {
-        var today = new Date();
-        if(today.getHours() > 19)
-        {
-            var startDate = new Date();
-            startDate.setDate(today.getDate() + 1);
-            document.getElementById("AccessDate").value = startDate.toLocaleString("fr-CA").split(",")[0];
-            document.getElementById("AccessDate").min = startDate.toLocaleString("fr-CA").split(",")[0];
-            var endDate = new Date();
-            endDate.setDate(startDate.getDate() + 13);
-            document.getElementById("AccessDate").max = endDate.toLocaleString("fr-CA").split(",")[0];
-        }
-        else
-        {
-            document.getElementById("AccessDate").value = today.toLocaleString("fr-CA").split(",")[0];
-            document.getElementById("AccessDate").min = today.toLocaleString("fr-CA").split(",")[0];
-            var endDate = new Date();
-            endDate.setDate(today.getDate() + 13);
-            document.getElementById("AccessDate").max = endDate.toLocaleString("fr-CA").split(",")[0];
-        }
-        $("#AccessHour").empty();
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("GetHours")',
-            dataType: 'json',
-            data: { serviceId: $("#ServiceId").val(), day: $("#AccessDate").val() },
-            success: function (hours) {
-                $.each(hours, function (i, hour) {
-                    $("#AccessHour").append('<option value="'
-                        + hour.value + '">'
-                        + hour.text + '</option>');
-                });
-            },
-            error: function (ex) {
-                alert('Failed to retrieve hours.' + ex);
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var today = new Date();
+            if (today.getHours() > 19) {
+                var startDate = new Date();
+                startDate.setDate(today.getDate() + 1);
+                document.getElementById("AccessDate").value = startDate.toLocaleString("fr-CA").split(",")[0];
+                document.getElementById("AccessDate").min = startDate.toLocaleString("fr-CA").split(",")[0];
+                var endDate = new Date();
+                endDate.setDate(startDate.getDate() + 13);
+                document.getElementById("AccessDate").max = endDate.toLocaleString("fr-CA").split(",")[0];
             }
-        });
-        $("#AccessDate").change(function () {
+            else {
+                document.getElementById("AccessDate").value = today.toLocaleString("fr-CA").split(",")[0];
+                document.getElementById("AccessDate").min = today.toLocaleString("fr-CA").split(",")[0];
+                var endDate = new Date();
+                endDate.setDate(today.getDate() + 13);
+                document.getElementById("AccessDate").max = endDate.toLocaleString("fr-CA").split(",")[0];
+            }
             $("#AccessHour").empty();
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetHours")',
                 dataType: 'json',
                 data: { serviceId: $("#ServiceId").val(), day: $("#AccessDate").val() },
-                success: function (hours) {
-                    $.each(hours, function (i, hour) {
+                success: function(hours) {
+                    $.each(hours, function(i, hour) {
                         $("#AccessHour").append('<option value="'
                             + hour.value + '">'
                             + hour.text + '</option>');
                     });
                 },
-                error: function (ex) {
+                error: function(ex) {
                     alert('Failed to retrieve hours.' + ex);
                 }
             });
-            return false;
-        });
-        $("#ServiceId").change(function () {
-            $("#showPrice").attr("readonly", false);
-            $("#totalPrice").attr("readonly", false);
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetPrice")',
-                data: { serviceId: $("#ServiceId").val() },
-                success: function (prices) {
-                    $("#showPrice").val(prices.priceValue);
-                    $("#totalPrice").val(prices.totalPriceValue);
-                },
-                error: function (ex) {
-                    $("#showPrice").attr("readonly", true);
-                    $("#totalPrice").attr("readonly", true);
-                    alert('Failed to retrieve price.' + ex);
-                }
+            $("#AccessDate").change(function() {
+                $("#AccessHour").empty();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetHours")',
+                    dataType: 'json',
+                    data: { serviceId: $("#ServiceId").val(), day: $("#AccessDate").val() },
+                    success: function(hours) {
+                        $.each(hours, function(i, hour) {
+                            $("#AccessHour").append('<option value="'
+                                + hour.value + '">'
+                                + hour.text + '</option>');
+                        });
+                    },
+                    error: function(ex) {
+                        alert('Failed to retrieve hours.' + ex);
+                    }
+                });
+                return false;
             });
-            $("#showPrice").attr("readonly", true);
-            $("#totalPrice").attr("readonly", true);
-            $("#AccessHour").empty();
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetHours")',
-                dataType: 'json',
-                data: { serviceId: $("#ServiceId").val(), day: $("#AccessDate").val() },
-                success: function (hours) {
-                    $.each(hours, function (i, hour) {
-                        $("#AccessHour").append('<option value="'
-                            + hour.value + '">'
-                            + hour.text + '</option>');
-                    });
-                },
-                error: function (ex) {
-                    alert('Failed to retrieve hours.' + ex);
-                }
+            $("#ServiceId").change(function() {
+                $("#showPrice").attr("readonly", false);
+                $("#totalPrice").attr("readonly", false);
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetPrice")',
+                    data: { serviceId: $("#ServiceId").val() },
+                    success: function(prices) {
+                        $("#showPrice").val(prices.priceValue);
+                        $("#totalPrice").val(prices.totalPriceValue);
+                    },
+                    error: function(ex) {
+                        $("#showPrice").attr("readonly", true);
+                        $("#totalPrice").attr("readonly", true);
+                        alert('Failed to retrieve price.' + ex);
+                    }
+                });
+                $("#showPrice").attr("readonly", true);
+                $("#totalPrice").attr("readonly", true);
+                $("#AccessHour").empty();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetHours")',
+                    dataType: 'json',
+                    data: { serviceId: $("#ServiceId").val(), day: $("#AccessDate").val() },
+                    success: function(hours) {
+                        $.each(hours, function(i, hour) {
+                            $("#AccessHour").append('<option value="'
+                                + hour.value + '">'
+                                + hour.text + '</option>');
+                        });
+                    },
+                    error: function(ex) {
+                        alert('Failed to retrieve hours.' + ex);
+                    }
+                });
+                return false;
             });
-            return false;
         });
-    });
-</script>
+    </script>
 }

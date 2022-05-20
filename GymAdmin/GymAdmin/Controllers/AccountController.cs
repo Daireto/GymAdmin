@@ -7,6 +7,7 @@ using GymAdmin.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Vereyon.Web;
+using static GymAdmin.Helpers.ModalHelper;
 
 namespace GymAdmin.Controllers
 {
@@ -143,7 +144,6 @@ namespace GymAdmin.Controllers
                     return View(model);
                 }
 
-                //Email confirmation
                 string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 string tokenLink = Url.Action(
                     "ConfirmEmail",
@@ -151,7 +151,8 @@ namespace GymAdmin.Controllers
                     new
                     {
                         UserId = user.Id,
-                        Token = token
+                        Token = token,
+                        Route = "user"
                     },
                     protocol: HttpContext.Request.Scheme);
 
@@ -181,7 +182,8 @@ namespace GymAdmin.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> ConfirmEmail(string UserId, string Token)
+        [NoDirectAccess]
+        public async Task<IActionResult> ConfirmEmail(string UserId, string Token, string Route)
         {
             if (string.IsNullOrEmpty(UserId) || string.IsNullOrEmpty(Token))
             {
@@ -200,7 +202,21 @@ namespace GymAdmin.Controllers
                 return NotFound();
             }
 
-            return View();
+            if (Route == "professional")
+            {
+                _flashMessage.Confirmation("Profesional insertado correctamente", "Email verificado:");
+                return RedirectToAction("ShowProfessionals", "Service");
+            }
+            else if (Route == "admin")
+            {
+                _flashMessage.Confirmation("Administrador insertado correctamente", "Email verificado:");
+                return RedirectToAction("Index", "User");
+            }
+            else
+            {
+                _flashMessage.Confirmation("Ya puedes iniciar sesión", "Email verificado:");
+                return RedirectToAction(nameof(Login));
+            }
         }
 
         public async Task<IActionResult> EditUser()
@@ -243,27 +259,37 @@ namespace GymAdmin.Controllers
                     }
                     imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
                 }
-                User user = await _userHelper.GetUserAsync(User.Identity.Name);
-                user.FirstName = model.FirstName;
-                user.LastName = model.LastName;
-                user.Document = model.Document;
-                user.DocumentType = model.DocumentType;
-                user.PhoneNumber = model.PhoneNumber;
-                user.ImageId = imageId;
-                var result = await _userHelper.UpdateUserAsync(user);
-                if (result.Succeeded)
+
+                try
                 {
-                    _flashMessage.Confirmation("Perfil actualizado correctamente", "Operación exitosa:");
-                    return RedirectToAction("ViewUser", "Account");
+                    User user = await _userHelper.GetUserAsync(User.Identity.Name);
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    user.Document = model.Document;
+                    user.DocumentType = model.DocumentType;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.ImageId = imageId;
+                    var result = await _userHelper.UpdateUserAsync(user);
+                    if (result.Succeeded)
+                    {
+                        _flashMessage.Confirmation("Perfil actualizado correctamente", "Operación exitosa:");
+                        return RedirectToAction("ViewUser", "Account");
+                    }
+                    else
+                    {
+                        _flashMessage.Danger("Si el problema persiste comunicate con soporte técnico", "Ha ocurrido un error:");
+                        return View(model);
+                    }
                 }
-                else
+                catch
                 {
-                    _flashMessage.Danger("Si el problema persiste comunicate con soporte técnico", "Ha ocurrido un error:");
+                    _flashMessage.Danger("Ya existe un usuario con este documento, por favor ingrese otro", "Error:");
                 }
             }
             return View(model);
         }
 
+        [NoDirectAccess]
         public IActionResult ChangePassword()
         {
             if (User.Identity.IsAuthenticated)
@@ -295,7 +321,7 @@ namespace GymAdmin.Controllers
                     if (result.Succeeded)
                     {
                         _flashMessage.Confirmation("Contraseña actualizada correctamente", "Operación exitosa:");
-                        return RedirectToAction(nameof(ViewUser));
+                        return Json(new { isValid = true, html = "" });
                     }
                     else
                     {
@@ -307,6 +333,7 @@ namespace GymAdmin.Controllers
             return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "ChangePassword", model) });
         }
 
+        [NoDirectAccess]
         public IActionResult RecoverPassword()
         {
             if (User.Identity.IsAuthenticated)
@@ -329,7 +356,6 @@ namespace GymAdmin.Controllers
                     return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "RecoverPassword", model) });
                 }
 
-                //Email confirmation
                 string token = await _userHelper.GeneratePasswordResetTokenAsync(user);
                 string tokenLink = Url.Action(
                     "ResetPassword",
@@ -362,7 +388,7 @@ namespace GymAdmin.Controllers
                     _flashMessage.Danger("Si el problema persiste comunicate con soporte técnico", "Ha ocurrido un error:");
                 }
 
-                return RedirectToAction(nameof(Login));
+                return Json(new { isValid = true, html = "" });
             }
 
             return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "RecoverPassword", model) });

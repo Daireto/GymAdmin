@@ -13,7 +13,12 @@ body {
     text-align: center !important;
 }
 
-.GymAdminFormButton{
+.GymAdminChangeOrResetPasswordInput {
+    border-bottom-color: #f2c60d !important;
+    text-align: left !important;
+}
+
+.GymAdminFormButton {
     margin-top: 20px !important;
 }
 

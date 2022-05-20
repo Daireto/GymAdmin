@@ -1,0 +1,24 @@
+﻿/*
+    Body
+*/
+body {
+    background-image: url("../../images/bg/message-body-background.jpg");
+}
+
+#GymAdminFieldsContainer {
+    background-color: rgba(0,0,0,0) !important;
+}
+
+.RecoverPasswordLink {
+    border-bottom: 1px solid white;
+    padding-bottom: 5px;
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+    transition: all .2s ease-out;
+}
+
+    .RecoverPasswordLink:hover {
+        border-bottom-color: #f2c60d;
+        color: #f2c60d;
+    }

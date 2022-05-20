@@ -30,7 +30,6 @@ namespace GymAdmin.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [NoDirectAccess]
         public async Task<IActionResult> DetailsServiceAccess(int? id)
         {
             return View(await _context.ServiceAccesses

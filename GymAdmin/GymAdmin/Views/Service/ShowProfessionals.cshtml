@@ -33,7 +33,7 @@
                 <h3 class="panel-title GymAdminTableTitle">Profesionales<i class="fa-solid fa-dumbbell"></i></h3>
                 <div>
                     <button disable class="GymAdminFormButton">
-                        <a onclick="showInPopup('@Url.Action("CreateProfessional", "Service", new{}, Context.Request.Scheme)' , 'Crear profesional')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Crear profesional</a>
+                        <a asp-action="CreateProfessional" asp-controller="Service" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Crear profesional</a>
                     </button>
                     <button disable class="GymAdminFormButton">
                         <a onclick="showInPopup('@Url.Action("EditProfessional", "Service", new{}, Context.Request.Scheme)' , 'Asignar profesional')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Asignar profesional</a>

@@ -69,75 +69,17 @@
 <!-- View professional page -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
-        <div class="col-md-12" id="GymAdminFieldsContainer">
-            <form asp-action="" id="GymAdminForm">
-                <div class="row">
-                    <div class="col-md-12">
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <h2 style="text-align:center;">Detalles del profesional</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <!-- Left column -->
-                    <div class="col-md-6 GymAdminFormColumn">
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Nombre completo</label>
-                            <input value="@Model.User.FullName" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        @{
-                            var professionalType = "";
-                            if (Model.ProfessionalType.ToString() == "Physiotherapist")
-                            {
-                                professionalType = "Fisioterapeuta";
-                            }
-                            else if (Model.ProfessionalType.ToString() == "Nutritionist")
-                            {
-                                professionalType = "Nutricionista";
-                            }
-                            else if (Model.ProfessionalType.ToString() == "Instructor")
-                            {
-                                professionalType = "Instructor";
-                            }
-                        }
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Profesión</label>
-                            <input value="@professionalType" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                    </div>
-                    <!-- Right column -->
-                    <div class="col-md-6 GymAdminFormColumn">
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Correo electrónico</label>
-                            <input value="@Model.User.Email" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Buttons and links -->
-                        <div class="GymAdminRegisterFormButtons form-group mt-2">
-                            <button disabled class="GymAdminFormButton">
-                                <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Regresar</a>
-                            </button>
-                            <button disabled class="GymAdminFormButton GymAdminEditButton">
-                                <a onclick="showInPopup('@Url.Action("EditProfessional", "Service", new { id=Model.Id }, Context.Request.Scheme)' , 'Editar profesional')" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-pen-to-square"></i>Editar</a>
-                            </button>
-                            <button data-id="@Model.Id" class="GymAdminFormButton GymAdminDeleteButton deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-lock"></i>Eliminar</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <hr />
         <!-- Schedules -->
         <div class="row" style="padding:0;margin:0 auto;">
             <div class="col-md-12 GymAdminTableContainer">
                 <div class="panel panel-default">
                     <div class="panel-heading GymAdminTableHeading">
-                        <h3 class="panel-title GymAdminTableTitle">Horarios del profesional</h3>
+                        <h3 class="panel-title GymAdminTableTitle">Horarios de @Model.User.FirstName</h3>
                         <div class="newScheduleDiv">
-                            <button disable class="GymAdminFormButton">
+                            <button disabled class="GymAdminFormButton">
+                                <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Regresar</a>
+                            </button>
+                            <button disabled class="GymAdminFormButton">
                                 <a onclick="showInPopup('@Url.Action("CreateSchedule", "Service", new{ id=Model.Id }, Context.Request.Scheme)' , 'Asignar horario')" class="GymAdminFormElement GymAdminFormLabel">Asignar horario</a>
                             </button>
                         </div>
@@ -152,8 +94,6 @@
         </div>
     </div>
 </div>
-
-<partial name="_DeleteDialog" />
 
 <!-- Scripts -->
 @section Scripts {
@@ -173,8 +113,5 @@
                 ]
             });
         });
-    </script>
-    <script>
-        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Service/DeleteProfessional/', false);
     </script>
     }

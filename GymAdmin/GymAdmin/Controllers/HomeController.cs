@@ -26,7 +26,6 @@ namespace GymAdmin.Controllers
             _flashMessage = flashMessage;
         }
 
-        //Principal pages
         public IActionResult Index()
         {
             return View();
@@ -59,7 +58,6 @@ namespace GymAdmin.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        //Services, events and plans
         [NoDirectAccess]
         public async Task<IActionResult> TakeService(int? id)
         {
@@ -94,7 +92,7 @@ namespace GymAdmin.Controllers
                 if (model.AccessHour == 0)
                 {
                     _flashMessage.Danger("Debe seleccionar un horario", "Error:");
-                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "TakeService", model) });
+                    return View(model);
                 }
 
                 TimeSpan AccessHour = TimeSpan.FromTicks(model.AccessHour);
@@ -114,25 +112,20 @@ namespace GymAdmin.Controllers
                 _context.Add(serviceAccess);
                 await _context.SaveChangesAsync();
                 _flashMessage.Confirmation("Registro insertado correctamente", "Operación exitosa:");
-
-                return Json(new
-                {
-                    isValid = true,
-                    html = ModalHelper.RenderRazorViewToString(this, "_ViewPendingServices", _context.ServiceAccesses.Where(sa => sa.User.Email == User.Identity.Name)
-                        .Include(sa => sa.Service)
-                        .ToList())
-                });
+                return RedirectToAction(nameof(MyServices));
             }
 
-            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "TakeService", model) });
+            return View(model);
         }
 
+        [NoDirectAccess]
         public async Task<JsonResult> GetHours(int serviceId, DateTime day)
         {
             var list = await _combosHelper.GetComboSchedulesAsync(serviceId, day);
             return Json(list);
         }
 
+        [NoDirectAccess]
         public JsonResult GetPrice(int serviceId)
         {
             Service service = _context.Services.Find(serviceId);
@@ -147,14 +140,12 @@ namespace GymAdmin.Controllers
 
         //TODO: Add events and plans methods
 
-        //Error control
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        //Error 404 method
         [Route("error/404")]
         public IActionResult Error404()
         {

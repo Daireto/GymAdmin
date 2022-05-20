@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Vereyon.Web;
+using static GymAdmin.Helpers.ModalHelper;
 
 namespace GymAdmin.Controllers
 {
@@ -31,10 +32,11 @@ namespace GymAdmin.Controllers
                 .ToListAsync());
         }
 
+        [NoDirectAccess]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            AddAttendanceViewModel model = new AddAttendanceViewModel
+            AddAttendanceViewModel model = new()
             {
                 Users = await _combosHelper.GetComboUsersWithPlanAsync()
             };
@@ -54,7 +56,7 @@ namespace GymAdmin.Controllers
                 {
                     PlanInscription pI = await _context.PlanInscriptions.Include(pI => pI.Plan).FirstOrDefaultAsync(pI => pI.Id == user.PlanInscriptions.Last().Id);
 
-                    Attendance at = new Attendance();
+                    Attendance at = new();
                     if (pI != null)
                     {
                         at.AttendanceDate = DateTime.Now;

@@ -90,7 +90,14 @@
                                     @Html.DisplayFor(modelItem => item.UserType)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.EmailConfirmed)
+                                    @if(item.EmailConfirmed == true)
+                                    {
+                                        <input type="checkbox" class="form-check-input Confirmed" checked="checked" disabled />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" class="form-check-input NoConfirmed" disabled />
+                                    }
                                 </td>
                                 <td>
                                     <img src="@item.ImageFullPath" style="width:100px; border-radius:50%;" />

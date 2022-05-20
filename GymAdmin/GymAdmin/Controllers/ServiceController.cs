@@ -34,27 +34,13 @@ namespace GymAdmin.Controllers
 
         //------------------------------------- Services --------------------------------------------
 
-        [NoDirectAccess]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Services
                 .Include(s => s.Professionals)
                 .ThenInclude(p => p.User)
+                .Include(s => s.ServiceAccesses)
                 .ToListAsync());
-        }
-
-        [NoDirectAccess]
-        public async Task<IActionResult> Details(int? id)
-        {
-            Service service = await _context.Services
-                .Include(s => s.Professionals)
-                .ThenInclude(s => s.User)
-                .Include(s => s.Professionals)
-                .ThenInclude(p => p.ProfessionalSchedules)
-                .ThenInclude(ps => ps.Schedule)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            return View(service);
         }
 
         [NoDirectAccess]
@@ -119,7 +105,7 @@ namespace GymAdmin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Service model)
+        public async Task<IActionResult> Edit(Service model)
         {
             if (ModelState.IsValid)
             {
@@ -177,7 +163,6 @@ namespace GymAdmin.Controllers
         }
 
         //------------------------------------- Professionals --------------------------------------------
-        [NoDirectAccess]
         public async Task<IActionResult> ShowProfessionals()
         {
             return View(await _context.Professionals
@@ -187,7 +172,6 @@ namespace GymAdmin.Controllers
                 .ToListAsync());
         }
 
-        [NoDirectAccess]
         public async Task<IActionResult> DetailsProfessional(int? id)
         {
             Professional professional = await _context.Professionals
@@ -237,7 +221,6 @@ namespace GymAdmin.Controllers
                     return View(model);
                 }
 
-                //Relation user - professional
                 Professional professional = new()
                 {
                     User = user,
@@ -262,7 +245,6 @@ namespace GymAdmin.Controllers
                 _context.Add(professional);
                 await _context.SaveChangesAsync();
 
-                //Email confirmation
                 string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 string tokenLink = Url.Action(
                     "ConfirmEmail",
@@ -270,13 +252,14 @@ namespace GymAdmin.Controllers
                     new
                     {
                         UserId = user.Id,
-                        Token = token
+                        Token = token,
+                        Route = "professional"
                     },
                     protocol: HttpContext.Request.Scheme);
 
                 string body = "<style>body{text-align:center;font-family:Verdana,Arial;}</style>" +
                     $"<h1>Soporte GymAdmin</h1>" +
-                    $"<h3>Estás a un solo paso de ser parte de nuestra comunidad</h3>" +
+                    $"<h3>Estás a un solo paso de ser un profesional de GymAdmin</h3>" +
                     $"<h4>Sólo debes hacer click en el siguiente botón para confirmar tu email</h4>" +
                     $"<br/>" +
                     $"<a style=\"padding:15px;background-color:#f1b00e;text-decoration:none;color:black;border: 5px solid #000;border-radius:10px;\" href=\"{tokenLink}\">Confirmar email</a>";
@@ -308,15 +291,18 @@ namespace GymAdmin.Controllers
                 Users = await _combosHelper.GetComboUsersAsync(),
             };
 
-            Professional professional = await _context.Professionals
-                .Include(p => p.Service)
-                .Include(p => p.ProfessionalSchedules)
-                .ThenInclude(ps => ps.Schedule)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            if (id != null)
+            {
+                Professional professional = await _context.Professionals
+                        .Include(p => p.Service)
+                        .Include(p => p.ProfessionalSchedules)
+                        .ThenInclude(ps => ps.Schedule)
+                        .FirstOrDefaultAsync(p => p.Id == id);
 
-            model.Id = professional.Id;
-            model.Username = professional.User.UserName;
-            model.ProfessionalType = professional.ProfessionalType;
+                model.Id = professional.Id;
+                model.Username = professional.User.UserName;
+                model.ProfessionalType = professional.ProfessionalType; 
+            }
 
             return View(model);
         }
@@ -535,8 +521,21 @@ namespace GymAdmin.Controllers
                 ProfessionalSchedule ps = await _context.ProfessionalSchedules.FirstOrDefaultAsync(
                             ps => ps.Professional == professional && ps.Schedule == schedule);
 
+                if (schedule.Day == model.Day && schedule.StartHour == model.StartHour && schedule.FinishHour == model.FinishHour)
+                {
+                    return Json(new
+                    {
+                        isValid = true,
+                        html = ModalHelper.RenderRazorViewToString(this, "_ViewAllSchedules", _context.Professionals
+                            .Include(p => p.User)
+                            .Include(p => p.ProfessionalSchedules)
+                            .ThenInclude(ps => ps.Schedule)
+                            .FirstOrDefault(p => p.Id == model.ProfessionalId))
+                    });
+                }
+
                 Schedule schedule2 = await _context.Schedules.FirstOrDefaultAsync(
-                            s => s.Day == model.Day && s.StartHour == model.StartHour && s.FinishHour == model.FinishHour);
+                    s => s.Day == model.Day && s.StartHour == model.StartHour && s.FinishHour == model.FinishHour);
 
                 if (schedule2 == null)
                 {
@@ -546,6 +545,7 @@ namespace GymAdmin.Controllers
                         StartHour = model.StartHour,
                         FinishHour = model.FinishHour,
                     };
+                    _context.Add(schedule2);
                 }
 
                 ps.Schedule = schedule2;

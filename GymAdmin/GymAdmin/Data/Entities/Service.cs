@@ -23,6 +23,6 @@ namespace GymAdmin.Data.Entities
 
         public int ProfessionalsNumber => Professionals == null ? 0 : Professionals.Count;
 
-        public int AccessesNumber => ServiceAccesses == null ? 0 : ServiceAccesses.Count;
+        public int AccessesNumber => ServiceAccesses.Where(sa => sa.ServiceStatus == Enums.ServiceStatus.Taken) == null ? 0 : ServiceAccesses.Count;
     }
 }

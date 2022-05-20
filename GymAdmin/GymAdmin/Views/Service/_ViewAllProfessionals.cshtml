@@ -50,7 +50,7 @@
                     @Html.DisplayFor(modelItem => item.ProfessionalSchedulesNumber)
                 </td>
                 <td class="td_option">
-                    <a asp-action="DetailsProfessional" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>
+                    <a asp-action="DetailsProfessional" asp-route-id="@item.Id" class="btn btn-outline-info">Horarios</a>
                     <a onclick="showInPopup('@Url.Action("EditProfessional", "Service", new { id=item.Id }, Context.Request.Scheme)' , 'Editar profesional')" class="btn btn-outline-warning">Editar</a>
                     <button data-id="@item.Id" class="btn btn-outline-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog">Eliminar</button>
                 </td>
