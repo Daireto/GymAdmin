@@ -1,0 +1,63 @@
+﻿@model IEnumerable<GymAdmin.Data.Entities.ServiceAccess>
+
+<table class="table table-hover table-responsive table-striped" id="MyTable">
+    <!-- Text -->
+    <thead>
+        <tr>
+            <th>
+                Servicio
+            </th>
+            <th>
+                Horario programado
+            </th>
+            <th>
+                Precio
+            </th>
+            <th>
+                Descuento
+            </th>
+            <th>
+                Precio final
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <!-- Values -->
+    <tbody>
+        @foreach (var item in Model)
+        {
+            @if (item.ServiceStatus == GymAdmin.Enums.ServiceStatus.Pending)
+            {
+                <tr class="GymAdminTableTr">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Service.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AccessDate)
+                    </td>
+                    @{
+                        //Format for prices and discount
+                        string p = $"{item.Service.Price:C2}";
+
+                        string d = $"{item.Discount:P2}";
+
+                        decimal totalPrice = (decimal)(Decimal.ToDouble(item.Service.Price) - (Decimal.ToDouble(item.Service.Price) * item.Discount));
+                        string tp = $"{totalPrice:C2}";
+                    }
+                    <td>
+                        @p
+                    </td>
+                    <td>
+                        @d
+                    </td>
+                    <td>
+                        @tp
+                    </td>
+                    <td class="td_option">
+                        <a asp-action="CancelService" asp-controller="Contracts" asp-route-id="@item.Id" asp-route-route="MyServices" class="btn btn-outline-danger">Cancelar</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

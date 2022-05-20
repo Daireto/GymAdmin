@@ -7,6 +7,7 @@ using GymAdmin.Data.Entities;
 using GymAdmin.Helpers;
 using GymAdmin.Models;
 using GymAdmin.Enums;
+using Vereyon.Web;
 
 namespace GymAdmin.Controllers
 {
@@ -17,13 +18,15 @@ namespace GymAdmin.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IBlobHelper _blobHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly IFlashMessage _flashMessage;
 
-        public UserController(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper, IMailHelper mailHelper)
+        public UserController(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper, IMailHelper mailHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _userHelper = userHelper;
             _blobHelper = blobHelper;
             _mailHelper = mailHelper;
+            _flashMessage = flashMessage;
         }
         public async Task<IActionResult> Index()
         {
@@ -58,7 +61,7 @@ namespace GymAdmin.Controllers
                 User user = await _userHelper.AddUserAsync(model, imageId);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Este correo ya está en uso!");
+                    _flashMessage.Danger("Este correo ya está en uso, por favor ingrese otro", "Error:");
                     return View(model);
                 }
 
@@ -89,12 +92,13 @@ namespace GymAdmin.Controllers
 
                 if (response.IsSuccess)
                 {
-                    return RedirectToAction("ConfirmEmailMessage", "Account");
+                    _flashMessage.Confirmation("Las instrucciones han sido enviadas al correo", "Para continuar se debe verificar el email:");
                 }
                 else
                 {
-                    return RedirectToAction("ConfirmEmailErrorMessage", "Account");
+                    _flashMessage.Danger("Si el problema persiste comunicate con soporte técnico", "Ha ocurrido un error:");
                 }
+                return RedirectToAction("Login", "Account");
             }
             return View(model);
         }

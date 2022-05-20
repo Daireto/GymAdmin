@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GymAdmin.Migrations
 {
-    public partial class DBUntilPlans : Migration
+    public partial class DbUntilAttendance : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -205,7 +205,7 @@ namespace GymAdmin.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Attendance",
+                name: "Attendances",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -215,9 +215,9 @@ namespace GymAdmin.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Attendance", x => x.Id);
+                    table.PrimaryKey("PK_Attendances", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Attendance_AspNetUsers_UserId",
+                        name: "FK_Attendances_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
@@ -378,8 +378,8 @@ namespace GymAdmin.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attendance_UserId",
-                table: "Attendance",
+                name: "IX_Attendances_UserId",
+                table: "Attendances",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -464,7 +464,7 @@ namespace GymAdmin.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Attendance");
+                name: "Attendances");
 
             migrationBuilder.DropTable(
                 name: "PlanInscriptions");

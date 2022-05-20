@@ -64,6 +64,8 @@
     }
 </style>
 
+<flash dismissable="true" />
+
 <!-- View professional page -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
@@ -119,11 +121,9 @@
                                 <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Regresar</a>
                             </button>
                             <button disabled class="GymAdminFormButton GymAdminEditButton">
-                                <a asp-action="EditProfessional" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-pen-to-square"></i>Editar</a>
+                                <a onclick="showInPopup('@Url.Action("EditProfessional", "Service", new { id=Model.Id }, Context.Request.Scheme)' , 'Editar profesional')" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-pen-to-square"></i>Editar</a>
                             </button>
-                            <button disabled class="GymAdminFormButton GymAdminDeleteButton">
-                                <a asp-action="DeleteProfessional" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Eliminar</a>
-                            </button>
+                            <button data-id="@Model.Id" class="GymAdminFormButton GymAdminDeleteButton deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-lock"></i>Eliminar</button>
                         </div>
                     </div>
                 </div>
@@ -138,86 +138,14 @@
                         <h3 class="panel-title GymAdminTableTitle">Horarios del profesional</h3>
                         <div class="newScheduleDiv">
                             <button disable class="GymAdminFormButton">
-                                <a asp-action="CreateSchedule" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel">Asignar horario</a>
+                                <a onclick="showInPopup('@Url.Action("CreateSchedule", "Service", new{ id=Model.Id }, Context.Request.Scheme)' , 'Asignar horario')" class="GymAdminFormElement GymAdminFormLabel">Asignar horario</a>
                             </button>
                         </div>
                     </div>
                     <div class="panel-body GymAdminTable">
-                        <table class="table table-hover table-responsive table-striped" id="MyTable">
-                            <!-- Text -->
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Día
-                                    </th>
-                                    <th>
-                                        Hora de inicio
-                                    </th>
-                                    <th>
-                                        Hora de salida
-                                    </th>
-                                    <th>
-                                        Opciones
-                                    </th>
-                                </tr>
-                            </thead>
-                            <!-- Values -->
-                            <tbody>
-                                @foreach (var item in Model.ProfessionalSchedules)
-                                {
-                                    var day = "";
-                                    if (item.Schedule.Day.ToString() == "Monday")
-                                    {
-                                        day = "Lunes";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Tuesday")
-                                    {
-                                        day = "Martes";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Wednesday")
-                                    {
-                                        day = "Miércoles";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Thursday")
-                                    {
-                                        day = "Jueves";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Friday")
-                                    {
-                                        day = "Viernes";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Saturday")
-                                    {
-                                        day = "Sábado";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Sunday")
-                                    {
-                                        day = "Domingo";
-                                    }
-                                    <tr class="GymAdminTableTr">
-                                        <td>
-                                            @day
-                                        </td>
-                                        <td>
-                                            @{
-                                                var StartHourDateTime = new DateTime(item.Schedule.StartHour.Ticks);
-                                                var FinishHourDateTime = new DateTime(item.Schedule.FinishHour.Ticks);
-                                                var StartHour12HoursFormated = StartHourDateTime.ToString("h:mm tt");
-                                                var FinishHour12HoursFormated = FinishHourDateTime.ToString("h:mm tt");
-                                            }
-                                            @StartHour12HoursFormated
-                                        </td>
-                                        <td>
-                                            @FinishHour12HoursFormated
-                                        </td>
-                                        <td class="td_option">
-                                            <a asp-action="EditSchedule" asp-route-id="@item.Schedule.Id" asp-route-proId="@Model.Id" class="btn btn-outline-warning">Editar</a>
-                                            <a asp-action="DeleteSchedule" asp-route-id="@item.Schedule.Id" asp-route-proId="@Model.Id" class="btn btn-outline-danger">Eliminar</a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                        <div id="view-all">
+                            @await Html.PartialAsync("_ViewAllSchedules", Model)
+                        </div>
                     </div>
                 </div>
             </div>
@@ -225,24 +153,28 @@
     </div>
 </div>
 
+<partial name="_DeleteDialog" />
 
-
+<!-- Scripts -->
 @section Scripts {
     @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#MyTable').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-            },
-            "aLengthMenu": [
-                [15, 30, 60, 120, -1],
-                [15, 30, 60, 120, "Todos"]
-            ]
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [15, 30, 60, 120, -1],
+                    [15, 30, 60, 120, "Todos"]
+                ]
+            });
         });
-    });
-</script>
-}
+    </script>
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Service/DeleteProfessional/', false);
+    </script>
+    }

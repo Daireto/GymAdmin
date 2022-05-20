@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymAdmin.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220519020617_DBUntilPlans")]
-    partial class DBUntilPlans
+    [Migration("20220520051326_DbUntilAttendance")]
+    partial class DbUntilAttendance
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,7 +42,7 @@ namespace GymAdmin.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Attendance");
+                    b.ToTable("Attendances");
                 });
 
             modelBuilder.Entity("GymAdmin.Data.Entities.Plan", b =>

@@ -6,6 +6,8 @@ using GymAdmin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Vereyon.Web;
+using static GymAdmin.Helpers.ModalHelper;
 
 namespace GymAdmin.Controllers
 {
@@ -14,12 +16,14 @@ namespace GymAdmin.Controllers
         private readonly DataContext _context;
         private readonly ICombosHelper _combosHelper;
         private readonly IUserHelper _userHelper;
+        private readonly IFlashMessage _flashMessage;
 
-        public HomeController(DataContext context, ICombosHelper combosHelper, IUserHelper userHelper)
+        public HomeController(DataContext context, ICombosHelper combosHelper, IUserHelper userHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _combosHelper = combosHelper;
             _userHelper = userHelper;
+            _flashMessage = flashMessage;
         }
 
         //Principal pages
@@ -56,6 +60,7 @@ namespace GymAdmin.Controllers
         }
 
         //Services, events and plans
+        [NoDirectAccess]
         public async Task<IActionResult> TakeService(int? id)
         {
             if (User.Identity.IsAuthenticated)
@@ -88,8 +93,8 @@ namespace GymAdmin.Controllers
             {
                 if (model.AccessHour == 0)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un horario!");
-                    return View(model);
+                    _flashMessage.Danger("Debe seleccionar un horario", "Error:");
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "TakeService", model) });
                 }
 
                 TimeSpan AccessHour = TimeSpan.FromTicks(model.AccessHour);
@@ -108,10 +113,18 @@ namespace GymAdmin.Controllers
 
                 _context.Add(serviceAccess);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(MyServices), "Home");
+                _flashMessage.Confirmation("Registro insertado correctamente", "Operación exitosa:");
+
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewPendingServices", _context.ServiceAccesses.Where(sa => sa.User.Email == User.Identity.Name)
+                        .Include(sa => sa.Service)
+                        .ToList())
+                });
             }
 
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "TakeService", model) });
         }
 
         public async Task<JsonResult> GetHours(int serviceId, DateTime day)

@@ -9,11 +9,12 @@
 <link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
 
+<flash dismissable="true" />
+
 <!-- Create form -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-                <h2 style="text-align:center;margin-top: 15px;">Crear profesional</h2>
             <form asp-action="CreateProfessional" id="GymAdminForm" enctype="multipart/form-data">
                 <!-- Hidden inputs -->
                 <input type="hidden" asp-for="UserType" />
@@ -21,7 +22,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
                     <!-- Left column -->
-                        <div class="col-md-6 GymAdminFormColumn">
+                    <div class="col-md-6 GymAdminFormColumn">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="Username" class="control-label GymAdminFormLabel"></label>
@@ -76,8 +77,8 @@
                         </div>
                         <!-- Buttons and links -->
                         <div class="GymAdminRegisterFormButtons form-group mt-2">
-                                <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                                <button disabled class="GymAdminFormButton">
+                            <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                            <button disabled class="GymAdminFormButton">
                                 <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
                             </button>
                         </div>
@@ -129,9 +130,9 @@
                         }
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="ProfessionalType" class="control-label GymAdminFormLabel"></label>
-                                <select asp-for="ProfessionalType" asp-items="@ProfessionalTypes" class="GymAdminFormCombobox"></select>
+                            <select asp-for="ProfessionalType" asp-items="@ProfessionalTypes" class="GymAdminFormCombobox"></select>
                             <span asp-validation-for="ProfessionalType" class="text-danger"></span>
-                        </div
+                        </div>
                     </div>
                 </div>
             </form>
@@ -144,14 +145,14 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-<script type="text/javascript">
-    $(document).ready(function (){
-        $("#searchUser").attr("value", @Model.Username);
-    });
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#searchUser").attr("value", @Model.Username);
+        });
 
-    $("#searchUser").on("input", function (){
-        var selected = $(this).val();
-        $(this).attr("value", selected);
-    });
-</script>
+        $("#searchUser").on("input", function() {
+            var selected = $(this).val();
+            $(this).attr("value", selected);
+        });
+    </script>
 }

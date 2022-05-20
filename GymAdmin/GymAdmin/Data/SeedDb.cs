@@ -56,6 +56,9 @@ namespace GymAdmin.Data
             //Plan Seeds
             await CheckPlansAsync();
             await CheckPlanInscriptionAsync();
+
+            //Attendance seed
+            await CheckAttendancesAsync();
         }
 
         //Professionals
@@ -347,7 +350,6 @@ namespace GymAdmin.Data
 
                 List<string> EmailsList = new()
                 {
-                    "dairo@yopmail.com",
                     "millie@yopmail.com",
                     "brett@yopmail.com",
                     "brian@yopmail.com",
@@ -549,9 +551,9 @@ namespace GymAdmin.Data
         }
 
         //PlanInscriptions
-        private async Task CheckPlanInscriptionAsync() 
+        private async Task CheckPlanInscriptionAsync()
         {
-            if (!_context.PlanInscriptions.Any())     
+            if (!_context.PlanInscriptions.Any())
             {
                 User user = await _userHelper.GetUserAsync("brett@yopmail.com");
                 User user2 = await _userHelper.GetUserAsync("brian@yopmail.com");
@@ -561,7 +563,7 @@ namespace GymAdmin.Data
                 Plan plan = await _context.Plans.FindAsync(1); //TicketHolder
                 Plan plan2 = await _context.Plans.FindAsync(2); //Simple
                 Plan plan3 = await _context.Plans.FindAsync(3); //Black
-                PlanInscription pl1 = new PlanInscription 
+                PlanInscription pl1 = new PlanInscription
                 {
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
@@ -579,7 +581,7 @@ namespace GymAdmin.Data
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
                     User = user2,
-                    Plan = plan2, 
+                    Plan = plan2,
                     Duration = 30,
                     ExpirationDate = DateTime.Today.AddDays(30),
                     PlanStatus = PlanStatus.Paid,
@@ -592,7 +594,7 @@ namespace GymAdmin.Data
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
                     User = user3,
-                    Plan = plan3, 
+                    Plan = plan3,
                     Duration = 30,
                     ExpirationDate = DateTime.Today.AddDays(30),
                     PlanStatus = PlanStatus.Paid,
@@ -632,7 +634,45 @@ namespace GymAdmin.Data
                 _context.Add(pl4);
                 _context.Add(pl5);
                 await _context.SaveChangesAsync();
-            } 
+            }
+        }
+
+        //Attendances
+        /*
+            millie@yopmail.com
+            brett@yopmail.com
+            brian@yopmail.com
+            lamar@yopmail.com
+            peyton@yopmail.com
+        */
+        private async Task CheckAttendancesAsync()
+        {
+            if (!_context.Attendances.Any())
+            {
+                List<string> EmailsList = new()
+                {
+                    "millie@yopmail.com",
+                    "brett@yopmail.com",
+                    "brian@yopmail.com",
+                    "lamar@yopmail.com",
+                    "peyton@yopmail.com",
+                };
+
+                foreach (string email in EmailsList)
+                {
+                    var user = await _userHelper.GetUserAsync(email);
+                    var serviceAccesses = await _context.ServiceAccesses.Where(sa => sa.User == user).ToListAsync();
+                    foreach(ServiceAccess serviceAccess in serviceAccesses)
+                    {
+                        _context.Add(new Attendance
+                        {
+                            User = user,
+                            AttendanceDate = serviceAccess.AccessDate
+                        });
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
         }
     }
 }

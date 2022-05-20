@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = null;
 }
 
 <!-- GymAdmin style -->
@@ -9,19 +10,13 @@
 <link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
 
+<flash dismissable="true" />
+
 <!-- Edit form -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-            @if (Model.Id == null)
-            {
-                <h2 style="text-align:center;margin-top: 15px;">Asignar usuario como profesional</h2>
-            }
-            else
-            {
-                <h2 style="text-align:center;margin-top: 15px;">Editar profesional</h2>
-            }
-            <form asp-action="EditProfessional" id="GymAdminForm">
+            <form asp-action="EditProfessional" id="GymAdminForm" onsubmit="return jQueryAjaxPost(this);">
                 <!-- Hidden inputs -->
                 <input type="hidden" asp-for="Id" />
                 <!-- Validation summary -->
@@ -47,15 +42,15 @@
                             {
                                 <input type="submit" value="Asignar usuario" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
                                 <button disabled class="GymAdminFormButton">
-                                <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
-                            </button>
+                                    <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                                </button>
                             }
                             else
                             {
                                 <input type="submit" value="Guardar cambios" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
                                 <button disabled class="GymAdminFormButton">
-                                <a asp-action="DetailsProfessional" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
-                            </button>
+                                    <a asp-action="DetailsProfessional" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                                </button>
                             }
                         </div>
                     </div>
@@ -104,14 +99,14 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-<script type="text/javascript">
-    $(document).ready(function (){
-        $("#searchUser").attr("value", @Model.Username);
-    });
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#searchUser").attr("value", @Model.Username);
+        });
 
-    $("#searchUser").on("input", function (){
-        var selected = $(this).val();
-        $(this).attr("value", selected);
-    });
-</script>
+        $("#searchUser").on("input", function() {
+            var selected = $(this).val();
+            $(this).attr("value", selected);
+        });
+    </script>
 }

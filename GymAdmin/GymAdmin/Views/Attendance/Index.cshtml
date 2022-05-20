@@ -1,7 +1,7 @@
-﻿@model IEnumerable<GymAdmin.Data.Entities.Professional>
+﻿@model IEnumerable<GymAdmin.Data.Entities.Attendance>
 
 @{
-    ViewData["Title"] = "Professionals";
+    ViewData["Title"] = "Attemdances";
 }
 
 <!-- GymAdmin style -->
@@ -9,11 +9,11 @@
 <link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
 
 <style>
-    a .fa-user-tie, a .fa-calendar {
+    a .fa-bell-concierge, a .fa-user-tie {
         padding-right: 5px;
     }
 
-    h3 .fa-dumbbell {
+    h3 .fa-hand-fist {
         padding-right: 0;
         padding-left: 10px;
     }
@@ -25,31 +25,26 @@
 
 <flash dismissable="true" />
 
-<!-- Professionals -->
+<!-- Attendances -->
 <div class="row">
     <div class="col-md-12 GymAdminTableContainer">
         <div class="panel panel-default">
             <div class="panel-heading GymAdminTableHeading">
-                <h3 class="panel-title GymAdminTableTitle">Profesionales<i class="fa-solid fa-dumbbell"></i></h3>
+                <h3 class="panel-title GymAdminTableTitle">Asistencias<i class="fa-solid fa-hand-fist"></i></h3>
                 <div>
                     <button disable class="GymAdminFormButton">
-                        <a onclick="showInPopup('@Url.Action("CreateProfessional", "Service", new{}, Context.Request.Scheme)' , 'Crear profesional')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Crear profesional</a>
-                    </button>
-                    <button disable class="GymAdminFormButton">
-                        <a onclick="showInPopup('@Url.Action("EditProfessional", "Service", new{}, Context.Request.Scheme)' , 'Asignar profesional')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Asignar profesional</a>
+                        <a onclick="showInPopup('@Url.Action("Create", "Attendance", new{}, Context.Request.Scheme)' , 'Registrar asistencia')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-bell-concierge"></i>Registrar asistencia</a>
                     </button>
                 </div>
             </div>
             <div class="panel-body GymAdminTable">
                 <div id="view-all">
-                    @await Html.PartialAsync("_ViewAllProfessionals", Model)
+                    @await Html.PartialAsync("_ViewAllAttendances", Model)
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<partial name="_DeleteDialog" />
 
 <!-- Scripts -->
 @section Scripts {
@@ -69,8 +64,5 @@
                 ]
             });
         });
-    </script>
-    <script>
-        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Service/DeleteProfessional/', false);
     </script>
     }

@@ -22,5 +22,7 @@ namespace GymAdmin.Data.Entities
         public ICollection<Professional> Professionals { get; set; }
 
         public int ProfessionalsNumber => Professionals == null ? 0 : Professionals.Count;
+
+        public int AccessesNumber => ServiceAccesses == null ? 0 : ServiceAccesses.Count;
     }
 }

@@ -40,7 +40,7 @@ namespace GymAdmin.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Attendance");
+                    b.ToTable("Attendances");
                 });
 
             modelBuilder.Entity("GymAdmin.Data.Entities.Plan", b =>

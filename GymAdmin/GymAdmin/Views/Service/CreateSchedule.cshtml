@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
+    Layout = null;
 }
 
 <!-- GymAdmin style -->
@@ -9,12 +10,13 @@
 <link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
 
+<flash dismissable="true" />
+
 <!-- Create form -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-            <h2 style="text-align:center;margin-top: 15px;">Asignar horario</h2>
-            <form asp-action="CreateSchedule" id="GymAdminForm">
+            <form asp-action="CreateSchedule" id="GymAdminForm" onsubmit="return jQueryAjaxPost(this);">
                 <!-- Hidden inputs -->
                 <input type="hidden" asp-for="ProfessionalId" />
                 <!-- Validation summary -->
@@ -96,4 +98,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+    }

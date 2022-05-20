@@ -61,6 +61,8 @@
     }
 </style>
 
+<flash dismissable="true" />
+
 <!-- View service page -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
@@ -102,11 +104,9 @@
                         <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Regresar</a>
                     </button>
                     <button disabled class="GymAdminFormButton GymAdminEditButton">
-                        <a asp-action="Edit" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-pen-to-square"></i>Editar</a>
+                        <a onclick="showInPopup('@Url.Action("Edit", "Service", new { id=Model.Id }, Context.Request.Scheme)' , 'Editar servicio')" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-pen-to-square"></i>Editar</a>
                     </button>
-                    <button disabled class="GymAdminFormButton GymAdminDeleteButton">
-                        <a asp-action="Delete" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Eliminar</a>
-                    </button>
+                    <button data-id="@Model.Id" class="GymAdminFormButton GymAdminDeleteButton deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-lock"></i>Eliminar</button>
                 </div>
             </form>
         </div>
@@ -130,10 +130,13 @@
                                         Correo electrónico
                                     </th>
                                     <th>
+                                        Documento
+                                    </th>
+                                    <th>
                                         Cantidad de horarios
                                     </th>
                                     <th>
-                                        Opciones
+                                        Foto
                                     </th>
                                 </tr>
                             </thead>
@@ -143,18 +146,19 @@
                                 {
                                     <tr class="GymAdminTableTr">
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.User.FullName)
+                                            <a asp-action="DetailsProfessional" asp-route-id="@item.Id" class="btn btn-outline-info">item.User.FullName</a>
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.User.Email)
                                         </td>
                                         <td>
+                                            @Html.DisplayFor(modelItem => item.User.Document)
+                                        </td>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.ProfessionalSchedulesNumber)
                                         </td>
-                                        <td class="td_option">
-                                            <a asp-action="DetailsProfessional" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>
-                                            <a asp-action="EditProfessional" asp-route-id="@item.Id" class="btn btn-outline-warning">Editar</a>
-                                            <a asp-action="DeleteProfessional" asp-route-id="@item.Id" class="btn btn-outline-danger">Eliminar</a>
+                                        <td>
+                                            <img src="@item.User.ImageFullPath" style="width:100px; border-radius:50%;" />
                                         </td>
                                     </tr>
                                 }
@@ -167,9 +171,28 @@
     </div>
 </div>
 
+<partial name="_DeleteDialog" />
+
 <!-- Scripts -->
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [15, 30, 60, 120, -1],
+                    [15, 30, 60, 120, "Todos"]
+                ]
+            });
+        });
+    </script>
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Service/Delete/', false);
+    </script>
+    }
