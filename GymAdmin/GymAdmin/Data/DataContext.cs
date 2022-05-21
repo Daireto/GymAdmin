@@ -7,7 +7,9 @@ namespace GymAdmin.Data
     public class DataContext : IdentityDbContext<User>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
-
+        
+        public DbSet<Director> Directors { get; set; }
+        public DbSet<Event> Events{ get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceAccess> ServiceAccesses { get; set; }
         public DbSet<ProfessionalSchedule> ProfessionalSchedules { get; set; }
@@ -16,6 +18,8 @@ namespace GymAdmin.Data
         public DbSet<Plan> Plans { get; set; }
         public DbSet<PlanInscription> PlanInscriptions { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<EventAcces> EventAcces { get; set; }
+        public DbSet<EventIncriptions> EventIncriptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
