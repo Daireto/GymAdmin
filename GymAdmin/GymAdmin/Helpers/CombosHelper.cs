@@ -31,7 +31,7 @@ namespace GymAdmin.Helpers
 
         public async Task<IEnumerable<SelectListItem>> GetComboSchedulesAsync(int serviceId, DateTime day)
         {
-            List<DateTime> allSchedules = new List<DateTime>();
+            List<DateTime> allSchedules = new();
 
             for(int i=7; i<=18; i++)
             {

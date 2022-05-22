@@ -28,13 +28,12 @@ namespace GymAdmin.Controllers
         }
 
         //-------------------------------- General TODOs ----------------------------------
+        //TODO: If your teammates don't, make GetPlan and EditActivePlan methods in PlanController and the views with modals
+        //TODO: Make SignUpToEvent and CancelInscription methods
         //TODO: Make Events view with pagination
         //TODO: Make a modal that shows the selected event details and the inscription button
-        //TODO: Make SignUpToEvent and CancelInscription methods
-        //TODO: Make a service on Program (like the Seeder) with UpdateExpirationDatePlan and UpdateEventAtendance methods
         //TODO: Make My Events view
-
-        //TODO: If your teammates don't, make GetPlan and EditActivePlan methods in PlanController and the views with modals
+        //TODO: Make a service on Program (like the Seeder) with UpdateExpirationDatePlan and UpdateEventAtendance methods
 
         //------------------------------------- Principal --------------------------------------------
         public IActionResult Index()
