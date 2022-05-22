@@ -1,0 +1,22 @@
+﻿/*
+    Body
+*/
+body {
+    background-image: url("../../images/bg/message-body-background.jpg");
+}
+
+p a {
+    color: white;
+    font-weight: bold;
+    transition: all .2s ease-out;
+}
+
+    p a:hover {
+        color: #f2c60d
+    }
+
+h1 {
+    color: #f2c60d;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

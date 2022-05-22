@@ -13,6 +13,7 @@
 <style>
     .fa-pen-to-square,
     .fa-lock,
+    .fa-hand-fist,
     .fa-bell-concierge {
         padding-right: 5px;
     }
@@ -24,7 +25,7 @@
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-            <form asp-action="" id="GymAdminForm">
+            <form id="GymAdminForm" onsubmit="return false;">
                 <!-- Image -->
                 <div class="row">
                     <div class="col-md-12">
@@ -95,6 +96,9 @@
                 <div class="GymAdminRegisterFormButtons form-group mt-2">
                     <button disabled class="GymAdminFormButton">
                         <a asp-action="MyServices" asp-controller="Home" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink"><i class="fa-solid fa-bell-concierge"></i>Mis servicios</a>
+                    </button>
+                    <button disabled class="GymAdminFormButton">
+                        <a onclick="showInPopup('@Url.Action("MyPlan", "Home", new{}, Context.Request.Scheme)' , 'Detalles del plan')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-hand-fist"></i>Mi plan</a>
                     </button>
                     <button disabled class="GymAdminFormButton">
                         <a asp-action="EditUser" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink"><i class="fa-solid fa-pen-to-square"></i>Editar perfil</a>

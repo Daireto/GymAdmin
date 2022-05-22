@@ -1,6 +1,7 @@
 ﻿using GymAdmin.Common;
 using GymAdmin.Data;
 using GymAdmin.Data.Entities;
+using GymAdmin.Enums;
 using GymAdmin.Helpers;
 using GymAdmin.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,16 @@ namespace GymAdmin.Controllers
             _flashMessage = flashMessage;
         }
 
+        //-------------------------------- General TODOs ----------------------------------
+        //TODO: Make Events view with pagination
+        //TODO: Make a modal that shows the selected event details and the inscription button
+        //TODO: Make SignUpToEvent and CancelInscription methods
+        //TODO: Make a service on Program (like the Seeder) with UpdateExpirationDatePlan and UpdateEventAtendance methods
+        //TODO: Make My Events view
+
+        //TODO: If your teammates don't, make GetPlan and EditActivePlan methods in PlanController and the views with modals
+
+        //------------------------------------- Principal --------------------------------------------
         public IActionResult Index()
         {
             return View();
@@ -42,6 +53,33 @@ namespace GymAdmin.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        //------------------------------------- User --------------------------------------------
+        public async Task<IActionResult> MyPlan()
+        {
+            User user = await _context.Users.Include(u => u.PlanInscriptions).FirstOrDefaultAsync(u => u.Email == User.Identity.Name);
+
+            PlanInscription planInscription = await _context.PlanInscriptions
+                .Include(pI => pI.User)
+                .Include(pI => pI.Plan)
+                .FirstOrDefaultAsync(
+                    pI => pI.User.UserName == User.Identity.Name &&
+                    pI.PlanStatus == PlanStatus.Active
+                );
+
+            if (planInscription == null)
+            {
+                return View(nameof(NoPlan));
+            }
+
+            return View(planInscription);
+        }
+
+        [NoDirectAccess]
+        public IActionResult NoPlan()
         {
             return View();
         }
@@ -67,11 +105,27 @@ namespace GymAdmin.Controllers
 
                 Service service = await _context.Services.FindAsync(Id);
 
+                User user = await _userHelper.GetUserAsync(User.Identity.Name);
+
+                PlanInscription planInscription = await _context.PlanInscriptions
+                .Include(pI => pI.User)
+                .Include(pI => pI.Plan)
+                .FirstOrDefaultAsync(
+                    pI => pI.User.UserName == User.Identity.Name &&
+                    pI.PlanStatus == PlanStatus.Active
+                );
+
+                if (planInscription == null)
+                {
+                    _flashMessage.Danger("No tienes ningún plan activo, debes adquirir uno para acceder a un servicio", "Error:");
+                    return RedirectToAction("ViewUser", "Account");
+                }
+
                 TakeServiceViewModel model = new()
                 {
                     ServiceId = Id,
                     Services = await _combosHelper.GetComboServicesAsync(),
-                    Discount = DiscountValues.GetDiscountValue("Regular"),
+                    Discount = DiscountValues.GetDiscountValue(planInscription.Plan.PlanType),
                     Price = service.Price
                 };
 
@@ -126,20 +180,27 @@ namespace GymAdmin.Controllers
         }
 
         [NoDirectAccess]
-        public JsonResult GetPrice(int serviceId)
+        public async Task<JsonResult> GetPrice(int serviceId)
         {
             Service service = _context.Services.Find(serviceId);
 
+            PlanInscription planInscription = await _context.PlanInscriptions
+                .Include(pI => pI.User)
+                .Include(pI => pI.Plan)
+                .FirstOrDefaultAsync(
+                    pI => pI.User.UserName == User.Identity.Name &&
+                    pI.PlanStatus == PlanStatus.Active
+                );
+
             string p = $"{service.Price:C2}";
 
-            decimal totalPrice = (decimal)(Decimal.ToDouble(service.Price) - (Decimal.ToDouble(service.Price) * DiscountValues.GetDiscountValue("Regular")));
+            decimal totalPrice = (decimal)(Decimal.ToDouble(service.Price) - (Decimal.ToDouble(service.Price) * DiscountValues.GetDiscountValue(planInscription.Plan.PlanType)));
             string tp = $"{totalPrice:C2}";
 
             return Json(new { priceValue = p, totalPriceValue = tp });
         }
 
-        //TODO: Add events and plans methods
-
+        //------------------------------------- Errors --------------------------------------------
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

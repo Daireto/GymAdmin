@@ -1,6 +1,7 @@
 ﻿using GymAdmin.Common;
 using GymAdmin.Data;
 using GymAdmin.Data.Entities;
+using GymAdmin.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
@@ -127,17 +128,18 @@ namespace GymAdmin.Helpers
 
         public async Task<IEnumerable<SelectListItem>> GetComboUsersWithPlanAsync()
         {
-            List<SelectListItem> list = await _context.Users
-                .Where(u => u.PlanInscriptions.LastOrDefault() != null)
-                .Select(u => new SelectListItem
+            List<SelectListItem> list = await _context.PlanInscriptions
+                .Include(pI => pI.User)
+                .Include(pI => pI.Plan)
+                .Where(pI => pI.PlanStatus == PlanStatus.Active)
+                .Select(pI => new SelectListItem
                 {
-                    Text = u.FullName,
-                    Value = u.UserName
+                    Text = pI.User.FullName,
+                    Value = pI.User.UserName
                 })
                 .ToListAsync();
 
             return list;
         }
-
     }
 }

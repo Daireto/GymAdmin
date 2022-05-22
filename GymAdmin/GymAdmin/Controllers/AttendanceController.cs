@@ -54,14 +54,20 @@ namespace GymAdmin.Controllers
                 User user = await _context.Users.Include(u => u.PlanInscriptions).FirstOrDefaultAsync(u => u.Email == model.Username);
                 if (user != null)
                 {
-                    PlanInscription pI = await _context.PlanInscriptions.Include(pI => pI.Plan).FirstOrDefaultAsync(pI => pI.Id == user.PlanInscriptions.Last().Id);
+                    PlanInscription pI = await _context.PlanInscriptions
+                        .Include(pI => pI.User)
+                        .Include(pI => pI.Plan)
+                        .FirstOrDefaultAsync(
+                            pI => pI.User.UserName == model.Username &&
+                            pI.PlanStatus == PlanStatus.Active
+                        );
 
                     Attendance at = new();
                     if (pI != null)
                     {
                         at.AttendanceDate = DateTime.Now;
                         at.User = user;
-                        if (pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.TicketHolder)
+                        if (pI.Plan.PlanType == PlanType.TicketHolder)
                         {
                             pI.RemainingDays -= 1;
                             if (pI.RemainingDays == 0)
@@ -69,10 +75,10 @@ namespace GymAdmin.Controllers
                                 pI.PlanStatus = PlanStatus.Cancelled;
                             }
                         }
-                        if (pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.Simple || pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.Black)
+                        if (pI.Plan.PlanType == PlanType.Regular || pI.Plan.PlanType == PlanType.Black)
                         {
                             DateTime fech = DateTime.Now;
-                            if (fech.Date == pI.ExpirationDate.Date)
+                            if (fech.Date >= pI.ExpirationDate.Date)
                             {
                                 pI.PlanStatus = PlanStatus.Cancelled;
                             }

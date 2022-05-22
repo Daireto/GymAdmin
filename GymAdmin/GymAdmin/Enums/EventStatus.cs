@@ -1,9 +1,9 @@
 ﻿namespace GymAdmin.Enums
 {
-    public enum EventsStatus
+    public enum EventStatus
     {
-        Pending,
-        Taken,
+        SignedUp,
         Attended,
+        Cancelled,
     }
 }

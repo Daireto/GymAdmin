@@ -55,14 +55,14 @@ namespace GymAdmin.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(Login));
         }
 
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(ViewUser));
             }
 
             return View();
@@ -106,7 +106,7 @@ namespace GymAdmin.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(ViewUser));
             }
 
             AddUserViewModel model = new()
@@ -207,6 +207,11 @@ namespace GymAdmin.Controllers
                 _flashMessage.Confirmation("Profesional insertado correctamente", "Email verificado:");
                 return RedirectToAction("ShowProfessionals", "Service");
             }
+            else if (Route == "director")
+            {
+                _flashMessage.Confirmation("Director insertado correctamente", "Email verificado:");
+                return RedirectToAction("Index", "Director");
+            }
             else if (Route == "admin")
             {
                 _flashMessage.Confirmation("Administrador insertado correctamente", "Email verificado:");
@@ -241,7 +246,7 @@ namespace GymAdmin.Controllers
                 };
                 return View(model);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(Login));
         }
 
         [HttpPost]
@@ -296,7 +301,7 @@ namespace GymAdmin.Controllers
             {
                 return View();
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(Login));
         }
 
         [HttpPost]
@@ -338,7 +343,7 @@ namespace GymAdmin.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(ViewUser));
             }
             return View();
         }

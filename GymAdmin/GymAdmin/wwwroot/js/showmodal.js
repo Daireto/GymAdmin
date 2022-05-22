@@ -92,3 +92,7 @@ jQueryAjaxPost = form => {
     soccerDeleteDialog.sc_deleteDialog = methods;
 
 })(window);
+
+function CloseModal() {
+    $('#form-modal').modal('hide');
+}

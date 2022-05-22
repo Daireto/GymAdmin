@@ -6,11 +6,13 @@ using GymAdmin.Helpers;
 using GymAdmin.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Vereyon.Web;
+using static GymAdmin.Helpers.ModalHelper;
 
 namespace GymAdmin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DirectorController : Controller
     {
         private readonly DataContext _context;
@@ -18,63 +20,70 @@ namespace GymAdmin.Controllers
         private readonly ICombosHelper _combosHelper;
         private readonly IBlobHelper _blobHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly IFlashMessage _flashMessage;
 
-        public DirectorController(DataContext context, IUserHelper userHelper, ICombosHelper combosHelper, IBlobHelper blobHelper, IMailHelper mailHelper)
+        public DirectorController(DataContext context, IUserHelper userHelper, ICombosHelper combosHelper, IBlobHelper blobHelper, IMailHelper mailHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _userHelper = userHelper;
             _combosHelper = combosHelper;
             _blobHelper = blobHelper;
             _mailHelper = mailHelper;
-        }
-        public IActionResult Index()
-        {
-            return View();
-        }
-        public async Task<IActionResult> DetailsDirector(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            _flashMessage = flashMessage;
+        }//TODO: Make views and the Seeder method for Directors, Events and Event inscriptions
 
+        //------------------------------------- Directors --------------------------------------------
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.Directors
+                .Include(p => p.User)
+                .Include(s => s.Events)
+                .ToListAsync());
+        }
+
+        [NoDirectAccess]
+        public async Task<IActionResult> DetailsDirector(int id)
+        {
             Director director = await _context.Directors
                 .Include(d => d.User)
-                .Include(d => d.Events)              
+                .Include(d => d.Events)
+                .ThenInclude(e => e.EventInscriptions)
                 .FirstOrDefaultAsync(p => p.Id == id);
-
             return View(director);
         }
-        public async Task<IActionResult> CreateDirector()
+
+        public IActionResult CreateDirector()
         {
-            AddDirectorViewModel model = new()
+            AddUserViewModel model = new()
             {
                 Id = Guid.Empty.ToString(),
-                UserType = UserType.User,
-                Events = await _combosHelper.GetComboEventsAsync()
+                UserType = UserType.User
             };
 
             return View(model);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateDirector(AddDirectorViewModel model)
+        public async Task<IActionResult> CreateDirector(AddUserViewModel model)
         {
-            if (ModelState.IsValid)
-            {              
-                    model.Events = await _combosHelper.GetComboEventsAsync();
-                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un horario para el evento a dar!");
-                    return View(model);               
+            if (await _context.Directors.Include(p => p.User).FirstAsync(p => p.User.UserName == model.Username) != null)
+            {
+                _flashMessage.Danger("Este usuario ya es un director", "Error:");
+                return View(model);
+            }
 
+            if (ModelState.IsValid)
+            {
                 User userDocumentExist = await _userHelper.GetUserAsync(model);
                 if (userDocumentExist != null)
                 {
-                    model.Events = await _combosHelper.GetComboEventsAsync();
-                    ModelState.AddModelError(string.Empty, "¡Ya existe un usuario con este documento!");
+                    _flashMessage.Danger("Ya existe un usuario con este documento, por favor ingrese otro", "Error:");
                     return View(model);
                 }
 
                 Guid imageId = Guid.Empty;
+
                 if (model.ImageFile != null)
                 {
                     imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
@@ -83,23 +92,18 @@ namespace GymAdmin.Controllers
                 User user = await _userHelper.AddUserAsync(model, imageId);
                 if (user == null)
                 {
-                    await _blobHelper.DeleteBlobAsync(imageId, "users");
-                    model.Events = await _combosHelper.GetComboEventsAsync();
-                    ModelState.AddModelError(string.Empty, "¡Este correo ya está en uso!");
+                    _flashMessage.Danger("Este correo ya está en uso, por favor ingrese otro", "Error:");
                     return View(model);
                 }
 
-                //Relation user - professional
-                Director director= new()
+                Director director = new()
                 {
                     User = user,
-                    DirectorType = model.DirectorType,
-                    //Event = await _context.Events.FindAsync(model.EventId)
                 };
+
                 _context.Add(director);
                 await _context.SaveChangesAsync();
 
-                //Email confirmation
                 string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 string tokenLink = Url.Action(
                     "ConfirmEmail",
@@ -107,13 +111,14 @@ namespace GymAdmin.Controllers
                     new
                     {
                         UserId = user.Id,
-                        Token = token
+                        Token = token,
+                        Route = "director"
                     },
                     protocol: HttpContext.Request.Scheme);
 
                 string body = "<style>body{text-align:center;font-family:Verdana,Arial;}</style>" +
                     $"<h1>Soporte GymAdmin</h1>" +
-                    $"<h3>Estás a un solo paso de ser parte de nuestra comunidad</h3>" +
+                    $"<h3>Estás a un solo paso de ser director de eventos de GymAdmin</h3>" +
                     $"<h4>Sólo debes hacer click en el siguiente botón para confirmar tu email</h4>" +
                     $"<br/>" +
                     $"<a style=\"padding:15px;background-color:#f1b00e;text-decoration:none;color:black;border: 5px solid #000;border-radius:10px;\" href=\"{tokenLink}\">Confirmar email</a>";
@@ -126,37 +131,34 @@ namespace GymAdmin.Controllers
 
                 if (response.IsSuccess)
                 {
-                    return RedirectToAction("ConfirmEmailMessage", "Account");
+                    _flashMessage.Confirmation("Las instrucciones han sido enviadas al correo", "Para continuar se debe verificar el email:");
                 }
                 else
                 {
-                    return RedirectToAction("ConfirmEmailErrorMessage", "Account");
+                    _flashMessage.Danger("Si el problema persiste comunicate con soporte técnico", "Ha ocurrido un error:");
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            model.Events = await _combosHelper.GetComboEventsAsync();
             return View(model);
         }
+
+        [NoDirectAccess]
         public async Task<IActionResult> EditDirector(int? id)
         {
             EditDirectorViewModel model = new()
             {
                 Users = await _combosHelper.GetComboUsersAsync(),
-                Events = await _combosHelper.GetComboEventsAsync()
             };
 
             if (id != null)
             {
                 Director director = await _context.Directors
+                    .Include(d => d.User)
                     .Include(d => d.Events)
                     .FirstOrDefaultAsync(p => p.Id == id);
-                if (director != null)
-                {
-                    model.Id = director.Id;
-                    model.Username = director.User.UserName;
-                    model.EventId = director.Id;//lleva el id del director , porque lo crea este
-                    model.DirectorType = director.DirectorType;
-                }
+
+                model.Id = director.Id;
+                model.Username = director.User.UserName;
             }
 
             return View(model);
@@ -170,27 +172,17 @@ namespace GymAdmin.Controllers
             {
                 if (model.Username == null || model.Username == "")
                 {
+                    _flashMessage.Danger("Debe seleccionar un usuario", "Error:");
                     model.Users = await _combosHelper.GetComboUsersAsync();
-                    model.Events = await _combosHelper.GetComboEventsAsync();
-                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un usuario!");
-                    return View(model);
-                }
-
-                if (model.ScheduleId == 0)
-                {
-                    model.Users = await _combosHelper.GetComboUsersAsync();
-                    model.Events = await _combosHelper.GetComboEventsAsync();
-                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un horario para el evento!");
-                    return View(model);
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditDirector", model) });
                 }
 
                 User user = await _userHelper.GetUserAsync(model.Username);
                 if (user == null)
                 {
+                    _flashMessage.Danger("Este usuario no existe en el sistema", "Error:");
                     model.Users = await _combosHelper.GetComboUsersAsync();
-                    model.Events = await _combosHelper.GetComboEventsAsync();
-                    ModelState.AddModelError(string.Empty, "¡Este usuario no existe en el sistema!");
-                    return View(model);
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditDirector", model) });
                 }
 
                 Director director = new();
@@ -199,10 +191,10 @@ namespace GymAdmin.Controllers
                 {
                     director = await _context.Directors.FindAsync(model.Id);
                     director.User = await _userHelper.GetUserAsync(model.Username);
-                    director.DirectorType= model.DirectorType;
-                    //director.Events = await _context.Events.FindAsync(model.EventId);
+
                     _context.Update(director);
                     await _context.SaveChangesAsync();
+                    _flashMessage.Confirmation("Registro actualizado correctamente", "Operación exitosa:");
                 }
                 else
                 {
@@ -211,81 +203,62 @@ namespace GymAdmin.Controllers
                         director = new()
                         {
                             User = await _userHelper.GetUserAsync(model.Username),
-                            DirectorType = model.DirectorType,
-                           // Schedule = await _context.Schedules.FindAsync(model.ScheduleId)
                         };
+
                         _context.Add(director);
                         await _context.SaveChangesAsync();
+                        _flashMessage.Confirmation("Registro insertado correctamente", "Operación exitosa:");
                     }
-                    catch (Exception)
+                    catch
                     {
-                        ModelState.AddModelError(string.Empty, "¡Este usuario ya tiene esta profesión!");
+                        _flashMessage.Danger("Este usuario ya es un director", "Error:");
                         model.Users = await _combosHelper.GetComboUsersAsync();
-                        model.Events = await _combosHelper.GetComboEventsAsync();
-                        return View(model);
+                        return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditDirector", model) });
                     }
                 }
 
-                return RedirectToAction(nameof(DetailsDirector), new { id = director.Id });
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllDirectors", _context.Directors
+                        .Include(p => p.User)
+                        .Include(s => s.Events)
+                        .ToList())
+                });//TODO: Make view _ViewAllDirectors
             }
 
             model.Users = await _combosHelper.GetComboUsersAsync();
-            model.Events = await _combosHelper.GetComboEventsAsync();
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditDirector", model) });
         }
 
-        public async Task<IActionResult> DeleteDirector(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteDirector(int id)
         {
-            if (id == null)
+            Director director = await _context.Directors.FirstOrDefaultAsync(m => m.Id == id);
+
+            try
             {
-                return NotFound();
+                _context.Directors.Remove(director);
+                await _context.SaveChangesAsync();
+                _flashMessage.Confirmation("Registro eliminado correctamente", "Operación exitosa:");
+            }
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar al director porque tiene registros relacionados", "Error:");
             }
 
-            Director director= await _context.Directors
-                .Include(d => d.User)
-                .Include(d => d.Events)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return RedirectToAction(nameof(Index));
+        }//TODO: Edit the deleteDialog script for Directors
 
-            if (director == null)
-            {
-                return NotFound();
-            }
-
-            return View(director);
-        }
-        [HttpPost, ActionName("DeleteProfessional")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteDirectorConfirmed(int id)
-        {
-            Director director= await _context.Directors
-                .Include(d => d.Events)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            foreach (var evento in director.Events)
-            {
-                _context.Events.Remove(evento);
-            }
-
-            _context.Directors.Remove(director);
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ShowDirector));
-        }
-
-        public async Task<IActionResult> ShowDirector()
-        {
-            return View(await _context.Directors
-                .Include(d => d.Events)
-                .Include(d => d.User)
-                .ToListAsync());
-        }
-        //---------------------------- Events -----------------
+        //------------------------------------- Events --------------------------------------------
         public async Task<IActionResult> ShowEvents()
         {
-            return View(await _context.Events.ToListAsync());
+            return View(await _context.Events
+                .Include(e => e.Director)
+                .ThenInclude(d => d.User)
+                .ToListAsync());
         }
 
-        //DetailsSchedule
         public async Task<IActionResult> DetailsEvent(int? id)
         {
             if (id == null)
@@ -293,14 +266,22 @@ namespace GymAdmin.Controllers
                 return NotFound();
             }
 
-            Event evento = await _context.Events
-                .Include(d => d.Director)
+            Event eventObject = await _context.Events
+                .Include(e => e.Director)
                 .ThenInclude(d => d.User)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .Include(e => e.EventInscriptions)
+                .ThenInclude(ei => ei.User)
+                .FirstOrDefaultAsync(e => e.Id == id);
 
-            return View(evento);
+            if (eventObject == null)
+            {
+                return NotFound();
+            }
+
+            return View(eventObject);
         }
 
+        [NoDirectAccess]
         public IActionResult CreateEvent()
         {
             return View();
@@ -308,7 +289,7 @@ namespace GymAdmin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateEvent(Schedule model)
+        public async Task<IActionResult> CreateEvent(Event model)
         {
             if (ModelState.IsValid)
             {
@@ -316,111 +297,104 @@ namespace GymAdmin.Controllers
                 {
                     _context.Add(model);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(ShowEvents));
+                    _flashMessage.Confirmation("Registro insertado correctamente", "Operación exitosa:");
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "¡Este Evento ya existe!");
+                        _flashMessage.Danger("Ya existe un evento con este nombre, por favor ingrese otro", "Error:");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message, "Error:");
                     }
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "CreateEvent", model) });
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message, "Error:");
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "CreateEvent", model) });
                 }
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllEvents", _context.Events
+                            .Include(e => e.Director)
+                            .ThenInclude(d => d.User)
+                            .ToList())
+                });//TODO: Make view _ViewAllEvents
             }
-
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "CreateEvent", model) });
         }
 
-        public async Task<IActionResult> EditEvent(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> EditEvent(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Event evento = await _context.Events
-                .Include(d => d.Director)
+            Event eventObject = await _context.Events
+                .Include(e => e.Director)
+                .ThenInclude(d => d.User)
                 .FirstOrDefaultAsync(e => e.Id == id);
-
-            if (evento == null)
-            {
-                return NotFound();
-            }
-
-            return View(evento);
+            return View(eventObject);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditEvento(int id, Event model)
+        public async Task<IActionResult> EditEvent(Event model)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(model);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(ShowEvents));
+                    _flashMessage.Confirmation("Registro actualizado correctamente", "Operación exitosa:");
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "¡Este Evento ya existe!");
+                        _flashMessage.Danger("Ya existe un evento con este nombre, por favor ingrese otro", "Error:");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message, "Error:");
                     }
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditEvent", model) });
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message, "Error:");
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditEvent", model) });
                 }
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllEvents", _context.Events
+                            .Include(e => e.Director)
+                            .ThenInclude(d => d.User)
+                            .ToList())
+                });
             }
-
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditEvent", model) });
         }
 
-        public async Task<IActionResult> DeleteEvent(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteEvent(int id)
         {
-            if (id == null)
+            Event eventObject = await _context.Events.FirstOrDefaultAsync(m => m.Id == id);
+            try
             {
-                return NotFound();
+                _context.Events.Remove(eventObject);
+                await _context.SaveChangesAsync();
+                _flashMessage.Confirmation("Registro eliminado correctamente", "Operación exitosa:");
             }
-
-            Event evento = await _context.Events
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (evento == null)
+            catch
             {
-                return NotFound();
+                _flashMessage.Danger("No se puede borrar el evento porque tiene registros relacionados", "Error:");
             }
-
-            return View(evento);
-        }
-
-        [HttpPost, ActionName("DeleteEvent")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteEventConfirmed(int id)
-        {
-            Event evento = await _context.Events.FindAsync(id);
-            _context.Events.Remove(evento);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(ShowEvents));
-        }
+        }//TODO: Edit the deleteDialog script for Events
     }
 }
 

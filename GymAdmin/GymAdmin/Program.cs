@@ -16,7 +16,6 @@ builder.Services.AddDbContext<DataContext>(o =>
 });
 
 //User configuration
-//TODO: Make strongest password
 builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 {
     cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;

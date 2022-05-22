@@ -44,6 +44,6 @@ namespace GymAdmin.Data.Entities
 
         public ICollection<PlanInscription> PlanInscriptions { get; set; }
 
-        public ICollection<EventIncriptions> EventIncriptions { get; set; }
+        public ICollection<EventInscription> EventInscriptions { get; set; }
     }
 }

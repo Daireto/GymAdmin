@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GymAdmin.Migrations
 {
-    public partial class DatabaseUntilPlans : Migration
+    public partial class DbUntilEvents : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -224,6 +224,24 @@ namespace GymAdmin.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Directors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Directors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Directors_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PlanInscriptions",
                 columns: table => new
                 {
@@ -309,6 +327,29 @@ namespace GymAdmin.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Events",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Day = table.Column<int>(type: "int", nullable: false),
+                    StartHour = table.Column<long>(type: "bigint", nullable: false),
+                    FinishHour = table.Column<long>(type: "bigint", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EventType = table.Column<int>(type: "int", nullable: false),
+                    DirectorId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Events", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Events_Directors_DirectorId",
+                        column: x => x.DirectorId,
+                        principalTable: "Directors",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProfessionalSchedules",
                 columns: table => new
                 {
@@ -329,6 +370,32 @@ namespace GymAdmin.Migrations
                         name: "FK_ProfessionalSchedules_Schedules_ScheduleId",
                         column: x => x.ScheduleId,
                         principalTable: "Schedules",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventInscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    EventId = table.Column<int>(type: "int", nullable: true),
+                    InscriptionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EventStatus = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventInscriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventInscriptions_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_EventInscriptions_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
                         principalColumn: "Id");
                 });
 
@@ -383,6 +450,34 @@ namespace GymAdmin.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Directors_UserId",
+                table: "Directors",
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventInscriptions_EventId",
+                table: "EventInscriptions",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventInscriptions_UserId",
+                table: "EventInscriptions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_DirectorId",
+                table: "Events",
+                column: "DirectorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_Name",
+                table: "Events",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PlanInscriptions_PlanId",
                 table: "PlanInscriptions",
                 column: "PlanId");
@@ -405,9 +500,9 @@ namespace GymAdmin.Migrations
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Professionals_UserId_ProfessionalType",
+                name: "IX_Professionals_UserId",
                 table: "Professionals",
-                columns: new[] { "UserId", "ProfessionalType" },
+                column: "UserId",
                 unique: true,
                 filter: "[UserId] IS NOT NULL");
 
@@ -467,6 +562,9 @@ namespace GymAdmin.Migrations
                 name: "Attendances");
 
             migrationBuilder.DropTable(
+                name: "EventInscriptions");
+
+            migrationBuilder.DropTable(
                 name: "PlanInscriptions");
 
             migrationBuilder.DropTable(
@@ -479,6 +577,9 @@ namespace GymAdmin.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Events");
+
+            migrationBuilder.DropTable(
                 name: "Plans");
 
             migrationBuilder.DropTable(
@@ -488,10 +589,13 @@ namespace GymAdmin.Migrations
                 name: "Schedules");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Directors");
 
             migrationBuilder.DropTable(
                 name: "Services");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

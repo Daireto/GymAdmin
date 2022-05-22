@@ -34,28 +34,30 @@ namespace GymAdmin.Data
             await CheckRolesAsync();
 
             //User seeds
-            await CheckUsersAsync("1001", DocumentType.CC, "Dairo", "Mosquera", "dairo@yopmail.com", "318 284 6418", "image-dairo.jpg", UserType.Admin);
-            await CheckUsersAsync("1002", DocumentType.CC, "Lindsey", "Morgan", "lindsey@yopmail.com", "311 456 1885", "image-lindsey.jpg", UserType.Admin);
-            await CheckUsersAsync("1003", DocumentType.CC, "Marie", "Avgeropoulos", "marie@yopmail.com", "311 456 9696", "image-marie.jpg", UserType.User);
-            await CheckUsersAsync("1004", DocumentType.PAP, "Curtis", "Jackson", "curtis@yopmail.com", "311 456 7589", "image-curtis.jpg", UserType.User);
-            await CheckUsersAsync("1005", DocumentType.PAP, "Dwayne", "Johnson", "dwayne@yopmail.com", "311 456 2498", "image-rock.jpg", UserType.User);
+            await CheckUsersAsync("1001", DocumentType.CC, "Lindsey", "Morgan", "lindsey@yopmail.com", "311 456 1885", "image-lindsey.jpg", UserType.Admin);
+            await CheckUsersAsync("1002", DocumentType.CC, "Marie", "Avgeropoulos", "marie@yopmail.com", "311 456 9696", "image-marie.jpg", UserType.Admin);
+            await CheckUsersAsync("1003", DocumentType.CC, "Victoria", "Justice", "victoria@yopmail.com", "311 456 6418", "image-victoria.jpg", UserType.User);
+            await CheckUsersAsync("1004", DocumentType.CE, "Curtis", "Jackson", "curtis@yopmail.com", "311 456 7589", "image-curtis.jpg", UserType.User);
+            await CheckUsersAsync("1005", DocumentType.CE, "Dwayne", "Johnson", "dwayne@yopmail.com", "311 456 2498", "image-rock.jpg", UserType.User);
             await CheckUsersAsync("1006", DocumentType.TI, "Millie", "Brown", "millie@yopmail.com", "311 456 7892", "image-millie.jpg", UserType.User);
             await CheckUsersAsync("1007", DocumentType.TI, "Brett", "Gray", "brett@yopmail.com", "311 456 6498", "image-brett.jpg", UserType.User);
-            await CheckUsersAsync("1008", DocumentType.CE, "Brian", "Henry", "brian@yopmail.com", "311 456 3794", "image-brian.jpg", UserType.User);
+            await CheckUsersAsync("1008", DocumentType.PAP, "Brian", "Henry", "brian@yopmail.com", "311 456 3794", "image-brian.jpg", UserType.User);
             await CheckUsersAsync("1009", DocumentType.CE, "Andy", "Allo", "andy@yopmail.com", "311 456 8002", "image-andy.jpg", UserType.User);
             await CheckUsersAsync("1010", DocumentType.CE, "Vanessa", "Hudgens", "vanessa@yopmail.com", "311 456 2841", "image-hudgens.jpg", UserType.User);
-            await CheckUsersAsync("1011", DocumentType.CE, "Rihanna", "Fenty", "rihanna@yopmail.com", "311 456 7945", "image-riri.jpg", UserType.User);
+            await CheckUsersAsync("1011", DocumentType.PAP, "Rihanna", "Fenty", "rihanna@yopmail.com", "311 456 7945", "image-riri.jpg", UserType.User);
             await CheckUsersAsync("1012", DocumentType.PAP, "Lamar", "Hill", "lamar@yopmail.com", "311 456 3628", "image-lamar.jpg", UserType.User);
             await CheckUsersAsync("1013", DocumentType.TI, "Peyton", "List", "peyton@yopmail.com", "311 456 4124", "image-peyton.jpg", UserType.User);
+            await CheckUsersAsync("1014", DocumentType.CC, "Maia", "Mitchell", "maia@yopmail.com", "311 456 3009", "image-maia.jpg", UserType.User);
+            await CheckUsersAsync("1015", DocumentType.TI, "Madison", "Pettis", "madison@yopmail.com", "311 456 0071", "image-madison.jpg", UserType.User);
+
+            //Plan Seeds
+            await CheckPlansAsync();
+            await CheckPlanInscriptionAsync();
 
             //Services seeds
             await CheckServicesAsync();
             await CheckProfessionalsAsync();
             await CheckServicesAccessesAsync();
-
-            //Plan Seeds
-            await CheckPlansAsync();
-            await CheckPlanInscriptionAsync();
 
             //Attendance seed
             await CheckAttendancesAsync();
@@ -310,6 +312,49 @@ namespace GymAdmin.Data
                 };
                 _context.Add(professional5);
                 await _context.SaveChangesAsync();
+
+                Professional professional6 = new()
+                {
+                    User = await _userHelper.GetUserAsync("maia@yopmail.com"),
+                    ProfessionalType = ProfessionalType.Nutritionist,
+                    Service = await _context.Services.FindAsync(3),
+                    ProfessionalSchedules = new List<ProfessionalSchedule>()
+                };
+                professional6.ProfessionalSchedules = new List<ProfessionalSchedule>()
+                {
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional6,
+                        Schedule = await _context.Schedules.FindAsync(1),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional6,
+                        Schedule = await _context.Schedules.FindAsync(2),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional6,
+                        Schedule = await _context.Schedules.FindAsync(3),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional6,
+                        Schedule = await _context.Schedules.FindAsync(4),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional6,
+                        Schedule = await _context.Schedules.FindAsync(5),
+                    },
+                    new ProfessionalSchedule()
+                    {
+                        Professional = professional6,
+                        Schedule = await _context.Schedules.FindAsync(6),
+                    },
+                };
+                _context.Add(professional6);
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -401,14 +446,22 @@ namespace GymAdmin.Data
 
                                 if (result)
                                 {
+                                    User user = await _userHelper.GetUserAsync(email);
+                                    PlanInscription planInscription = await _context.PlanInscriptions
+                                        .Include(pI => pI.User)
+                                        .Include(pI => pI.Plan)
+                                        .FirstOrDefaultAsync(
+                                            pI => pI.User == user &&
+                                            pI.PlanStatus == PlanStatus.Active
+                                        );
                                     _context.Add(new ServiceAccess
                                     {
-                                        User = await _userHelper.GetUserAsync(email),
+                                        User = user,
                                         Service = service,
                                         AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
                                         ServiceStatus = status,
-                                        Discount = DiscountValues.GetDiscountValue("Regular"),
-                                        TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                                        Discount = DiscountValues.GetDiscountValue(planInscription.Plan.PlanType),
+                                        TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue(planInscription.Plan.PlanType)),
                                     });
                                     await _context.SaveChangesAsync();
                                     notExist = true;
@@ -458,14 +511,22 @@ namespace GymAdmin.Data
 
                                 if (result)
                                 {
+                                    User user = await _userHelper.GetUserAsync(email);
+                                    PlanInscription planInscription = await _context.PlanInscriptions
+                                        .Include(pI => pI.User)
+                                        .Include(pI => pI.Plan)
+                                        .FirstOrDefaultAsync(
+                                            pI => pI.User == user &&
+                                            pI.PlanStatus == PlanStatus.Active
+                                        );
                                     _context.Add(new ServiceAccess
                                     {
-                                        User = await _userHelper.GetUserAsync(email),
+                                        User = user,
                                         Service = service,
                                         AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
                                         ServiceStatus = status,
-                                        Discount = DiscountValues.GetDiscountValue("Regular"),
-                                        TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                                        Discount = DiscountValues.GetDiscountValue(planInscription.Plan.PlanType),
+                                        TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue(planInscription.Plan.PlanType)),
                                     });
                                     await _context.SaveChangesAsync();
                                     notExist = true;
@@ -526,7 +587,7 @@ namespace GymAdmin.Data
             {
                 _context.Add(new Plan
                 {
-                    Name = "TicketHolder",
+                    Name = "Tiquetera",
                     PlanType = PlanType.TicketHolder,
                     Price = 5900
 
@@ -534,8 +595,8 @@ namespace GymAdmin.Data
 
                 _context.Add(new Plan
                 {
-                    Name = "Simple",
-                    PlanType = PlanType.Simple,
+                    Name = "Regular",
+                    PlanType = PlanType.Regular,
                     Price = 49000
                 });
 
@@ -561,9 +622,9 @@ namespace GymAdmin.Data
                 User user4 = await _userHelper.GetUserAsync("lamar@yopmail.com");
                 User user5 = await _userHelper.GetUserAsync("peyton@yopmail.com");
                 Plan plan = await _context.Plans.FindAsync(1); //TicketHolder
-                Plan plan2 = await _context.Plans.FindAsync(2); //Simple
+                Plan plan2 = await _context.Plans.FindAsync(2); //Regular
                 Plan plan3 = await _context.Plans.FindAsync(3); //Black
-                PlanInscription pl1 = new PlanInscription
+                PlanInscription pl1 = new()
                 {
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
@@ -571,12 +632,12 @@ namespace GymAdmin.Data
                     Plan = plan,
                     Duration = 5,
                     ExpirationDate = DateTime.Today.AddDays(5),
-                    PlanStatus = PlanStatus.Paid,
+                    PlanStatus = PlanStatus.Active,
                     TotalPrice = plan.Price * 5,
                     RemainingDays = 5,
-                    Discount = DiscountValues.GetDiscountValue("TicketHolder")
+                    Discount = DiscountValues.GetDiscountValue(plan.PlanType)
                 };
-                PlanInscription pl2 = new PlanInscription
+                PlanInscription pl2 = new()
                 {
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
@@ -584,12 +645,12 @@ namespace GymAdmin.Data
                     Plan = plan2,
                     Duration = 30,
                     ExpirationDate = DateTime.Today.AddDays(30),
-                    PlanStatus = PlanStatus.Paid,
-                    TotalPrice = plan2.Price - (plan2.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                    PlanStatus = PlanStatus.Active,
+                    TotalPrice = plan2.Price,
                     RemainingDays = 30,
-                    Discount = DiscountValues.GetDiscountValue("Regular")
+                    Discount = 0
                 };
-                PlanInscription pl3 = new PlanInscription
+                PlanInscription pl3 = new()
                 {
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
@@ -597,12 +658,12 @@ namespace GymAdmin.Data
                     Plan = plan3,
                     Duration = 30,
                     ExpirationDate = DateTime.Today.AddDays(30),
-                    PlanStatus = PlanStatus.Paid,
-                    TotalPrice = plan3.Price - (plan3.Price * (decimal)DiscountValues.GetDiscountValue("Black")),
+                    PlanStatus = PlanStatus.Active,
+                    TotalPrice = plan3.Price,
                     RemainingDays = 30,
-                    Discount = DiscountValues.GetDiscountValue("Black")
+                    Discount = 0
                 };
-                PlanInscription pl4 = new PlanInscription
+                PlanInscription pl4 = new()
                 {
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
@@ -610,12 +671,12 @@ namespace GymAdmin.Data
                     Plan = plan2,
                     Duration = 30,
                     ExpirationDate = DateTime.Today.AddDays(30),
-                    PlanStatus = PlanStatus.Paid,
-                    TotalPrice = plan2.Price - (plan2.Price * (decimal)DiscountValues.GetDiscountValue("Regular")),
+                    PlanStatus = PlanStatus.Active,
+                    TotalPrice = plan2.Price,
                     RemainingDays = 30,
-                    Discount = DiscountValues.GetDiscountValue("Regular")
+                    Discount = 0
                 };
-                PlanInscription pl5 = new PlanInscription
+                PlanInscription pl5 = new()
                 {
                     InscriptionDate = DateTime.Today,
                     ActivationDate = DateTime.Today,
@@ -623,10 +684,10 @@ namespace GymAdmin.Data
                     Plan = plan3,
                     Duration = 30,
                     ExpirationDate = DateTime.Today.AddDays(30),
-                    PlanStatus = PlanStatus.Paid,
-                    TotalPrice = plan3.Price - (plan3.Price * (decimal)DiscountValues.GetDiscountValue("Black")),
+                    PlanStatus = PlanStatus.Active,
+                    TotalPrice = plan3.Price,
                     RemainingDays = 30,
-                    Discount = DiscountValues.GetDiscountValue("Black")
+                    Discount = 0
                 };
                 _context.Add(pl1);
                 _context.Add(pl2);
@@ -638,13 +699,6 @@ namespace GymAdmin.Data
         }
 
         //Attendances
-        /*
-            millie@yopmail.com
-            brett@yopmail.com
-            brian@yopmail.com
-            lamar@yopmail.com
-            peyton@yopmail.com
-        */
         private async Task CheckAttendancesAsync()
         {
             if (!_context.Attendances.Any())
@@ -662,7 +716,7 @@ namespace GymAdmin.Data
                 {
                     var user = await _userHelper.GetUserAsync(email);
                     var serviceAccesses = await _context.ServiceAccesses.Where(sa => sa.User == user).ToListAsync();
-                    foreach(ServiceAccess serviceAccess in serviceAccesses)
+                    foreach (ServiceAccess serviceAccess in serviceAccesses)
                     {
                         _context.Add(new Attendance
                         {

@@ -4,9 +4,11 @@
     {
         Yudo,
         Karate,
-        Rumba,
-        Spingnit,
         Boxeo,
-        Crostfit,
+        Rumba,
+        Cardio,
+        Crossfit,
+        Balance,
+        Yoga,
     }
 }
