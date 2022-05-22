@@ -72,7 +72,7 @@ namespace GymAdmin.Controllers
                             pI.RemainingDays -= 1;
                             if (pI.RemainingDays == 0)
                             {
-                                pI.PlanStatus = PlanStatus.Cancelled;
+                                pI.PlanStatus = PlanStatus.Expired;
                             }
                         }
                         if (pI.Plan.PlanType == PlanType.Regular || pI.Plan.PlanType == PlanType.Black)
@@ -80,13 +80,13 @@ namespace GymAdmin.Controllers
                             DateTime fech = DateTime.Now;
                             if (fech.Date >= pI.ExpirationDate.Date)
                             {
-                                pI.PlanStatus = PlanStatus.Cancelled;
+                                pI.PlanStatus = PlanStatus.Expired;
                             }
                         }
                         _context.Add(at);
                         _context.Update(pI);
                         await _context.SaveChangesAsync();
-                        _flashMessage.Confirmation("Registro insertado correctamente", "Operación exitosa:");
+                        _flashMessage.Confirmation("Asistencia registrada correctamente", "Operación exitosa:");
                         return Json(new
                         {
                             isValid = true,
@@ -95,10 +95,11 @@ namespace GymAdmin.Controllers
                                     .ToList())
                         });
                     }
-                    _flashMessage.Danger("El usuario no cuenta con algun plan activo en el momento", "Error:");
+                    _flashMessage.Danger("El usuario no cuenta con algún plan activo", "Error:");
+                    model.Users = await _combosHelper.GetComboUsersWithPlanAsync();
                     return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Create", model) });
                 }
-                _flashMessage.Danger("Este usuario no existe en nuestra base de datos", "Error:");
+                _flashMessage.Danger("Este usuario no existe en el sistema", "Error:");
             }
             model.Users = await _combosHelper.GetComboUsersWithPlanAsync();
             return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Create", model) });

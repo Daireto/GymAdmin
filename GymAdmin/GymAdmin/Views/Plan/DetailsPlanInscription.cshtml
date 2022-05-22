@@ -1,4 +1,4 @@
-﻿@model GymAdmin.Data.Entities.ServiceAccess
+﻿@model GymAdmin.Data.Entities.PlanInscription
 
 @{
     ViewData["Title"] = "Details";
@@ -66,45 +66,44 @@
                     <div class="col-md-12">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
-                            <h2 style="text-align:center;">Servicio de @Model.Service.Name</h2>
+                            <h2 style="text-align:center;">Suscripción @Model.Plan.Name</h2>
                         </div>
                     </div>
                 </div>
                 @{
-                    //Format for prices and discount
-                    string p = $"{Model.Service.Price:C2}";
+                    //Format total prices and discount
+                    string p = $"{Model.Plan.Price:C2}";
 
                     string d = $"{Model.Discount:P2}";
 
-                    decimal totalPrice = (decimal)(Decimal.ToDouble(Model.Service.Price) - (Decimal.ToDouble(Model.Service.Price) * Model.Discount));
-                    string tp = $"{totalPrice:C2}";
+                    string tp = $"{Model.TotalPrice:C2}";
                 }
                 <div class="row">
                     <!-- Left column -->
                     <div class="col-md-6 GymAdminFormColumn">
                         @{
                             var Status = "";
-                            if (Model.ServiceStatus == GymAdmin.Enums.ServiceStatus.Pending)
+                            if (Model.PlanStatus == GymAdmin.Enums.PlanStatus.Active)
                             {
-                                Status = "Contratado por";
+                                Status = "Activo";
                             }
-                            if (Model.ServiceStatus == GymAdmin.Enums.ServiceStatus.Taken)
+                            if (Model.PlanStatus == GymAdmin.Enums.PlanStatus.Expired)
                             {
-                                Status = "Tomado por";
+                                Status = "Expirado";
                             }
-                            if (Model.ServiceStatus == GymAdmin.Enums.ServiceStatus.Cancelled)
+                            if (Model.PlanStatus == GymAdmin.Enums.PlanStatus.Cancelled)
                             {
-                                Status = "Cancelado por";
+                                Status = "Cancelado";
                             }
                         }
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">@Status</label>
+                            <label class="control-label GymAdminFormLabel">Suscriptor</label>
                             <input value="@Model.User.FullName" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Precio base del servicio</label>
+                            <label class="control-label GymAdminFormLabel">Precio base del plan</label>
                             <input value="@p" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
@@ -113,13 +112,27 @@
                             <input value="@tp" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
-                        @{
-                            var ContractDay = Model.AccessDate.ToString(@"dd/MM/yyyy");
-                        }
                         <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Fecha del contrato</label>
-                            <input value="@ContractDay" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <label class="control-label GymAdminFormLabel">Estado</label>
+                            <input value="@Status" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
+                        @if (Model.Plan.PlanType == GymAdmin.Enums.PlanType.TicketHolder)
+                        {
+                            <!-- Field -->
+                            <div class="form-group GymAdminFormElement">
+                                <label class="control-label GymAdminFormLabel">Días restantes</label>
+                                <input value="@Model.RemainingDays" class="GymAdminFormInput" autocomplete="off" readonly />
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Field -->
+                            var ExpDay = Model.ExpirationDate.ToString(@"dd/MM/yyyy");
+                            <div class="form-group GymAdminFormElement">
+                                <label class="control-label GymAdminFormLabel">Fecha de expiración</label>
+                                <input value="@ExpDay" class="GymAdminFormInput" autocomplete="off" readonly />
+                            </div>
+                        }
                     </div>
                     <!-- Right column -->
                     <div class="col-md-6 GymAdminFormColumn">
@@ -140,22 +153,24 @@
                         </div>
                         <!-- Field -->
                         @{
-                            var ContractHour = Model.AccessDate.ToString("h:mm tt");
+                            var ActDay = Model.ActivationDate.ToString(@"dd/MM/yyyy");
                         }
                         <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Hora del contrato</label>
-                            <input value="@ContractHour" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <label class="control-label GymAdminFormLabel">Fecha de activación</label>
+                            <input value="@ActDay" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Duración en días</label>
+                            <input value="@Model.Duration" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                 </div>
                 <!-- Buttons and links -->
                 <div class="GymAdminRegisterFormButtons form-group mt-2">
-                    @if (Model.ServiceStatus == GymAdmin.Enums.ServiceStatus.Pending)
+                    @if (Model.PlanStatus == GymAdmin.Enums.PlanStatus.Active)
                     {
-                        <button disabled class="GymAdminFormButton GymAdminEditButton">
-                            <a asp-action="SetServiceAsTaken" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-circle-check"></i>Marcar como tomado</a>
-                        </button>
-                        <button onclick="    return false;" data-id="@Model.Id" class="btn btn-outline-danger deleteItem GymAdminFormButton GymAdminDeleteButton" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-ban"></i>Marcar como cancelado</button>
+                        <button onclick="    return false;" data-id="@Model.Id" class="btn btn-outline-danger deleteItem GymAdminFormButton GymAdminDeleteButton" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-ban"></i>Cancelar plan</button>
                     }
                     <button disabled class="GymAdminFormButton">
                         <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Regresar</a>
@@ -166,7 +181,7 @@
     </div>
 </div>
 
-<partial name="_CancelDialog" />
+<partial name="_CancelPlanDialog" />
 
 <!-- Scripts -->
 @section Scripts {
@@ -174,6 +189,6 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Contracts/CancelService/', false);
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Plan/CancelPlan/', false);
     </script>
-}
+    }

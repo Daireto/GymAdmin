@@ -97,9 +97,12 @@
                     <button disabled class="GymAdminFormButton">
                         <a asp-action="MyServices" asp-controller="Home" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink"><i class="fa-solid fa-bell-concierge"></i>Mis servicios</a>
                     </button>
-                    <button disabled class="GymAdminFormButton">
-                        <a onclick="showInPopup('@Url.Action("MyPlan", "Home", new{}, Context.Request.Scheme)' , 'Detalles del plan')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-hand-fist"></i>Mi plan</a>
-                    </button>
+                    @if (!User.IsInRole("Admin"))
+                    {
+                        <button disabled class="GymAdminFormButton">
+                            <a onclick="showInPopup('@Url.Action("MyPlan", "Home", new{}, Context.Request.Scheme)' , 'Detalles del plan')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-hand-fist"></i>Mi plan</a>
+                        </button>
+                    }
                     <button disabled class="GymAdminFormButton">
                         <a asp-action="EditUser" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink"><i class="fa-solid fa-pen-to-square"></i>Editar perfil</a>
                     </button>

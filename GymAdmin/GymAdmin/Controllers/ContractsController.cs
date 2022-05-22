@@ -32,15 +32,27 @@ namespace GymAdmin.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DetailsServiceAccess(int? id)
         {
-            return View(await _context.ServiceAccesses
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            ServiceAccess serviceAccess = await _context.ServiceAccesses
                 .Include(sa => sa.Service)
                 .Include(sa => sa.User)
-                .FirstOrDefaultAsync(sa => sa.Id == id));
+                .FirstOrDefaultAsync(sa => sa.Id == id);
+
+            if (serviceAccess == null)
+            {
+                return NotFound();
+            }
+
+            return View(serviceAccess);
         }
 
         [Authorize(Roles = "Admin")]
         [NoDirectAccess]
-        public async Task<IActionResult> SetServiceAsTaken(int? id)
+        public async Task<IActionResult> SetServiceAsTaken(int id)
         {
             ServiceAccess serviceAccess = await _context.ServiceAccesses.FindAsync(id);
 
@@ -60,7 +72,7 @@ namespace GymAdmin.Controllers
         }
 
         [NoDirectAccess]
-        public async Task<IActionResult> CancelService(int? id, string route)
+        public async Task<IActionResult> CancelService(int id, string? route)
         {
             ServiceAccess serviceAccess = await _context.ServiceAccesses.FindAsync(id);
 
@@ -76,14 +88,16 @@ namespace GymAdmin.Controllers
                 _flashMessage.Danger("Sólo se pueden cancelar servicios pendientes", "Error:");
             }
 
+            if(route == null)
+            {
+                return RedirectToAction("DetailsServiceAccess", "Contracts", new { id = id });
+            }
+
             if (route == "MyServices")
             {
                 return RedirectToAction("MyServices", "Home");
             }
-            else
-            {
-                return RedirectToAction("DetailsServiceAccess", "Contracts", new { id = id });
-            }
+            return RedirectToAction("DetailsServiceAccess", "Contracts", new { id = id });
         }
     }
 }

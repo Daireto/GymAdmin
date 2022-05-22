@@ -164,7 +164,7 @@ namespace GymAdmin.Controllers
 
                 _context.Add(serviceAccess);
                 await _context.SaveChangesAsync();
-                _flashMessage.Confirmation("Registro insertado correctamente", "Operación exitosa:");
+                _flashMessage.Confirmation("Servicio contratado correctamente", "Operación exitosa:");
                 return RedirectToAction(nameof(MyServices));
             }
 

@@ -29,22 +29,50 @@ namespace GymAdmin.Controllers
                 .ToListAsync());
         }
 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DetailsPlanInscription(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            PlanInscription planInscription = await _context.PlanInscriptions
+                .Include(pi => pi.User)
+                .Include(pi => pi.Plan)
+                .FirstOrDefaultAsync(pi => pi.Id == id);
+
+            if (planInscription == null)
+            {
+                return NotFound();
+            }
+
+            return View(planInscription);
+        }
+
         [NoDirectAccess]
         public async Task<IActionResult> CancelPlan(int id)
         {
-            try
+            PlanInscription planInscription = await _context.PlanInscriptions.FindAsync(id);
+            if (planInscription.PlanStatus == PlanStatus.Active)
             {
-                PlanInscription planInscription = await _context.PlanInscriptions.FindAsync(id);
-                planInscription.PlanStatus = PlanStatus.Cancelled;
-                _context.Update(planInscription);
-                await _context.SaveChangesAsync();
-                _flashMessage.Confirmation("Plan cancelado correctamente", "Operación exitosa:");
+                try
+                {
+                    planInscription.PlanStatus = PlanStatus.Cancelled;
+                    _context.Update(planInscription);
+                    await _context.SaveChangesAsync();
+                    _flashMessage.Confirmation("Plan cancelado correctamente", "Operación exitosa:");
+                }
+                catch
+                {
+                    _flashMessage.Danger("No se pudo cancelar el plan", "Error:");
+                }
             }
-            catch
+            else
             {
-                _flashMessage.Danger("No se pudo cancelar el plan", "Error:");
+                _flashMessage.Danger("Sólo se pueden cancelar planes activos", "Error:");
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(DetailsPlanInscription), new { id = id });
         }
 
         [NoDirectAccess]

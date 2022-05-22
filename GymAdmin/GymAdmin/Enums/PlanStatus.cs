@@ -2,8 +2,8 @@
 {
     public enum PlanStatus
     {
-        Paid,
         Active,
+        Expired,
         Cancelled
     }
 }
