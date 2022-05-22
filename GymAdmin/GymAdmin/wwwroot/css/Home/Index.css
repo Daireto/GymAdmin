@@ -222,6 +222,45 @@ header a{
         color: #f2c60d !important;
     }
 
+#UserOption {
+    position: relative !important;
+}
+
+#userImage {
+    border-radius: 50% !important;
+    position: absolute !important;
+    width: 35px !important;
+    left: -40px !important;
+    top: -5px !important;
+    z-index: 1 !important;
+}
+
+.backdrop {
+    border-radius: 50% !important;
+    position: absolute !important;
+    width: 35px !important;
+    height: 35px !important;
+    left: -40px !important;
+    top: -5px !important;
+    z-index: 2 !important;
+    background-color: #f2c60d !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: visibility .2s ease-out !important;
+    transition: opacity .2s ease-out !important;
+}
+
+#UserOption:hover .backdrop {
+    opacity: 0.5 !important;
+    visibility: visible !important;
+}
+
+#UserOption:hover a.ViewUserLink {
+    border-color: #f2c60d !important;
+    color: #f2c60d !important;
+}
+
+
 /* Cards */
 .container-cards {
     display: flex;

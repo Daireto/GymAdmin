@@ -158,6 +158,44 @@ header a {
     visibility: visible;
 }
 
+#UserOption{
+    position: relative;
+}
+
+#userImage {
+    border-radius: 50%;
+    position: absolute;
+    width: 35px;
+    left: -40px;
+    top: -5px;
+    z-index: 1;
+}
+
+.backdrop {
+    border-radius: 50%;
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    left: -40px;
+    top: -5px;
+    z-index: 2;
+    background-color: #f2c60d;
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility .2s ease-out !important;
+    transition: opacity .2s ease-out !important;
+}
+
+#UserOption:hover .backdrop {
+    opacity: 0.5;
+    visibility: visible;
+}
+
+#UserOption:hover a.ViewUserLink {
+    border-color: #f2c60d;
+    color: #f2c60d !important;
+}
+
 /* Content */
 .container {
     margin-bottom: 24px;

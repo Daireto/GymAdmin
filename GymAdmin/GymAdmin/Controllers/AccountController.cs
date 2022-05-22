@@ -436,5 +436,11 @@ namespace GymAdmin.Controllers
 
             return View(model);
         }
+
+        public async Task<JsonResult> GetImageFullPath()
+        {
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            return Json(new { imagePath = user.ImageFullPath });
+        }
     }
 }

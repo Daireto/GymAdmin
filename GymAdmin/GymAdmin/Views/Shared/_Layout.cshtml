@@ -26,11 +26,18 @@
 
     <!-- Icons style -->
     <style>
-        .fa-user,
         .fa-arrow-right-from-bracket {
             padding-right: 5px;
         }
     </style>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <style>
+            #EventOption{
+                margin-right: 40px;
+            }
+        </style>
+    }
 </head>
 
 <body>
@@ -67,7 +74,7 @@
                             <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Home" asp-action="Professionals">Servicios adicionales</a>
                         </li>
                         <!-- Events option -->
-                        <li class="nav-item">
+                        <li class="nav-item" id="EventOption">
                             <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Home" asp-action="Events">Eventos grupales</a>
                         </li>
                         @if (User.Identity.IsAuthenticated)
@@ -75,8 +82,11 @@
                             var nombreUsuario = User.Identity.Name.Substring(0, User.Identity.Name.Length - 12);
                             nombreUsuario = nombreUsuario.Substring(0, 1).ToUpper() + nombreUsuario.Substring(1).ToLower();
                             <!-- View user option -->
-                            <li class="nav-item">
-                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Account" asp-action="ViewUser"><i class="fa-solid fa-user"></i>@nombreUsuario</a>
+                            <li class="nav-item" id="UserOption">
+                                <a class="GymAdminHeaderLink ViewUserLink text-white" asp-area="" asp-controller="Account" asp-action="ViewUser">
+                                    <img id="userImage" alt="" src="" />
+                                    <div class="backdrop"></div>@nombreUsuario
+                                </a>
                             </li>
                             <!-- Logout option -->
                             <li class="nav-item">
@@ -142,7 +152,7 @@
     <script src="~/lib/font-awesome/js/all.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/showmodal.js"></script>
-    
+
     <script>
         function displayBusyIndicator() {
             $('.loading').show();
@@ -154,12 +164,24 @@
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            var height = $(window).height() - $('#body-header').height() - 40;
-            $('#body-container').css('min-height', height);
-        });
-    </script>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var height = $(window).height() - $('#body-header').height() - 40;
+                $('#body-container').css('min-height', height);
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetImageFullPath", "Account")',
+                    success: function(path) {
+                        $("#userImage").attr("src", path.imagePath);
+                    },
+                    error: function(ex) {
+                        alert('Failed to retrieve path.' + ex);
+                    }
+                });
+            });
+        </script>
+    }
 </body>
 </html>
