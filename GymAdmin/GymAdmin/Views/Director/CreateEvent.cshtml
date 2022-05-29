@@ -1,0 +1,143 @@
+﻿@model GymAdmin.Models.AddEventViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = null;
+}
+
+<flash dismissable="true" />
+
+<!-- Create form -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="CreateEvent" id="GymAdminForm" enctype="multipart/form-data" onsubmit="return jQueryAjaxPost(this);">
+                <!-- Hidden inputs -->
+                <input type="hidden" asp-for="DirectorUsername" />
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Name" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="Name" class="GymAdminFormInput" autocomplete="off" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        @{
+                            var Days = Html.GetEnumSelectList<DayOfWeek>();
+                            foreach (var Day in Days)
+                            {
+                                if (Day.Text == "Monday")
+                                {
+                                    Day.Text = "Lunes";
+                                }
+                                else if (Day.Text == "Tuesday")
+                                {
+                                    Day.Text = "Martes";
+                                }
+                                else if (Day.Text == "Wednesday")
+                                {
+                                    Day.Text = "Miércoles";
+                                }
+                                else if (Day.Text == "Thursday")
+                                {
+                                    Day.Text = "Jueves";
+                                }
+                                else if (Day.Text == "Friday")
+                                {
+                                    Day.Text = "Viernes";
+                                }
+                                else if (Day.Text == "Saturday")
+                                {
+                                    Day.Text = "Sábado";
+                                }
+                                else if (Day.Text == "Sunday")
+                                {
+                                    Day.Text = "Domingo";
+                                }
+                            }
+                        }
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Day" class="control-label GymAdminFormLabel"></label>
+                            <select asp-for="Day" asp-items="@Days" class="GymAdminFormCombobox"></select>
+                            <span asp-validation-for="Day" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        @{
+                            var EvTypes = Html.GetEnumSelectList<GymAdmin.Enums.EventType>();
+                            foreach (var EvType in EvTypes)
+                            {
+                                if (EvType.Text == "Balance")
+                                {
+                                    EvType.Text = "Equilibrio";
+                                }
+                                else if (EvType.Text == "Crossfit")
+                                {
+                                    EvType.Text = "Crossfit";
+                                }
+                                else if (EvType.Text == "Dance")
+                                {
+                                    EvType.Text = "Baile";
+                                }
+                                else if (EvType.Text == "Martial")
+                                {
+                                    EvType.Text = "Artes marciales";
+                                }
+                                else if (EvType.Text == "Yoga")
+                                {
+                                    EvType.Text = "Yoga";
+                                }
+                            }
+                        }
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="EventType" class="control-label GymAdminFormLabel"></label>
+                            <select asp-for="EventType" asp-items="@EvTypes" class="GymAdminFormCombobox"></select>
+                            <span asp-validation-for="EventType" class="text-danger"></span>
+                        </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group">
+                            <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="StartHour" class="control-label GymAdminFormLabel"></label>
+                            <input type="time" asp-for="StartHour" class="GymAdminFormInput" />
+                            <span asp-validation-for="StartHour" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="FinishHour" class="control-label GymAdminFormLabel"></label>
+                            <input type="time" asp-for="FinishHour" class="GymAdminFormInput" />
+                            <span asp-validation-for="FinishHour" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="ImageFile" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="ImageFile" class="GymAdminFormInput GymAdminFormImageInput" autocomplete="off" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Description" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="Description" class="GymAdminFormInput" autocomplete="off" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

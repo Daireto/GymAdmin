@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GymAdmin.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using GymAdmin.Enums;
-namespace GymAdmin.Data.Entities
+
+namespace GymAdmin.Models
 {
-    public class Event
+    public class EditEventViewModel
     {
         public int Id { get; set; }
+
         [Display(Name = "Dia")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public DayOfWeek Day { get; set; }
@@ -20,7 +22,7 @@ namespace GymAdmin.Data.Entities
         [Column(TypeName = "bigint")]
         public TimeSpan FinishHour { get; set; }
 
-        [Display(Name = "Nombre")]
+        [Display(Name = "Nombre del evento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Name { get; set; }
 
@@ -30,16 +32,7 @@ namespace GymAdmin.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Description { get; set; }
 
+        [Display(Name = "Tipo de evento")]
         public EventType EventType { get; set; }
-
-        public Director Director { get; set; }
-
-        public ICollection<EventInscription> EventInscriptions { get; set; }
-
-        public int InscriptionsNumber => EventInscriptions == null ? 0 : EventInscriptions.Where(e => e.EventStatus == Enums.EventStatus.SignedUp).Count();
-
-        public ICollection<EventImage> EventImages { get; set; }
-
-        public int ImagesNumber => EventImages == null ? 0 : EventImages.Count();
     }
 }

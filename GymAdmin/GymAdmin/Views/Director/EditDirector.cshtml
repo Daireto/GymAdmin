@@ -1,0 +1,75 @@
+﻿@model GymAdmin.Models.EditDirectorViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = null;
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+
+<flash dismissable="true" />
+
+<!-- Edit form -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="EditDirector" id="GymAdminForm" onsubmit="return jQueryAjaxPost(this);">
+                <!-- Hidden inputs -->
+                <input type="hidden" asp-for="Id" />
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Username" class="control-label GymAdminFormLabel"></label>
+                            <input id="searchUser" type="search" list="usersList" asp-for="Username" class="GymAdminFormInput" autocomplete="off" />
+                            <datalist id="usersList">
+                                @foreach (var pro in Model.Users)
+                                {
+                                    <option value="@pro.Value">@pro.Text</option>
+                                }
+                            </datalist>
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                            @if (Model.Id == null)
+                            {
+                                <input type="submit" value="Asignar usuario" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                            }
+                            else
+                            {
+                                <input type="submit" value="Guardar cambios" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#searchUser").attr("value", @Model.Username);
+        });
+
+        $("#searchUser").on("input", function() {
+            var selected = $(this).val();
+            $(this).attr("value", selected);
+        });
+    </script>
+}

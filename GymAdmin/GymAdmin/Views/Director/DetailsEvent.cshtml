@@ -1,0 +1,94 @@
+﻿@model GymAdmin.Data.Entities.Event
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+
+<style>
+    h3 {
+        color: white !important;
+    }
+
+    .fa-lock {
+        padding-right: 5px;
+    }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+</style>
+
+<flash dismissable="true" />
+
+<!-- View event page -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <!-- Users signed up -->
+        <div class="row" style="padding:0;margin:0 auto;">
+            <div class="col-md-12 GymAdminTableContainer">
+                <div class="panel panel-default">
+                    <div class="panel-heading GymAdminTableHeading">
+                        <h3 class="panel-title GymAdminTableTitle">@Model.Name</h3>
+                        <div class="row">
+                            <!-- Left column -->
+                            <div class="col-md-6 GymAdminFormColumn">
+                                <!-- Field -->
+                                <div class="form-group GymAdminFormElement">
+                                    <h4>Descripción</h4>
+                                    <div class="eventDescription">@Model.Description</div>
+                                </div>
+                            </div>
+                            <!-- Right column -->
+                            <div class="col-md-6 GymAdminFormColumn">
+                                <!-- Field -->
+                                <div class="form-group GymAdminFormElement">
+                                    <h4>Cantidad de usuarios inscritos</h4>
+                                    <div class="eventUsers">@Model.InscriptionsNumber</div>
+                                </div>
+                                <!-- Buttons and links -->
+                                <div class="GymAdminRegisterFormButtons form-group">
+                                    <button disabled class="GymAdminFormButton">
+                                        <a asp-action="DetailsDirector" asp-route-id="@Model.Director.Id" asp-controller="Director" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink">Regresar</a>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body GymAdminTable">
+                        <div id="view-all">
+                            @await Html.PartialAsync("_ViewAllSignedUpUsers", Model)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [15, 30, 60, 120, -1],
+                    [15, 30, 60, 120, "Todos"]
+                ]
+            });
+        });
+    </script>
+    }

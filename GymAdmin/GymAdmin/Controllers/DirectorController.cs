@@ -30,7 +30,7 @@ namespace GymAdmin.Controllers
             _blobHelper = blobHelper;
             _mailHelper = mailHelper;
             _flashMessage = flashMessage;
-        }//TODO: Make views and the Seeder method for Directors, Events and Event inscriptions
+        }
 
         //------------------------------------- Directors --------------------------------------------
         public async Task<IActionResult> Index()
@@ -38,6 +38,7 @@ namespace GymAdmin.Controllers
             return View(await _context.Directors
                 .Include(p => p.User)
                 .Include(s => s.Events)
+                .ThenInclude(e => e.EventImages)
                 .ToListAsync());
         }
 
@@ -224,7 +225,7 @@ namespace GymAdmin.Controllers
                         .Include(p => p.User)
                         .Include(s => s.Events)
                         .ToList())
-                });//TODO: Make view _ViewAllDirectors
+                });
             }
 
             model.Users = await _combosHelper.GetComboUsersAsync();
@@ -248,17 +249,9 @@ namespace GymAdmin.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }//TODO: Edit the deleteDialog script for Directors
-
-        //------------------------------------- Events --------------------------------------------
-        public async Task<IActionResult> ShowEvents()
-        {
-            return View(await _context.Events
-                .Include(e => e.Director)
-                .ThenInclude(d => d.User)
-                .ToListAsync());
         }
 
+        //------------------------------------- Events --------------------------------------------
         public async Task<IActionResult> DetailsEvent(int? id)
         {
             if (id == null)
@@ -269,8 +262,11 @@ namespace GymAdmin.Controllers
             Event eventObject = await _context.Events
                 .Include(e => e.Director)
                 .ThenInclude(d => d.User)
-                .Include(e => e.EventInscriptions)
+                .Include(e => e.EventInscriptions.Where(ei => ei.EventStatus == EventStatus.SignedUp))
                 .ThenInclude(ei => ei.User)
+                .ThenInclude(u => u.PlanInscriptions)
+                .ThenInclude(pi => pi.Plan)
+                .Include(e => e.EventImages)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (eventObject == null)
@@ -282,20 +278,58 @@ namespace GymAdmin.Controllers
         }
 
         [NoDirectAccess]
-        public IActionResult CreateEvent()
+        public async Task<IActionResult> CreateEvent(int id)
         {
-            return View();
+            Director director = await _context.Directors
+                .Include(d => d.User)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            AddEventViewModel model = new()
+            {
+                DirectorUsername = director.User.Email,
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateEvent(Event model)
+        public async Task<IActionResult> CreateEvent(AddEventViewModel model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Add(model);
+                    Director director = await _context.Directors
+                        .Include(d => d.User)
+                        .FirstOrDefaultAsync(d => d.User.Email == model.DirectorUsername);
+
+                    Guid imageId = Guid.Empty;
+                    if (model.ImageFile != null)
+                    {
+                        imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "events");
+                    }
+
+                    Event objectEvent = new()
+                    {
+                        Day = model.Day,
+                        StartHour = model.StartHour,
+                        FinishHour = model.FinishHour,
+                        Name = model.Name,
+                        Director = director,
+                        EventType = model.EventType,
+                        Description = model.Description,
+                    };
+
+                    EventImage eventImage = new()
+                    {
+                        Event = objectEvent,
+                        ImageId = imageId,
+                    };
+
+                    objectEvent.EventImages.Add(eventImage);
+
+                    _context.Add(objectEvent);
                     await _context.SaveChangesAsync();
                     _flashMessage.Confirmation("Registro insertado correctamente", "Operación exitosa:");
                 }
@@ -323,7 +357,7 @@ namespace GymAdmin.Controllers
                             .Include(e => e.Director)
                             .ThenInclude(d => d.User)
                             .ToList())
-                });//TODO: Make view _ViewAllEvents
+                });
             }
             return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "CreateEvent", model) });
         }
@@ -332,21 +366,39 @@ namespace GymAdmin.Controllers
         public async Task<IActionResult> EditEvent(int id)
         {
             Event eventObject = await _context.Events
-                .Include(e => e.Director)
-                .ThenInclude(d => d.User)
                 .FirstOrDefaultAsync(e => e.Id == id);
+
+            EditEventViewModel model = new()
+            {
+                Day = eventObject.Day,
+                StartHour = eventObject.StartHour,
+                FinishHour = eventObject.FinishHour,
+                Name = eventObject.Name,
+                EventType = eventObject.EventType,
+                Description = eventObject.Description,
+                Id = eventObject.Id,
+            };
+
             return View(eventObject);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditEvent(Event model)
+        public async Task<IActionResult> EditEvent(EditEventViewModel model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(model);
+                    Event objectEvent = await _context.Events.FindAsync(model.Id);
+                    objectEvent.Day = model.Day;
+                    objectEvent.StartHour = model.StartHour;
+                    objectEvent.FinishHour = model.FinishHour;
+                    objectEvent.Name = model.Name;
+                    objectEvent.EventType = model.EventType;
+                    objectEvent.Description = model.Description;
+
+                    _context.Update(objectEvent);
                     await _context.SaveChangesAsync();
                     _flashMessage.Confirmation("Registro actualizado correctamente", "Operación exitosa:");
                 }
@@ -385,6 +437,15 @@ namespace GymAdmin.Controllers
             Event eventObject = await _context.Events.FirstOrDefaultAsync(m => m.Id == id);
             try
             {
+                foreach (EventImage eventImage in eventObject.EventImages)
+                {
+                    try
+                    {
+                        await _blobHelper.DeleteBlobAsync(eventImage.ImageId, "events");
+                    }
+                    catch { }
+                }
+
                 _context.Events.Remove(eventObject);
                 await _context.SaveChangesAsync();
                 _flashMessage.Confirmation("Registro eliminado correctamente", "Operación exitosa:");
@@ -394,7 +455,7 @@ namespace GymAdmin.Controllers
                 _flashMessage.Danger("No se puede borrar el evento porque tiene registros relacionados", "Error:");
             }
             return RedirectToAction(nameof(ShowEvents));
-        }//TODO: Edit the deleteDialog script for Events
+        }
     }
 }
 

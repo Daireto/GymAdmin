@@ -1,0 +1,117 @@
+﻿@model GymAdmin.Data.Entities.Director
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+
+<style>
+    h3 {
+        color: white !important;
+    }
+
+    .fa-pen-to-square,
+    .fa-lock {
+        padding-right: 5px;
+    }
+
+    .GymAdminEditButton {
+        border-color: #FFC107;
+    }
+
+        .GymAdminEditButton:hover {
+            color: black;
+        }
+
+        .GymAdminEditButton a {
+            color: #FFC107;
+        }
+
+            .GymAdminEditButton a:hover {
+                color: black;
+            }
+
+    .GymAdminDeleteButton {
+        border-color: #DC3545;
+        color: #DC3545;
+    }
+
+        .GymAdminDeleteButton:hover {
+            background-color: #DC3545;
+            color: black;
+        }
+
+        .GymAdminDeleteButton a {
+            color: #DC3545;
+        }
+
+            .GymAdminDeleteButton a:hover {
+                color: black;
+            }
+
+    a .fa-bell-concierge, a .fa-user-tie, a .fa-calendar {
+        padding-right: 5px;
+    }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+</style>
+
+<flash dismissable="true" />
+
+<!-- View director page -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <!-- Events -->
+        <div class="row" style="padding:0;margin:0 auto;">
+            <div class="col-md-12 GymAdminTableContainer">
+                <div class="panel panel-default">
+                    <div class="panel-heading GymAdminTableHeading">
+                        <h3 class="panel-title GymAdminTableTitle">Eventos de @Model.User.FirstName</h3>
+                        <div class="newScheduleDiv">
+                            <button disabled class="GymAdminFormButton">
+                                <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Regresar</a>
+                            </button>
+                            <button disabled class="GymAdminFormButton">
+                                <a onclick="showInPopup('@Url.Action("CreateEvent", "Director", new{ id=Model.Id }, Context.Request.Scheme)' , 'Asignar evento')" class="GymAdminFormElement GymAdminFormLabel">Asignar evento</a>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-body GymAdminTable">
+                        <div id="view-all">
+                            @await Html.PartialAsync("_ViewAllEvents", Model)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [15, 30, 60, 120, -1],
+                    [15, 30, 60, 120, "Todos"]
+                ]
+            });
+        });
+    </script>
+    }

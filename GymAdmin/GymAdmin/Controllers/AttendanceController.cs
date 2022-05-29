@@ -83,6 +83,27 @@ namespace GymAdmin.Controllers
                                 pI.PlanStatus = PlanStatus.Expired;
                             }
                         }
+
+                        if(pI.PlanStatus == PlanStatus.Expired)
+                        {
+                            var eventInscriptions = await _context.EventInscriptions
+                                .Include(ei => ei.User)
+                                .Where(ei => ei.User.Email == pI.User.Email)
+                                .ToListAsync();
+
+                            if (eventInscriptions != null)
+                            {
+                                if (eventInscriptions.Count() != 0)
+                                {
+                                    foreach (EventInscription eventInscription in eventInscriptions)
+                                    {
+                                        eventInscription.EventStatus = EventStatus.Cancelled;
+                                        _context.Update(eventInscription);
+                                    }
+                                }
+                            }
+                        }
+
                         _context.Add(at);
                         _context.Update(pI);
                         await _context.SaveChangesAsync();

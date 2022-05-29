@@ -53,11 +53,31 @@ namespace GymAdmin.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> CancelPlan(int id)
         {
-            PlanInscription planInscription = await _context.PlanInscriptions.FindAsync(id);
+            PlanInscription planInscription = await _context.PlanInscriptions
+                .Include(pi => pi.User)
+                .FirstOrDefaultAsync(pi => pi.Id == id);
+
             if (planInscription.PlanStatus == PlanStatus.Active)
             {
                 try
                 {
+                    var eventInscriptions = await _context.EventInscriptions
+                        .Include(ei => ei.User)
+                        .Where(ei => ei.User.Email == planInscription.User.Email)
+                        .ToListAsync();
+
+                    if (eventInscriptions != null)
+                    {
+                        if (eventInscriptions.Count() != 0)
+                        {
+                            foreach (EventInscription eventInscription in eventInscriptions)
+                            {
+                                eventInscription.EventStatus = EventStatus.Cancelled;
+                                _context.Update(eventInscription);
+                            } 
+                        } 
+                    }
+
                     planInscription.PlanStatus = PlanStatus.Cancelled;
                     _context.Update(planInscription);
                     await _context.SaveChangesAsync();
