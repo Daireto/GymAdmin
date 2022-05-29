@@ -15,6 +15,7 @@ namespace GymAdmin.Data
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Director> Directors { get; set; }
+        public DbSet<EventImage> EventImages { get; set; }
 
         //Relationships
         public DbSet<ServiceAccess> ServiceAccesses { get; set; }

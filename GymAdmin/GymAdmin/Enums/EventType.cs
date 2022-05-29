@@ -2,13 +2,10 @@
 {
     public enum EventType
     {
-        Yudo,
-        Karate,
-        Boxeo,
-        Rumba,
-        Cardio,
-        Crossfit,
         Balance,
+        Crossfit,
+        Dance,
+        Martial,
         Yoga,
     }
 }

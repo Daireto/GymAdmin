@@ -31,5 +31,9 @@ namespace GymAdmin.Data.Entities
         public ICollection<EventInscription> EventInscriptions { get; set; }
 
         public int InscriptionsNumber => EventInscriptions == null ? 0 : EventInscriptions.Where(e => e.EventStatus == Enums.EventStatus.SignedUp).Count();
+
+        public ICollection<EventImage> EventImages { get; set; }
+
+        public int ImagesNumber => EventImages == null ? 0 : EventImages.Count();
     }
 }

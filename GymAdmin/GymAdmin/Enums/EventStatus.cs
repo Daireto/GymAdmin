@@ -3,7 +3,6 @@
     public enum EventStatus
     {
         SignedUp,
-        Attended,
         Cancelled,
     }
 }

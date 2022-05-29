@@ -28,6 +28,7 @@ namespace GymAdmin.Data
             {
                 //Get Azure blob empty
                 await _blobHelper.DeleteBlobsAsync("users");
+                await _blobHelper.DeleteBlobsAsync("events");
             }
 
             //Roles seed
@@ -49,6 +50,13 @@ namespace GymAdmin.Data
             await CheckUsersAsync("1013", DocumentType.TI, "Peyton", "List", "peyton@yopmail.com", "311 456 4124", "image-peyton.jpg", UserType.User);
             await CheckUsersAsync("1014", DocumentType.CC, "Maia", "Mitchell", "maia@yopmail.com", "311 456 3009", "image-maia.jpg", UserType.User);
             await CheckUsersAsync("1015", DocumentType.TI, "Madison", "Pettis", "madison@yopmail.com", "311 456 0071", "image-madison.jpg", UserType.User);
+            await CheckUsersAsync("1016", DocumentType.CE, "Aliya", "Mustafina", "aliya@yopmail.com", "311 456 6271", "image-aliya.jpg", UserType.User);
+            await CheckUsersAsync("1017", DocumentType.CC, "Mariana", "Pajón", "mariana@yopmail.com", "311 456 6272", "image-mariana.jpg", UserType.User);
+            await CheckUsersAsync("1018", DocumentType.CC, "Greeicy", "Rendón", "greeicy@yopmail.com", "311 456 6273", "image-greeicy.jpg", UserType.User);
+            await CheckUsersAsync("1019", DocumentType.CE, "Chris", "Brown", "chris@yopmail.com", "311 456 6274", "image-chris.jpg", UserType.User);
+            await CheckUsersAsync("1020", DocumentType.CC, "Tamara", "Rojo", "tamara@yopmail.com", "311 456 6275", "image-tamara.jpg", UserType.User);
+            await CheckUsersAsync("1021", DocumentType.CE, "Jackie", "Chan", "jackie@yopmail.com", "311 456 6276", "image-jackie.jpg", UserType.User);
+            await CheckUsersAsync("1022", DocumentType.CE, "Alicia", "Keys", "alicia@yopmail.com", "311 456 6277", "image-alicia.jpg", UserType.User);
 
             //Plan Seeds
             await CheckPlansAsync();
@@ -61,6 +69,440 @@ namespace GymAdmin.Data
 
             //Attendance seed
             await CheckAttendancesAsync();
+
+            //Events seeds
+            await CheckDirectorsAsync();
+            await CheckEventInscription();
+        }
+
+        private async Task CheckDirectorsAsync()
+        {
+            if (!_context.Directors.Any())
+            {
+                Director director1 = new()
+                {
+                    User = await _userHelper.GetUserAsync("aliya@yopmail.com"),
+                    Events = new List<Event>(),
+                };
+                Director director2 = new()
+                {
+                    User = await _userHelper.GetUserAsync("mariana@yopmail.com"),
+                    Events = new List<Event>(),
+                };
+                Director director3 = new()
+                {
+                    User = await _userHelper.GetUserAsync("tamara@yopmail.com"),
+                    Events = new List<Event>(),
+                };
+                Director director4 = new()
+                {
+                    User = await _userHelper.GetUserAsync("chris@yopmail.com"),
+                    Events = new List<Event>(),
+                };
+                Director director5 = new()
+                {
+                    User = await _userHelper.GetUserAsync("greeicy@yopmail.com"),
+                    Events = new List<Event>(),
+                };
+                Director director6 = new()
+                {
+                    User = await _userHelper.GetUserAsync("jackie@yopmail.com"),
+                    Events = new List<Event>(),
+                };
+                Director director7 = new()
+                {
+                    User = await _userHelper.GetUserAsync("alicia@yopmail.com"),
+                    Events = new List<Event>(),
+                };
+                director1.Events = new List<Event>()
+                {
+                    new Event()
+                    {
+                        Day = DayOfWeek.Monday,
+                        StartHour = new TimeSpan(7, 0, 0),
+                        FinishHour = new TimeSpan(9, 0, 0),
+                        Name = "Body Balance",
+                        EventType = EventType.Balance,
+                        Director = director1,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-women-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-women1.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-women2.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-women3.jpg", "events"),
+                            },
+                        }
+                    },
+                    new Event()
+                    {
+                        Day = DayOfWeek.Wednesday,
+                        StartHour = new TimeSpan(7, 0, 0),
+                        FinishHour = new TimeSpan(9, 0, 0),
+                        Name = "Gimnasia",
+                        EventType = EventType.Balance,
+                        Director = director1,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-gymnastics-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-gymnastics1.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-gymnastics2.jpg", "events"),
+                            },
+                        }
+                    },
+                };
+                director2.Events = new List<Event>()
+                {
+                    new Event()
+                    {
+                        Day = DayOfWeek.Tuesday,
+                        StartHour = new TimeSpan(8, 0, 0),
+                        FinishHour = new TimeSpan(10, 0, 0),
+                        Name = "Cardio",
+                        EventType = EventType.Crossfit,
+                        Director = director2,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-cardio-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-cardio1.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-cardio2.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-cardio3.jpg", "events"),
+                            },
+                        }
+                    },
+                    new Event()
+                    {
+                        Day = DayOfWeek.Thursday,
+                        StartHour = new TimeSpan(8, 0, 0),
+                        FinishHour = new TimeSpan(10, 0, 0),
+                        Name = "Salto alto",
+                        EventType = EventType.Crossfit,
+                        Director = director2,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-jump-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-jump1.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-jump2.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-jump3.jpg", "events"),
+                            },
+                        }
+                    },
+                };
+                director3.Events = new List<Event>()
+                {
+                    new Event()
+                    {
+                        Day = DayOfWeek.Monday,
+                        StartHour = new TimeSpan(7, 0, 0),
+                        FinishHour = new TimeSpan(9, 0, 0),
+                        Name = "Ballet",
+                        EventType = EventType.Dance,
+                        Director = director3,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-ballet-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-ballet1.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-ballet2.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-ballet3.jpg", "events"),
+                            },
+                        }
+                    },
+                };
+                director4.Events = new List<Event>()
+                {
+                    new Event()
+                    {
+                        Day = DayOfWeek.Tuesday,
+                        StartHour = new TimeSpan(16, 0, 0),
+                        FinishHour = new TimeSpan(18, 0, 0),
+                        Name = "Breakdance",
+                        EventType = EventType.Dance,
+                        Director = director4,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-breakdance-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-breakdance1.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-breakdance2.jpg", "events"),
+                            },
+                        }
+                    },
+                    new Event()
+                    {
+                        Day = DayOfWeek.Thursday,
+                        StartHour = new TimeSpan(16, 0, 0),
+                        FinishHour = new TimeSpan(18, 0, 0),
+                        Name = "Breakdance infantil",
+                        EventType = EventType.Dance,
+                        Director = director4,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-children-header.jpg", "events"),
+                            },
+                        }
+                    },
+                };
+                director5.Events = new List<Event>()
+                {
+                    new Event()
+                    {
+                        Day = DayOfWeek.Wednesday,
+                        StartHour = new TimeSpan(14, 0, 0),
+                        FinishHour = new TimeSpan(16, 0, 0),
+                        Name = "Baile urbano",
+                        EventType = EventType.Dance,
+                        Director = director5,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-dance-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-dance1.jpg", "events"),
+                            },
+                        }
+                    },
+                    new Event()
+                    {
+                        Day = DayOfWeek.Friday,
+                        StartHour = new TimeSpan(16, 0, 0),
+                        FinishHour = new TimeSpan(18, 0, 0),
+                        Name = "Folclor en parejas",
+                        EventType = EventType.Dance,
+                        Director = director5,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-danceinpairs-header.jpg", "events"),
+                            },
+                        }
+                    },
+                };
+                director6.Events = new List<Event>()
+                {
+                    new Event()
+                    {
+                        Day = DayOfWeek.Monday,
+                        StartHour = new TimeSpan(16, 0, 0),
+                        FinishHour = new TimeSpan(18, 0, 0),
+                        Name = "Boxeo",
+                        EventType = EventType.Martial,
+                        Director = director6,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-box-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-box1.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-box2.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-box3.jpg", "events"),
+                            },
+                        }
+                    },
+                    new Event()
+                    {
+                        Day = DayOfWeek.Wednesday,
+                        StartHour = new TimeSpan(16, 0, 0),
+                        FinishHour = new TimeSpan(18, 0, 0),
+                        Name = "Lucha libre",
+                        EventType = EventType.Martial,
+                        Director = director6,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-fight-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-fight1.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-fight2.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-fight3.jpg", "events"),
+                            },
+                        }
+                    },
+                    new Event()
+                    {
+                        Day = DayOfWeek.Saturday,
+                        StartHour = new TimeSpan(8, 0, 0),
+                        FinishHour = new TimeSpan(10, 0, 0),
+                        Name = "Karate",
+                        EventType = EventType.Martial,
+                        Director = director6,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-karate-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-karate1.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-karate2.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-karate3.jpg", "events"),
+                            },
+                        }
+                    },
+                };
+                director7.Events = new List<Event>()
+                {
+                    new Event()
+                    {
+                        Day = DayOfWeek.Saturday,
+                        StartHour = new TimeSpan(7, 0, 0),
+                        FinishHour = new TimeSpan(9, 0, 0),
+                        Name = "Yoga",
+                        EventType = EventType.Yoga,
+                        Director = director7,
+                        EventImages = new List<EventImage>()
+                        {
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-yoga-header.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-yoga1.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-yoga2.jpg", "events"),
+                            },
+                            new EventImage()
+                            {
+                                ImageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\home\\events\\events-yoga3.jpg", "events"),
+                            },
+                        }
+                    },
+                };
+                _context.Add(director1);
+                _context.Add(director2);
+                _context.Add(director3);
+                _context.Add(director4);
+                _context.Add(director5);
+                _context.Add(director6);
+                _context.Add(director7);
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        //EventInscriptions
+        private async Task CheckEventInscription()
+        {
+            if (!_context.EventInscriptions.Any())
+            {
+                List<string> EmailsList = new()
+                {
+                    "millie@yopmail.com",
+                    "brett@yopmail.com",
+                    "brian@yopmail.com",
+                    "lamar@yopmail.com",
+                    "peyton@yopmail.com",
+                };
+
+                var Events = await _context.Events.ToListAsync();
+
+                foreach(Event objectEvent in Events)
+                {
+                    foreach(string email in EmailsList)
+                    {
+                        User user = await _userHelper.GetUserAsync(email);
+                        EventInscription eventInscription = new()
+                        {
+                            Event = objectEvent,
+                            User = user,
+                            EventStatus = EventStatus.SignedUp,
+                            InscriptionDate = DateTime.Now,
+                        };
+                        _context.Add(eventInscription);
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
         }
 
         //Professionals
