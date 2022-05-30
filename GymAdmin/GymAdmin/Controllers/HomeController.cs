@@ -27,13 +27,15 @@ namespace GymAdmin.Controllers
             _flashMessage = flashMessage;
         }
 
-        //-------------------------------- General TODOs ----------------------------------
-        //TODO: If your teammates don't, make GetPlan and EditActivePlan methods in PlanController and the views with modals
-        //TODO: Make SignUpToEvent and CancelInscription methods
+        //-------------------------------- TODOs ----------------------------------
         //TODO: Make Events view with pagination
-        //TODO: Make a modal that shows the selected event details and the inscription button
         //TODO: Make My Events view
-        //TODO: Make a service on Program (like the Seeder) with UpdateExpirationDatePlan and UpdateEventAtendance methods
+
+        //TODO: Make EventInscriptions view (Like Suscriptions view)
+        //TODO: Dashboard and personalize navbar
+        //TODO: Make a service on Program (like the Seeder) with UpdateExpirationDatePlan method
+
+        //TODO: If your teammates don't, make GetPlan and EditActivePlan methods in PlanController and the views with modals
 
         //------------------------------------- Principal --------------------------------------------
         public IActionResult Index()
@@ -81,6 +83,18 @@ namespace GymAdmin.Controllers
         public IActionResult NoPlan()
         {
             return View();
+        }
+
+        public async Task<IActionResult> MyEvents() //TODO: Make view
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return View(await _context.EventInscriptions.Where(ei => ei.User.Email == User.Identity.Name)
+                    .Include(ei => ei.Event)
+                    .ToListAsync());
+            }
+
+            return RedirectToAction("Login", "Account");
         }
 
         public async Task<IActionResult> MyServices()

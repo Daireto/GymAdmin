@@ -61,7 +61,7 @@ namespace GymAdmin.Controllers
                 serviceAccess.ServiceStatus = Enums.ServiceStatus.Taken;
                 _context.Update(serviceAccess);
                 await _context.SaveChangesAsync();
-                _flashMessage.Confirmation("Registro actualizado correctamente", "Operación exitosa:");
+                _flashMessage.Confirmation("Servicio actualizado correctamente", "Operación exitosa:");
             }
             else
             {
@@ -81,7 +81,7 @@ namespace GymAdmin.Controllers
                 serviceAccess.ServiceStatus = Enums.ServiceStatus.Cancelled;
                 _context.Update(serviceAccess);
                 await _context.SaveChangesAsync();
-                _flashMessage.Confirmation("Registro actualizado correctamente", "Operación exitosa:");
+                _flashMessage.Confirmation("Servicio cancelado correctamente", "Operación exitosa:");
             }
             else
             {
