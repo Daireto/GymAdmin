@@ -23,6 +23,18 @@
     #MyTable th, .td_option {
         text-align: center;
     }
+
+    #eventDescription{
+        border: none;
+        resize: none;
+        margin-top: 0 !important;
+        text-align: center;
+    }
+
+    #eventUsers{
+        font-size: 18px;
+        color: #f2c60d;
+    }
 </style>
 
 <flash dismissable="true" />
@@ -36,32 +48,30 @@
                 <div class="panel panel-default">
                     <div class="panel-heading GymAdminTableHeading">
                         <h3 class="panel-title GymAdminTableTitle">@Model.Name</h3>
+                    </div>
+                    <div class="panel-body GymAdminTable">
                         <div class="row">
                             <!-- Left column -->
                             <div class="col-md-6 GymAdminFormColumn">
                                 <!-- Field -->
+                                <h5>Descripción</h5>
                                 <div class="form-group GymAdminFormElement">
-                                    <h4>Descripción</h4>
-                                    <div class="eventDescription">@Model.Description</div>
+                                    <textarea id="eventDescription" class="GymAdminFormTextArea" rows="8" cols="50" readonly>@Model.Description</textarea>
                                 </div>
                             </div>
                             <!-- Right column -->
                             <div class="col-md-6 GymAdminFormColumn">
                                 <!-- Field -->
-                                <div class="form-group GymAdminFormElement">
-                                    <h4>Cantidad de usuarios inscritos</h4>
-                                    <div class="eventUsers">@Model.InscriptionsNumber</div>
-                                </div>
+                                <h5>Cantidad de usuarios inscritos</h5>
+                                <div id="eventUsers">@Model.InscriptionsNumber</div>
                                 <!-- Buttons and links -->
-                                <div class="GymAdminRegisterFormButtons form-group">
+                                <div class="GymAdminRegisterFormButtons form-group mt-2">
                                     <button disabled class="GymAdminFormButton">
                                         <a asp-action="DetailsDirector" asp-route-id="@Model.Director.Id" asp-controller="Director" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink">Regresar</a>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="panel-body GymAdminTable">
                         <div id="view-all">
                             @await Html.PartialAsync("_ViewAllSignedUpUsers", Model)
                         </div>

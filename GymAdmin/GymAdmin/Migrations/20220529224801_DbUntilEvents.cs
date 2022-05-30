@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -336,6 +335,7 @@ namespace GymAdmin.Migrations
                     StartHour = table.Column<long>(type: "bigint", nullable: false),
                     FinishHour = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     EventType = table.Column<int>(type: "int", nullable: false),
                     DirectorId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -370,6 +370,25 @@ namespace GymAdmin.Migrations
                         name: "FK_ProfessionalSchedules_Schedules_ScheduleId",
                         column: x => x.ScheduleId,
                         principalTable: "Schedules",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventImages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EventId = table.Column<int>(type: "int", nullable: true),
+                    ImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventImages_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
                         principalColumn: "Id");
                 });
 
@@ -455,6 +474,11 @@ namespace GymAdmin.Migrations
                 column: "UserId",
                 unique: true,
                 filter: "[UserId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventImages_EventId",
+                table: "EventImages",
+                column: "EventId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventInscriptions_EventId",
@@ -560,6 +584,9 @@ namespace GymAdmin.Migrations
 
             migrationBuilder.DropTable(
                 name: "Attendances");
+
+            migrationBuilder.DropTable(
+                name: "EventImages");
 
             migrationBuilder.DropTable(
                 name: "EventInscriptions");

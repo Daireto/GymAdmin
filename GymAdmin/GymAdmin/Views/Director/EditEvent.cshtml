@@ -98,10 +98,6 @@
                             <span asp-validation-for="EventType" class="text-danger"></span>
                         </div>
                     </div>
-                    <!-- Buttons and links -->
-                        <div class="GymAdminRegisterFormButtons form-group mt-2">
-                            <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                        </div>
                     <!-- Right column -->
                     <div class="col-md-6 GymAdminFormColumn">
                         <!-- Field -->
@@ -116,11 +112,17 @@
                             <input type="time" asp-for="FinishHour" class="GymAdminFormInput" />
                             <span asp-validation-for="FinishHour" class="text-danger"></span>
                         </div>
+                    </div>
+                    <div class="col-md-12 GymAdminFormColumn">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="Description" class="control-label GymAdminFormLabel"></label>
-                            <input asp-for="Description" class="GymAdminFormInput" autocomplete="off" />
+                            <textarea asp-for="Description" class="GymAdminFormTextArea" autocomplete="off" maxlength="500" rows="4" cols="50"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                            <input type="submit" value="Editar" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
                         </div>
                     </div>
                 </div>

@@ -5,6 +5,11 @@
     Layout = null;
 }
 
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+
 <flash dismissable="true" />
 
 <!-- Create form -->
@@ -60,7 +65,7 @@
                                 }
                             }
                         }
-                        <div class="form-group GymAdminFormElement">
+                        <div class="form-group GymAdminFormElement md-2">
                             <label asp-for="Day" class="control-label GymAdminFormLabel"></label>
                             <select asp-for="Day" asp-items="@Days" class="GymAdminFormCombobox"></select>
                             <span asp-validation-for="Day" class="text-danger"></span>
@@ -97,10 +102,6 @@
                             <select asp-for="EventType" asp-items="@EvTypes" class="GymAdminFormCombobox"></select>
                             <span asp-validation-for="EventType" class="text-danger"></span>
                         </div>
-                        <!-- Buttons and links -->
-                        <div class="GymAdminRegisterFormButtons form-group">
-                            <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
-                        </div>
                     </div>
                     <!-- Right column -->
                     <div class="col-md-6 GymAdminFormColumn">
@@ -122,11 +123,17 @@
                             <input asp-for="ImageFile" class="GymAdminFormInput GymAdminFormImageInput" autocomplete="off" />
                             <span asp-validation-for="ImageFile" class="text-danger"></span>
                         </div>
+                    </div>
+                    <div class="col-md-12 GymAdminFormColumn">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
                             <label asp-for="Description" class="control-label GymAdminFormLabel"></label>
-                            <input asp-for="Description" class="GymAdminFormInput" autocomplete="off" />
+                            <textarea asp-for="Description" class="GymAdminFormTextArea" autocomplete="off" maxlength="500" rows="4" cols="50"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group">
+                            <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
                         </div>
                     </div>
                 </div>

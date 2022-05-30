@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymAdmin.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220522045312_DbUntilEvents")]
+    [Migration("20220529224801_DbUntilEvents")]
     partial class DbUntilEvents
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,11 @@ namespace GymAdmin.Migrations
                     b.Property<int>("Day")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<int?>("DirectorId")
                         .HasColumnType("int");
 
@@ -100,6 +105,27 @@ namespace GymAdmin.Migrations
                         .IsUnique();
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.EventImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ImageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("EventImages");
                 });
 
             modelBuilder.Entity("GymAdmin.Data.Entities.EventInscription", b =>
@@ -595,6 +621,15 @@ namespace GymAdmin.Migrations
                     b.Navigation("Director");
                 });
 
+            modelBuilder.Entity("GymAdmin.Data.Entities.EventImage", b =>
+                {
+                    b.HasOne("GymAdmin.Data.Entities.Event", "Event")
+                        .WithMany("EventImages")
+                        .HasForeignKey("EventId");
+
+                    b.Navigation("Event");
+                });
+
             modelBuilder.Entity("GymAdmin.Data.Entities.EventInscription", b =>
                 {
                     b.HasOne("GymAdmin.Data.Entities.Event", "Event")
@@ -728,6 +763,8 @@ namespace GymAdmin.Migrations
 
             modelBuilder.Entity("GymAdmin.Data.Entities.Event", b =>
                 {
+                    b.Navigation("EventImages");
+
                     b.Navigation("EventInscriptions");
                 });
 

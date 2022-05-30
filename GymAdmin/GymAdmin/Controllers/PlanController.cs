@@ -68,7 +68,7 @@ namespace GymAdmin.Controllers
 
                     if (eventInscriptions != null)
                     {
-                        if (eventInscriptions.Count() != 0)
+                        if (eventInscriptions.Count != 0)
                         {
                             foreach (EventInscription eventInscription in eventInscriptions)
                             {

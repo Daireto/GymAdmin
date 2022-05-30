@@ -304,12 +304,6 @@ namespace GymAdmin.Controllers
                         .Include(d => d.User)
                         .FirstOrDefaultAsync(d => d.User.Email == model.DirectorUsername);
 
-                    Guid imageId = Guid.Empty;
-                    if (model.ImageFile != null)
-                    {
-                        imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "events");
-                    }
-
                     Event objectEvent = new()
                     {
                         Day = model.Day,
@@ -321,13 +315,19 @@ namespace GymAdmin.Controllers
                         Description = model.Description,
                     };
 
-                    EventImage eventImage = new()
+                    Guid imageId = Guid.Empty;
+                    if (model.ImageFile != null)
                     {
-                        Event = objectEvent,
-                        ImageId = imageId,
-                    };
+                        imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "events");
 
-                    objectEvent.EventImages.Add(eventImage);
+                        EventImage eventImage = new()
+                        {
+                            Event = objectEvent,
+                            ImageId = imageId,
+                        };
+
+                        objectEvent.EventImages.Add(eventImage);
+                    }
 
                     _context.Add(objectEvent);
                     await _context.SaveChangesAsync();
@@ -379,7 +379,7 @@ namespace GymAdmin.Controllers
                 Id = eventObject.Id,
             };
 
-            return View(eventObject);
+            return View(model);
         }
 
         [HttpPost]
@@ -434,16 +434,23 @@ namespace GymAdmin.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> DeleteEvent(int id)
         {
-            Event eventObject = await _context.Events.FirstOrDefaultAsync(m => m.Id == id);
+            Event eventObject = await _context.Events
+                .Include(e => e.Director)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
             try
             {
-                foreach (EventImage eventImage in eventObject.EventImages)
+                if (eventObject.EventImages != null)
                 {
-                    try
+                    foreach (EventImage eventImage in eventObject.EventImages)
                     {
-                        await _blobHelper.DeleteBlobAsync(eventImage.ImageId, "events");
-                    }
-                    catch { }
+                        try
+                        {
+                            await _blobHelper.DeleteBlobAsync(eventImage.ImageId, "events");
+                            _context.EventImages.Remove(eventImage);
+                        }
+                        catch { }
+                    } 
                 }
 
                 _context.Events.Remove(eventObject);
@@ -454,8 +461,7 @@ namespace GymAdmin.Controllers
             {
                 _flashMessage.Danger("No se puede borrar el evento porque tiene registros relacionados", "Error:");
             }
-            return RedirectToAction(nameof(ShowEvents));
+            return RedirectToAction(nameof(DetailsDirector), new {id = eventObject.Director.Id });
         }
     }
 }
-

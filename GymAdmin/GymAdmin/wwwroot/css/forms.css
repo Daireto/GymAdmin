@@ -54,6 +54,34 @@
         border-bottom-color: #f2c60d;
     }
 
+.GymAdminFormTextArea {
+    width: 100%;
+    display: block;
+    margin-top: 5px;
+    background-color: transparent;
+    border-top: 1px solid #a8a7a7;
+    border-left: 1px solid #a8a7a7;
+    border-right: 1px solid #a8a7a7;
+    border-bottom: 1px solid #a8a7a7;
+    color: #f2c60d;
+    transition: all .2s ease-out;
+}
+
+    .GymAdminFormTextArea:focus {
+        border-top-color: #f2c60d;
+        border-bottom-color: #f2c60d;
+        border-right-color: #f2c60d;
+        border-left-color: #f2c60d;
+        outline: none;
+    }
+
+    .GymAdminFormTextArea:hover {
+        border-top-color: #f2c60d;
+        border-bottom-color: #f2c60d;
+        border-right-color: #f2c60d;
+        border-left-color: #f2c60d;
+    }
+
 .GymAdminFormCombobox {
     width: 100%;
     display: block;

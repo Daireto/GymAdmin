@@ -124,6 +124,7 @@ namespace GymAdmin.Data
                         Name = "Body Balance",
                         EventType = EventType.Balance,
                         Director = director1,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -152,6 +153,7 @@ namespace GymAdmin.Data
                         Name = "Gimnasia",
                         EventType = EventType.Balance,
                         Director = director1,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -179,6 +181,7 @@ namespace GymAdmin.Data
                         Name = "Cardio",
                         EventType = EventType.Crossfit,
                         Director = director2,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -207,6 +210,7 @@ namespace GymAdmin.Data
                         Name = "Salto alto",
                         EventType = EventType.Crossfit,
                         Director = director2,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -238,6 +242,7 @@ namespace GymAdmin.Data
                         Name = "Ballet",
                         EventType = EventType.Dance,
                         Director = director3,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -269,6 +274,7 @@ namespace GymAdmin.Data
                         Name = "Breakdance",
                         EventType = EventType.Dance,
                         Director = director4,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -293,6 +299,7 @@ namespace GymAdmin.Data
                         Name = "Breakdance infantil",
                         EventType = EventType.Dance,
                         Director = director4,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -312,6 +319,7 @@ namespace GymAdmin.Data
                         Name = "Baile urbano",
                         EventType = EventType.Dance,
                         Director = director5,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -332,6 +340,7 @@ namespace GymAdmin.Data
                         Name = "Folclor en parejas",
                         EventType = EventType.Dance,
                         Director = director5,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -351,6 +360,7 @@ namespace GymAdmin.Data
                         Name = "Boxeo",
                         EventType = EventType.Martial,
                         Director = director6,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -379,6 +389,7 @@ namespace GymAdmin.Data
                         Name = "Lucha libre",
                         EventType = EventType.Martial,
                         Director = director6,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -407,6 +418,7 @@ namespace GymAdmin.Data
                         Name = "Karate",
                         EventType = EventType.Martial,
                         Director = director6,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -438,6 +450,7 @@ namespace GymAdmin.Data
                         Name = "Yoga",
                         EventType = EventType.Yoga,
                         Director = director7,
+                        Description = "",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
