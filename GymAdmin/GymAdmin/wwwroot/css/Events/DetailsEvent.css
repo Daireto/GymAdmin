@@ -1,0 +1,12 @@
+﻿#ImagesCarousel{
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.deleteButtonContainer {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}

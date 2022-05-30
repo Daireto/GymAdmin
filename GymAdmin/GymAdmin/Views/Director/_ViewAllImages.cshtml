@@ -1,0 +1,29 @@
+﻿@model GymAdmin.Data.Entities.Event
+
+<div id="ImagesCarousel" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        @{
+            var first = true;
+        }
+        @foreach (var item in Model.EventImages)
+        {
+            <div class="carousel-item @(first?Html.Raw("active"):Html.Raw(""))">
+                <img class="d-block w-100" src="@item.ImageFullPath" alt="@item.Id">
+                <div class="deleteButtonContainer">
+                    <button onclick="    return false;" data-id="@item.Id" class="btn btn-outline-danger deleteItem GymAdminFormButton GymAdminDeleteButton" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-ban"></i>Eliminar imagen</button>
+                </div>
+            </div>
+            first = false;
+        }
+    </div>
+    <a id="ImagesCarouselPrev" class="carousel-control-prev" onclick="    return false;" role="button"
+       data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only btn btn-secondary">Anterior</span>
+    </a>
+    <a id="ImagesCarouselNext" class="carousel-control-next" onclick="    return false;" role="button"
+       data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only btn-primary btn">Siguiente</span>
+    </a>
+</div>

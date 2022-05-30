@@ -16,7 +16,7 @@
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-            <form asp-action="CreateEvent" id="GymAdminForm" enctype="multipart/form-data" onsubmit="return jQueryAjaxPost(this);">
+            <form asp-action="CreateEvent" id="GymAdminForm" onsubmit="return jQueryAjaxPost(this);" enctype="multipart/form-data">
                 <!-- Hidden inputs -->
                 <input type="hidden" asp-for="DirectorUsername" />
                 <!-- Validation summary -->

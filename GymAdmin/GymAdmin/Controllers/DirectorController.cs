@@ -298,6 +298,7 @@ namespace GymAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
+                Guid imageId = Guid.Empty;
                 try
                 {
                     Director director = await _context.Directors
@@ -313,9 +314,9 @@ namespace GymAdmin.Controllers
                         Director = director,
                         EventType = model.EventType,
                         Description = model.Description,
+                        EventImages = new List<EventImage>()
                     };
 
-                    Guid imageId = Guid.Empty;
                     if (model.ImageFile != null)
                     {
                         imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "events");
@@ -343,11 +344,13 @@ namespace GymAdmin.Controllers
                     {
                         _flashMessage.Danger(dbUpdateException.InnerException.Message, "Error:");
                     }
+                    await _blobHelper.DeleteBlobAsync(imageId, "events");
                     return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "CreateEvent", model) });
                 }
                 catch (Exception exception)
                 {
                     _flashMessage.Danger(exception.Message, "Error:");
+                    await _blobHelper.DeleteBlobAsync(imageId, "events");
                     return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "CreateEvent", model) });
                 }
                 return Json(new
@@ -436,6 +439,7 @@ namespace GymAdmin.Controllers
         {
             Event eventObject = await _context.Events
                 .Include(e => e.Director)
+                .Include(e => e.EventImages)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             try
@@ -450,7 +454,7 @@ namespace GymAdmin.Controllers
                             _context.EventImages.Remove(eventImage);
                         }
                         catch { }
-                    } 
+                    }
                 }
 
                 _context.Events.Remove(eventObject);
@@ -461,7 +465,110 @@ namespace GymAdmin.Controllers
             {
                 _flashMessage.Danger("No se puede borrar el evento porque tiene registros relacionados", "Error:");
             }
-            return RedirectToAction(nameof(DetailsDirector), new {id = eventObject.Director.Id });
+            return RedirectToAction(nameof(DetailsDirector), new { id = eventObject.Director.Id });
+        }
+
+        [NoDirectAccess]
+        public IActionResult AddEventImage(int id)
+        {
+            AddImageViewModel model = new()
+            {
+                EventId = id,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddEventImage(AddImageViewModel model)
+        {
+            try
+            {
+                if (model.ImageFile != null)
+                {
+                    Guid imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "events");
+
+                    Event objectEvent = await _context.Events
+                        .Include(e => e.EventImages)
+                        .FirstOrDefaultAsync(e => e.Id == model.EventId);
+
+                    EventImage eventImage = new()
+                    {
+                        Event = objectEvent,
+                        ImageId = imageId
+                    };
+
+                    if (objectEvent.EventImages == null)
+                    {
+                        objectEvent.EventImages = new List<EventImage>();
+                    }
+                    objectEvent.EventImages.Add(eventImage);
+
+                    _context.Add(eventImage);
+                    _context.Update(objectEvent);
+                    await _context.SaveChangesAsync();
+                    _flashMessage.Confirmation("Imagen insertada correctamente", "Operación exitosa:");
+                    return Json(new
+                    {
+                        isValid = true,
+                        html = ModalHelper.RenderRazorViewToString(this, "_ViewAllImages", _context.Events
+                            .Include(e => e.Director)
+                            .ThenInclude(d => d.User)
+                            .Include(e => e.EventInscriptions.Where(ei => ei.EventStatus == EventStatus.SignedUp))
+                            .ThenInclude(ei => ei.User)
+                            .ThenInclude(u => u.PlanInscriptions)
+                            .ThenInclude(pi => pi.Plan)
+                            .Include(e => e.EventImages)
+                            .FirstOrDefault(e => e.Id == model.EventId))
+                    });
+                }
+                else
+                {
+                    _flashMessage.Danger("Debe seleccionar una imagen", "Error:");
+                }
+            }
+            catch
+            {
+                _flashMessage.Danger("La imagen no ha sido añadida", "Error:");
+            }
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "AddEventImage", model) });
+        }
+
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteEventImage(int id)
+        {
+            EventImage eventImage = await _context.EventImages
+                .Include(ei => ei.Event)
+                .FirstOrDefaultAsync(ei => ei.Id == id);
+
+            Event objectEvent = await _context.Events
+                .Include(e => e.EventImages)
+                .FirstOrDefaultAsync(e => e.Id == eventImage.Event.Id);
+
+            if(objectEvent.EventImages.Count == 1)
+            {
+                _flashMessage.Danger("El evento debe tener al menos una imagen", "Error:");
+                return RedirectToAction(nameof(DetailsEvent), new { id = eventImage.Event.Id });
+            }
+
+            try
+            {
+                try
+                {
+                    await _blobHelper.DeleteBlobAsync(eventImage.ImageId, "events");
+                }
+                catch { }
+
+                _context.Remove(eventImage);
+                await _context.SaveChangesAsync();
+                _flashMessage.Confirmation("Imagen eliminada correctamente", "Operación exitosa:");
+            }
+            catch
+            {
+                _flashMessage.Danger("La imagen no pudo ser eliminada", "Error:");
+            }
+            return RedirectToAction(nameof(DetailsEvent), new { id = eventImage.Event.Id });
         }
     }
 }
