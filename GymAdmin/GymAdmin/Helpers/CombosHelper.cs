@@ -29,6 +29,19 @@ namespace GymAdmin.Helpers
             return list;
         }
 
+        public async Task<IEnumerable<SelectListItem>> GetComboPlansAsync()
+        {
+            List<SelectListItem> list = await _context.Plans
+                .Select(p => new SelectListItem
+                {
+                    Text = p.Name,
+                    Value = p.Id.ToString(),
+                })
+                .ToListAsync();
+
+            return list;
+        }
+
         public async Task<IEnumerable<SelectListItem>> GetComboSchedulesAsync(int serviceId, DateTime day)
         {
             List<DateTime> allSchedules = new();
@@ -112,6 +125,29 @@ namespace GymAdmin.Helpers
             foreach (var professional in professionals)
             {
                 userIds.Add(professional.User.Id);
+            }
+
+            List<SelectListItem> list = await _context.Users
+                .Where(u => !userIds.Contains(u.Id))
+                .Select(u => new SelectListItem
+                {
+                    Text = u.FullName,
+                    Value = u.UserName
+                })
+                .ToListAsync();
+
+            return list;
+        }
+
+        public async Task<IEnumerable<SelectListItem>> GetComboNoDirectorsAsync()
+        {
+            List<Director> directors = await _context.Directors
+                .Include(p => p.User)
+                .ToListAsync();
+            List<string> userIds = new();
+            foreach (var director in directors)
+            {
+                userIds.Add(director.User.Id);
             }
 
             List<SelectListItem> list = await _context.Users

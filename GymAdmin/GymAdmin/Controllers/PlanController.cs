@@ -1,6 +1,8 @@
 ﻿using GymAdmin.Data;
 using GymAdmin.Data.Entities;
 using GymAdmin.Enums;
+using GymAdmin.Helpers;
+using GymAdmin.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +15,13 @@ namespace GymAdmin.Controllers
     {
         private readonly DataContext _context;
         private readonly IFlashMessage _flashMessage;
+        private readonly ICombosHelper _combosHelper;
 
-        public PlanController(DataContext context, IFlashMessage flashMessage)
+        public PlanController(DataContext context, IFlashMessage flashMessage, ICombosHelper combosHelper)
         {
             _context = context;
             _flashMessage = flashMessage;
+            _combosHelper = combosHelper;
         }
 
         [Authorize(Roles = "Admin")]
@@ -102,9 +106,14 @@ namespace GymAdmin.Controllers
         }
 
         [NoDirectAccess]
-        public IActionResult GetPlan()
+        public async Task<IActionResult> GetPlan()
         {
-            return View();
+            GetPlanViewModel model = new()
+            {
+                Plans = await _combosHelper.GetComboPlansAsync()
+            };
+
+            return View(model);
         }
     }
 }

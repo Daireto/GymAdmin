@@ -148,7 +148,7 @@ namespace GymAdmin.Controllers
         {
             EditDirectorViewModel model = new()
             {
-                Users = await _combosHelper.GetComboUsersAsync(),
+                Users = await _combosHelper.GetComboNoDirectorsAsync(),
             };
 
             if (id != null)
