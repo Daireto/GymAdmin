@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymAdmin.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220529224801_DbUntilEvents")]
+    [Migration("20220531043952_DbUntilEvents")]
     partial class DbUntilEvents
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,8 +78,8 @@ namespace GymAdmin.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
 
                     b.Property<int?>("DirectorId")
                         .HasColumnType("int");

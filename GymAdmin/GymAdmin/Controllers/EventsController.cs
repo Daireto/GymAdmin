@@ -84,9 +84,33 @@ namespace GymAdmin.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> SignUpToEvent(int id) //TODO: Make modal
         {
+            Event objectEvent = await _context.Events
+                .Include(e => e.Director)
+                .ThenInclude(d => d.User)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            SignUpToEventViewModel model = new()
+            {
+                Day = objectEvent.Day,
+                Description = objectEvent.Description,
+                DirectorFullName = objectEvent.Director.User.FullName,
+                EventId = objectEvent.Id,
+                EventType = objectEvent.EventType,
+                FinishHour = objectEvent.FinishHour,
+                Name = objectEvent.Name,
+                StartHour = objectEvent.StartHour
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignUpToEvent(SignUpToEventViewModel model)
+        {
             if (User.Identity.IsAuthenticated)
             {
-                Event objectEvent = await _context.Events.FindAsync(id);
+                Event objectEvent = await _context.Events.FindAsync(model.EventId);
 
                 EventInscription ei = await _context.EventInscriptions
                     .FirstAsync(ei =>
@@ -115,6 +139,7 @@ namespace GymAdmin.Controllers
                 else
                 {
                     _flashMessage.Danger("Ya estás inscrito a este evento", "Error:");
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "SignUpToEvent", model) });
                 }
             }
             return RedirectToAction("Login", "Account");

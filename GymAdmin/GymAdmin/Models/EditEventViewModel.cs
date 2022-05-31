@@ -28,7 +28,7 @@ namespace GymAdmin.Models
 
         [DataType(DataType.MultilineText)]
         [Display(Name = "Descripción")]
-        [MaxLength(500, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres")]
+        [MaxLength(600, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Description { get; set; }
 

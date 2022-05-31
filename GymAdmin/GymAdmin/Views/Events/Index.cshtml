@@ -5,28 +5,55 @@
 }
 
 <!-- GymAdmin style -->
-<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
-<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Events/EventsView.css" />
 
-<!-- Filtering buttons -->
-<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">Ordenar por Nombre</a>
-<a asp-action="Index" asp-route-sortOrder="@ViewData["DaySortParm"]">Ordenar por Día</a>
-
-<!-- Searching form -->
-<form asp-action="Index" method="get">
-<input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-<input type="submit" value="Buscar" />
-</form>
-
-<!-- Pagination buttons -->
-@{
-var prevDisabled = !Model.Events.HasPreviousPage ? "disabled" : "";
-var nextDisabled = !Model.Events.HasNextPage ? "disabled" : "";
-}
-<a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.Events.PageIndex - 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-warning @prevDisabled">Anterior</a>
-<a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.Events.PageIndex + 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-warning @nextDisabled">Siguiente</a>
-
-
+<!-- Events view -->
+<div class="events-container">
+    <aside id="ViewOptionsAside">
+        <div class="OptionsContainer">
+            <!-- Searching form -->
+            <div class="SearchingFormContainer">
+                <form asp-action="Index" method="get" id="SearchingForm">
+                    <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                    <input type="submit" value="Buscar" />
+                </form>
+            </div>
+            <!-- Filtering buttons -->
+            <div class="FilteringButtonsContainer">
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" class="FilteringButton">Ordenar por Nombre</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DaySortParm"]" class="FilteringButton">Ordenar por Día</a>
+            </div>
+            <!-- Pagination buttons -->
+            <div class="PaginationButtonsContainer">
+                @{
+                    var prevDisabled = !Model.Events.HasPreviousPage ? "disabled" : "";
+                    var nextDisabled = !Model.Events.HasNextPage ? "disabled" : "";
+                }
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.Events.PageIndex - 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="PaginationButton btn btn-warning @prevDisabled">Anterior</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.Events.PageIndex + 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="PaginationButton btn btn-warning @nextDisabled">Siguiente</a>
+            </div>
+        </div>
+    </aside>
+    <section id="ViewEventsSection">
+        <div class="FilteredEventsContainer">
+            @foreach (var eventItem in Model.Events)
+            {
+                <div class="EventItemContainer">
+                    <!-- Images -->
+                    <img class="d-block w-100" src="@eventItem.EventImages.FirstOrDefault().ImageFullPath">
+                    <!-- Description -->
+                    <div class="DescriptionContainer">
+                        <textarea class="EventDescription" rows="10" cols="50" readonly>@eventItem.Description</textarea>
+                    </div>
+                    <!-- Details option -->
+                    <div class="DetailsButtonContainer">
+                        <a onclick="showInPopup('@Url.Action("DetailsEvent", "Director", new{ id=eventItem}, Context.Request.Scheme)' , 'Detalles del evento')" class="DetailsButton">Detalles</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+</div>
 
 @section Scripts {
     @{

@@ -90,7 +90,7 @@
                         <!-- Services option -->
                         <li><a asp-area="" asp-controller="Home" asp-action="Professionals">Servicios adicionales</a></li>
                         <!-- Events option -->
-                        <li id="EventOption"><a asp-area="" asp-controller="Home" asp-action="Events">Eventos grupales</a></li>
+                        <li id="EventOption"><a asp-area="" asp-controller="Events" asp-action="Index">Eventos grupales</a></li>
                         @if (User.Identity.IsAuthenticated)
                         {
                             var nombreUsuario = User.Identity.Name.Substring(0, User.Identity.Name.Length - 12);

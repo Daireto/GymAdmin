@@ -124,7 +124,11 @@ namespace GymAdmin.Data
                         Name = "Body Balance",
                         EventType = EventType.Balance,
                         Director = director1,
-                        Description = "",
+                        Description = "Los ejercicios de Core  entrenan los músculos de la pelvis, la baja espalda, la cadera y " +
+                        "el abdomen para que trabajen en armonía. Esto produce un mejor equilibrio y estabilidad. Los problemas " +
+                        "de espalda suelen ser muy comunes en las mujeres, por lo tanto, es necesario realizar buenos ejercicios " +
+                        "para aliviar dichos problemas.\n\nInscríbete y aprende los mejores ejercicios de Core para mejorar " +
+                        "tu equilibrio y estabilidad.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -153,7 +157,10 @@ namespace GymAdmin.Data
                         Name = "Gimnasia",
                         EventType = EventType.Balance,
                         Director = director1,
-                        Description = "",
+                        Description = "La práctica de la gimnasia es importante porque disciplina al individuo en todos los sentidos. " +
+                        "Ayuda a desarrollar la estabilidad emocional, la cual viene dada por la concentración, velocidad de reflejos " +
+                        "y seguridad que debe preceder a cada actuación. Constituye una disciplina que ayuda a mantener la elasticidad " +
+                        "y fuerza natural.\n\nInscríbete y aprende sobre gimnasia con nuestros directores más experimentados.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -181,7 +188,10 @@ namespace GymAdmin.Data
                         Name = "Cardio",
                         EventType = EventType.Crossfit,
                         Director = director2,
-                        Description = "",
+                        Description = "El beneficio fundamental del trabajo de cardio es, entre otros, ayudar al corazón a que " +
+                        "funcione de una mejor manera. También contribuye a mejorar la capacidad respiratoria. El ejercicio de " +
+                        "cardio hace que se nivelen algunos aspectos fundamentales en el cuerpo.\n\nVen a hacer cardio con " +
+                        "nosotros y aprende a mejorar tu salud cardiaca bajo la orientación de nuestros directores más experimentados.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -210,7 +220,11 @@ namespace GymAdmin.Data
                         Name = "Salto alto",
                         EventType = EventType.Crossfit,
                         Director = director2,
-                        Description = "",
+                        Description = "Para muchos atletas y deportistas, uno de las habilidades más importantes es el salto. " +
+                        "Un buen salto puede marcar la diferencia en el deporte que se está practicando, ya sea atletismo, baloncesto, " +
+                        "fútbol, etc.\n\nSi quieres mejorar tu salto y aprender todos lo ejercicios recomendados para potenciar " +
+                        "la fuerza en las piernas y prevenir lesiones, inscríbete y entrena con nosotros bajo la orientación de nuestros " +
+                        "directores.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -242,7 +256,10 @@ namespace GymAdmin.Data
                         Name = "Ballet",
                         EventType = EventType.Dance,
                         Director = director3,
-                        Description = "",
+                        Description = "Bailar Ballet es una de las grandes pasiones de toda una serie de hombres y mujeres de a lo largo " +
+                        "de todo el mundo. Los profesionales que lo practican pasan mucho tiempo desarrollando su técnica, logrando " +
+                        "resultados admirables.\n\nSi quieres ampliar tus conocimientos y aprender todo sobre el Ballet, no dudes " +
+                        "en inscribirte y unirte a nosotros.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -274,7 +291,10 @@ namespace GymAdmin.Data
                         Name = "Breakdance",
                         EventType = EventType.Dance,
                         Director = director4,
-                        Description = "",
+                        Description = "El Breakdance o el Bboying es una danza social que forma parte de la cultura del hip hop, junto " +
+                        "con el grafiti, rap y djing. Este elemento nace en las comunidades de los barrios neoyorquinos como Bronx y " +
+                        "Brooklyn, en Estados Unidos, en la década de 1960.\n\nSi quieres aprender a bailar Breakdance no dudes " +
+                        "en inscribirte y unirte a nosotros.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -299,7 +319,10 @@ namespace GymAdmin.Data
                         Name = "Breakdance infantil",
                         EventType = EventType.Dance,
                         Director = director4,
-                        Description = "",
+                        Description = "El Breakdance o el Bboying es una danza social que forma parte de la cultura del hip hop, junto " +
+                        "con el grafiti, rap y djing. Este elemento nace en las comunidades de los barrios neoyorquinos como Bronx y " +
+                        "Brooklyn, en Estados Unidos, en la década de 1960.\n\nLos niños y niñas también pueden disfrutar de este " +
+                        "estilo de baile con nostros.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -319,7 +342,10 @@ namespace GymAdmin.Data
                         Name = "Baile urbano",
                         EventType = EventType.Dance,
                         Director = director5,
-                        Description = "",
+                        Description = "El baile urbano o baile callejero es un estilo de baile, independientemente del país de origen, " +
+                        "el cual evolucionó fuera de los estudios de baile en cualquier espacio abierto disponible como calles, fiestas " +
+                        "de baile, fiestas de barrio, parques, patios escolares, raves y clubes nocturnos.\n\nSi quieres aprender " +
+                        "los fundamentos del baile urbano, este es tu lugar. Únete a nosotros y aprende todo sobre este movimiento.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -340,7 +366,10 @@ namespace GymAdmin.Data
                         Name = "Folclor en parejas",
                         EventType = EventType.Dance,
                         Director = director5,
-                        Description = "",
+                        Description = "La danza folklórica es la danza tradicional de carácter social que se practica en grupos y que " +
+                        "forma parte de patrimonio cultural de una región o sociedad. Este tipo de baile también se practica en parejas " +
+                        "y es el más emocionante en las fiestas y reuniones familiares.\n\nVen con nosotros para aprender todos los " +
+                        "fundamentos del folclor y conviértete en un experto o experta.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -360,7 +389,10 @@ namespace GymAdmin.Data
                         Name = "Boxeo",
                         EventType = EventType.Martial,
                         Director = director6,
-                        Description = "",
+                        Description = "El boxeo y la lucha son dos de los deportes de combate más antiguos de la historia. " +
+                        "En la actualidad es reconocido como uno de los sistemas de entrenamientos cardiovasculares más efectivos " +
+                        "y puede ser practicado por mujeres, hombres y niños.\n\nLas clases de boxeo en GymAdmin están dirigidas a " +
+                        "mujeres, hombres y niños a partir de los 9 años.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -389,7 +421,10 @@ namespace GymAdmin.Data
                         Name = "Lucha libre",
                         EventType = EventType.Martial,
                         Director = director6,
-                        Description = "",
+                        Description = "La lucha libre es un deporte físico popular en el que se puede competir en la escuela secundaria, " +
+                        "la universidad, a nivel de aficionado o profesional. Si estás interesado en aprender algunos fundamentos de la " +
+                        "lucha libre, unirte a nuestro gimnasio es la mejor manera de hacerlo.\n\nRecibirás asesorías y acompañamiento " +
+                        "continuo de nuestros directores más experimentados y profesionales.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -418,7 +453,11 @@ namespace GymAdmin.Data
                         Name = "Karate",
                         EventType = EventType.Martial,
                         Director = director6,
-                        Description = "",
+                        Description = "El Karate es un arte marcial japonés que se considera, sobre todo, un arte defensivo. " +
+                        "No necesitas inscribirte en el Dojo más caro para aprender esta grandiosa arte marcial. En GymAdmin " +
+                        "aprenderás todo sobre el Karate, desde las técnicas de defensa más básicas hasta las más avanzadas. " +
+                        "Todo esto bajo la orientación de nuestros mejores directores.\n\nInscríbete y demuestra tu poder entrenando " +
+                        "Karate con nosotros.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
@@ -450,7 +489,10 @@ namespace GymAdmin.Data
                         Name = "Yoga",
                         EventType = EventType.Yoga,
                         Director = director7,
-                        Description = "",
+                        Description = "Ven a hacer Yoga con nosotros para equilibrar cuerpo y mente, reducir el estrés y el agotamiento," +
+                        " para despejar tu mente de cualquier dificultad por la que estés pasando, y para que tengas más claridad de lo " +
+                        "que quieres hacer y lo que quieres lograr.\n\nEn GymAdmin te ofrecemos las mejores terapias complementarias a la" +
+                        " práctica de Yoga con la orientación de nuestros mejores directores.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()

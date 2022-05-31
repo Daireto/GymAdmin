@@ -28,10 +28,6 @@ namespace GymAdmin.Controllers
         }
 
         //-------------------------------- TODOs ----------------------------------
-        //TODO: Make Events view with pagination
-        //TODO: Make My Events view
-
-        //TODO: Make EventInscriptions view (Like Suscriptions view)
         //TODO: Dashboard and personalize navbar
         //TODO: Make a service on Program (like the Seeder) with UpdateExpirationDatePlan method
 
