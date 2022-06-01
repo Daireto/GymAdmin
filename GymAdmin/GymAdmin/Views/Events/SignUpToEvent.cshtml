@@ -5,8 +5,139 @@
     Layout = null;
 }
 
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/EditViews.css" />
+
+<style>
+    h2{
+        width: 100%;
+        text-align: center;
+    }
+
+    #GymAdminForm{
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #GymAdminForm textarea.DescriptionField {
+        resize: none;
+        border: none !important;
+        text-align: justify !important;
+    }
+
+    #GymAdminForm .row {
+        padding: 20px !important;
+    }
+
+    #GymAdminForm .Linkdiv {
+        text-align: center;
+    }
+
+        #GymAdminForm .Linkdiv .SubmitInput {
+            padding: 10px 20px;
+            border: 1px solid white;
+            background-color: transparent !important;
+            text-decoration: none;
+            color: white;
+            transition: all .2s ease-out;
+            margin-top: 0 !important;
+        }
+
+            #GymAdminForm .Linkdiv .SubmitInput:hover {
+                color: black;
+                background-color: white !important;
+            }
+
+    #GymAdminForm .GymAdminFormInput {
+        border: none !important;
+    }
+
+    .GymAdminFormElement, .GymAdminFormInput{
+        text-align: center !important;
+    }
+</style>
+
+<flash dismissable="true" />
+
+<!-- Edit form -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <form asp-action="SignUpToEvent" id="GymAdminForm" onsubmit="return jQueryAjaxPost(this);">
+            <div class="col-md-12" id="GymAdminFieldsContainer">
+                <div class="row">
+                    <h2>@Model.Name</h2>
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Descripción</label>
+                            <textarea class="GymAdminFormInput DescriptionField" rows="12" cols="50">@Model.Description</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Director</label>
+                            <input value="@Model.DirectorFullName" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        @{
+                            var day = "";
+                            if (Model.Day.ToString() == "Monday")
+                            {
+                                day = "Lunes";
+                            }
+                            if (Model.Day.ToString() == "Tuesday")
+                            {
+                                day = "Martes";
+                            }
+                            if (Model.Day.ToString() == "Wednesday")
+                            {
+                                day = "Miércoles";
+                            }
+                            if (Model.Day.ToString() == "Thursday")
+                            {
+                                day = "Jueves";
+                            }
+                            if (Model.Day.ToString() == "Friday")
+                            {
+                                day = "Viernes";
+                            }
+                            if (Model.Day.ToString() == "Saturday")
+                            {
+                                day = "Sábado";
+                            }
+                            if (Model.Day.ToString() == "Sunday")
+                            {
+                                day = "Domingo";
+                            }
+                        }
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Día</label>
+                            <input value="@day" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        @{
+                            var StartHourDateTime = new DateTime(Model.StartHour.Ticks);
+                            var FinishHourDateTime = new DateTime(Model.FinishHour.Ticks);
+                            var StartHour12HoursFormated = StartHourDateTime.ToString("h:mm tt");
+                            var FinishHour12HoursFormated = FinishHourDateTime.ToString("h:mm tt");
+                        }
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Horario</label>
+                            <input value="@StartHour12HoursFormated - @FinishHour12HoursFormated" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement Linkdiv">
+                            <input type="submit" class="SubmitInput GymAdminFormElement GymAdminFormLabel" value="Inscribirse" />
+                        </div>
+                    </div>
+                </div>
+        </form>
+    </div>
+</div>
+
 @section Scripts {
     @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     }
