@@ -39,7 +39,6 @@ namespace GymAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddAttendanceViewModel model)
         {
-            string n = model.Username;
             if (ModelState.IsValid)
             {
                 User user = await _context.Users.Include(u => u.PlanInscriptions).FirstOrDefaultAsync(u => u.Email == model.Username);
@@ -48,9 +47,9 @@ namespace GymAdmin.Controllers
                     PlanInscription pI = await _context.PlanInscriptions.Include(pI => pI.Plan).FirstOrDefaultAsync(pI => pI.Id == user.PlanInscriptions.Last().Id);
 
                     Attendance at = new Attendance();
-                    if (pI != null) //the last position is always the last plan that the user bought to access the gym, so we first comprobate if the user has already a plan, then if it is ticketholder and is still active to make the operations
+                    if (pI != null && pI.PlanStatus==PlanStatus.Paid) //the last position is always the last plan that the user bought to access the gym, so we first comprobate if the user has already a plan, then if it is ticketholder and is still active to make the operations
                     {
-                        if (pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.TicketHolder)
+                        if (pI.Plan.PlanType == PlanType.TicketHolder)
                         {
 
                             at.AttendanceDate = DateTime.Now;
@@ -63,7 +62,7 @@ namespace GymAdmin.Controllers
                             }
 
                         }
-                        if (pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.Simple || pI.PlanStatus == PlanStatus.Paid && pI.Plan.PlanType == PlanType.Black)
+                        if (pI.Plan.PlanType == PlanType.Simple || pI.Plan.PlanType == PlanType.Black)
                         {
 
                             at.AttendanceDate = DateTime.Now;
