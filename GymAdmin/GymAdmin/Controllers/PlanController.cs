@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Vereyon.Web;
 using static GymAdmin.Helpers.ModalHelper;
+using GymAdmin.Common;
 
 namespace GymAdmin.Controllers
 {
@@ -17,7 +18,7 @@ namespace GymAdmin.Controllers
         private readonly IFlashMessage _flashMessage;
         private readonly ICombosHelper _combosHelper;
 
-        public PlanController(DataContext context, IFlashMessage flashMessage, ICombosHelper combosHelper)
+        public PlanController(DataContext context, IFlashMessage flashMessage, ICombosHelper combosHelper )
         {
             _context = context;
             _flashMessage = flashMessage;
@@ -115,5 +116,66 @@ namespace GymAdmin.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> GetPlan(GetPlanViewModel model)
+        {
+            User user = await _context.Users.Include(u => u.PlanInscriptions).FirstOrDefaultAsync(u => u.Email == User.Identity.Name);
+            PlanInscription pI = user.PlanInscriptions.Last();
+            if (pI.PlanStatus != PlanStatus.Active || pI == null)
+            {
+                Plan plan = await _context.Plans.FindAsync(model.PlanId);
+                if (plan.PlanType == PlanType.Regular || plan.PlanType == PlanType.Black) {
+
+                    PlanInscription pI2 = new PlanInscription
+                    {
+                        ActivationDate = DateTime.Now,
+                        ExpirationDate = DateTime.Now.AddDays(model.Duration),
+                        InscriptionDate = DateTime.Now,
+                        PlanStatus = PlanStatus.Active,
+                        Plan = plan,
+                        User = user,
+                        Duration = model.Duration,
+                        RemainingDays = model.Duration,
+                        Discount = DiscountValues.GetDiscountValue(plan.PlanType),
+                        TotalPrice = plan.Price
+
+                    };
+                    user.PlanInscriptions.Add(pI2);
+                    _context.Add(pI2);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                { 
+                    PlanInscription pI2 = new PlanInscription
+                    {
+                        ActivationDate = DateTime.Now,
+                        ExpirationDate = DateTime.Now.AddDays(90), //the plan ticketholder will have 3 months to be used, the other way it will be expired
+                        InscriptionDate = DateTime.Now,
+                        PlanStatus = PlanStatus.Active,
+                        Plan = plan,
+                        User = user,
+                        Duration = model.Duration,
+                        RemainingDays = model.Duration,
+                        Discount = DiscountValues.GetDiscountValue(plan.PlanType),
+                        TotalPrice = plan.Price
+                    };
+                    user.PlanInscriptions.Add(pI2);
+                    _context.Add(pI2);
+                    await _context.SaveChangesAsync();
+
+                }
+                return View(model);
+
+
+
+            }
+            else { 
+             //the user cannot suscribe to another plan because has another one active at the moment
+            }
+
+            
+        }
+
+
     }
 }

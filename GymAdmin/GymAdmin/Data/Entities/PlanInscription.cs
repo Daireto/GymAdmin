@@ -5,6 +5,7 @@ namespace GymAdmin.Data.Entities
 {
     public class PlanInscription
     {
+
         public int Id { get; set; }
 
         public User User { get; set; }
@@ -27,5 +28,7 @@ namespace GymAdmin.Data.Entities
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalPrice { get; set; }
+
+       
     }
 }

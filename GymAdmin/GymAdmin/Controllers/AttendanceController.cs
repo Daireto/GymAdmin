@@ -48,7 +48,6 @@ namespace GymAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddAttendanceViewModel model)
         {
-            string n = model.Username;
             if (ModelState.IsValid)
             {
                 User user = await _context.Users.Include(u => u.PlanInscriptions).FirstOrDefaultAsync(u => u.Email == model.Username);
@@ -63,7 +62,7 @@ namespace GymAdmin.Controllers
                         );
 
                     Attendance at = new();
-                    if (pI != null)
+                    if (pI != null &&  pI.PlanStatus==PlanStatus.Active)
                     {
                         at.AttendanceDate = DateTime.Now;
                         at.User = user;
