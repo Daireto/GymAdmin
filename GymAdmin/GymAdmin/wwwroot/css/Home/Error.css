@@ -1,6 +1,3 @@
-﻿/*
-    Body
-*/
-body {
+﻿#blur-bg {
     background-image: url("../../images/bg/message-body-background.jpg");
 }

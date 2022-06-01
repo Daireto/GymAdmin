@@ -9,50 +9,101 @@
 
 <!-- Events view -->
 <div class="events-container">
-    <aside id="ViewOptionsAside">
-        <div class="OptionsContainer">
-            <!-- Searching form -->
-            <div class="SearchingFormContainer">
-                <form asp-action="Index" method="get" id="SearchingForm">
-                    <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-                    <input type="submit" value="Buscar" />
-                </form>
-            </div>
-            <!-- Filtering buttons -->
-            <div class="FilteringButtonsContainer">
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" class="FilteringButton">Ordenar por Nombre</a>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DaySortParm"]" class="FilteringButton">Ordenar por Día</a>
-            </div>
-            <!-- Pagination buttons -->
-            <div class="PaginationButtonsContainer">
-                @{
-                    var prevDisabled = !Model.Events.HasPreviousPage ? "disabled" : "";
-                    var nextDisabled = !Model.Events.HasNextPage ? "disabled" : "";
-                }
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.Events.PageIndex - 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="PaginationButton btn btn-warning @prevDisabled">Anterior</a>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.Events.PageIndex + 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="PaginationButton btn btn-warning @nextDisabled">Siguiente</a>
-            </div>
-        </div>
-    </aside>
-    <section id="ViewEventsSection">
-        <div class="FilteredEventsContainer">
-            @foreach (var eventItem in Model.Events)
-            {
-                <div class="EventItemContainer">
-                    <!-- Images -->
-                    <img class="d-block w-100" src="@eventItem.EventImages.FirstOrDefault().ImageFullPath">
-                    <!-- Description -->
-                    <div class="DescriptionContainer">
-                        <textarea class="EventDescription" rows="10" cols="50" readonly>@eventItem.Description</textarea>
-                    </div>
-                    <!-- Details option -->
-                    <div class="DetailsButtonContainer">
-                        <a onclick="showInPopup('@Url.Action("DetailsEvent", "Director", new{ id=eventItem}, Context.Request.Scheme)' , 'Detalles del evento')" class="DetailsButton">Detalles</a>
-                    </div>
+    <div class="EventsPanel">
+        <aside id="ViewOptionsAside">
+            <div class="OptionsContainer">
+                <h3 class="PrincipalTitle">EVENTOS GRUPALES</h3>
+                <!-- Searching form -->
+                <div class="SearchingFormContainer">
+                    <form asp-action="Index" method="get" id="SearchingForm">
+                        <input class="SearchString" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                        <input id="SearchingSubmitButton" type="submit" value="Buscar" />
+                    </form>
                 </div>
-            }
-        </div>
-    </section>
+                <!-- Filtering buttons -->
+                <div class="FilteringButtonsContainer">
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" class="FilteringButton">Ordenar por Nombre</a>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["DaySortParm"]" class="FilteringButton">Ordenar por Día</a>
+                </div>
+                <!-- Pagination buttons -->
+                <div class="PaginationButtonsContainer">
+                    @{
+                        var prevDisabled = !Model.Events.HasPreviousPage ? "disabled" : "";
+                        var nextDisabled = !Model.Events.HasNextPage ? "disabled" : "";
+                    }
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.Events.PageIndex - 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="PaginationButton btn btn-warning @prevDisabled">Anterior</a>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.Events.PageIndex + 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="PaginationButton btn btn-warning @nextDisabled">Siguiente</a>
+                </div>
+            </div>
+        </aside>
+        <section id="ViewEventsSection">
+            <div class="FilteredEventsContainer">
+                @foreach (var eventItem in Model.Events)
+                {
+                    <div class="EventItemContainer">
+                        <div class="NameContainer">
+                            <p class="EventName">@eventItem.Name</p>
+                        </div>
+                        <!-- Images -->
+                        <img class="EventImage" src="@eventItem.EventImages.FirstOrDefault().ImageFullPath">
+                        @{
+                            int i = eventItem.Description.IndexOf("\n");
+                            var Des = eventItem.Description.Substring(i + 2);
+                        }
+                        <!-- Description -->
+                        <div class="DescriptionContainer">
+                            <p class="EventDescription">@Des</p>
+                        </div>
+                        @{
+                            var date = "";
+                            var day = "";
+                            if (eventItem.Day.ToString() == "Monday")
+                            {
+                                day = "Lunes";
+                            }
+                            if (eventItem.Day.ToString() == "Tuesday")
+                            {
+                                day = "Martes";
+                            }
+                            if (eventItem.Day.ToString() == "Wednesday")
+                            {
+                                day = "Miércoles";
+                            }
+                            if (eventItem.Day.ToString() == "Thursday")
+                            {
+                                day = "Jueves";
+                            }
+                            if (eventItem.Day.ToString() == "Friday")
+                            {
+                                day = "Viernes";
+                            }
+                            if (eventItem.Day.ToString() == "Saturday")
+                            {
+                                day = "Sábado";
+                            }
+                            if (eventItem.Day.ToString() == "Sunday")
+                            {
+                                day = "Domingo";
+                            }
+                            var StartHourDateTime = new DateTime(eventItem.StartHour.Ticks);
+                            var FinishHourDateTime = new DateTime(eventItem.FinishHour.Ticks);
+                            var StartHour12HoursFormated = StartHourDateTime.ToString("h:mm tt");
+                            var FinishHour12HoursFormated = FinishHourDateTime.ToString("h:mm tt");
+                            date = $"{day} de {StartHour12HoursFormated} a {FinishHour12HoursFormated}";
+                        }
+                        <!-- Date -->
+                        <div class="DateContainer">
+                            <p class="EventDate">@date</p>
+                        </div>
+                        <!-- Details option -->
+                        <div class="DetailsButtonContainer">
+                            <a onclick="showInPopup('@Url.Action("SignUpToEvent", "Events", new{ id=eventItem.Id}, Context.Request.Scheme)' , 'Detalles del evento')" class="DetailsButton">Detalles</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    </div>
 </div>
 
 @section Scripts {

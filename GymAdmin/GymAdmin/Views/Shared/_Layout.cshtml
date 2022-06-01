@@ -17,9 +17,9 @@
 
     <!-- Default style -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" type="text/css" href="~/css/scrollbar.css" />
 
     <!-- GymAdmin style -->
+    <link rel="stylesheet" type="text/css" href="~/css/scrollbar.css" />
     <link rel="stylesheet" type="text/css" href="~/css/layout.css" />
     <link rel="stylesheet" type="text/css" href="~/css/contact.css" />
     <link rel="stylesheet" type="text/css" href="~/css/modal.css" />
@@ -41,6 +41,9 @@
 </head>
 
 <body>
+    <div id="blur-bg">
+        <div id="fill-bg"></div>
+    </div>
     <!-- Header -->
     <header id="body-header">
         <nav class="GymAdminHeader navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
@@ -111,10 +114,10 @@
         </nav>
     </header>
 
+    <partial name="_BusyIndicatorPartial" />
     <!-- Razor view body -->
     <div class="container" id="body-container">
         <main role="main" class="pb-3">
-            <partial name="_BusyIndicatorPartial" />
             @RenderBody()
             <div class="modal fade in" tabindex="-1" role="dialog" data-bs-backdrop="static" id="form-modal">
                 <div class="modal-dialog modal-lg" role="document">
@@ -129,7 +132,6 @@
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 

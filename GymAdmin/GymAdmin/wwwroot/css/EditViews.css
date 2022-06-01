@@ -1,8 +1,4 @@
-﻿#blur-bg {
-    background-image: url("../../images/bg/register-body-background.jpg");
-}
-
-/*
+﻿/*
     Containers
 */
 #GymAdminRegisterFormElementsContainer {
@@ -23,7 +19,7 @@
 /*
     Links
 */
-.GymAdminRegisterFormButtons{
+.GymAdminRegisterFormButtons {
     padding-bottom: 10px;
 }
 

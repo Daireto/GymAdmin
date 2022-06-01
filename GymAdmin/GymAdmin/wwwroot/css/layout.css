@@ -8,16 +8,27 @@ html {
 }
 
 body {
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    backdrop-filter: blur(6px);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
     overflow-x: hidden;
 }
 
-div.col-md-12{
-    border-radius:10px;
+#blur-bg {
+    z-index: -20;
+    position: fixed;
+    background-position: center !important;
+    background-size: cover !important;
+    height: 100% !important;
+    width: 100% !important;
+}
+
+#fill-bg {
+    backdrop-filter: blur(6px) !important;
+    height: 100% !important;
+    width: 100% !important;
+}
+
+div.col-md-12 {
+    border-radius: 10px;
 }
 
 a, .GymAdminFormButton {

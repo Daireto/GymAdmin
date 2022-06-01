@@ -222,9 +222,8 @@ namespace GymAdmin.Data
                         Director = director2,
                         Description = "Para muchos atletas y deportistas, uno de las habilidades más importantes es el salto. " +
                         "Un buen salto puede marcar la diferencia en el deporte que se está practicando, ya sea atletismo, baloncesto, " +
-                        "fútbol, etc.\n\nSi quieres mejorar tu salto y aprender todos lo ejercicios recomendados para potenciar " +
-                        "la fuerza en las piernas y prevenir lesiones, inscríbete y entrena con nosotros bajo la orientación de nuestros " +
-                        "directores.",
+                        "fútbol, etc.\n\nSi quieres mejorar tu salto y aumentar la fuerza de tus piernas, inscríbete y entrena con " +
+                        "nosotros.",
                         EventImages = new List<EventImage>()
                         {
                             new EventImage()
