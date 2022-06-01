@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "NoPlan";
+    Layout = null;
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+
+<flash dismissable="true" />
+
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="" id="GymAdminForm">
+                <div class="row">
+                    <!-- Right column -->
+                    <div class="col-md-12 GymAdminFormColumn">
+                        <h2>No tienes ningún plan activo</h2>
+                    </div>
+                </div>
+                <!-- Buttons and links -->
+                <div class="GymAdminRegisterFormButtons form-group mt-2">
+                    <button disabled class="GymAdminFormButton">
+                        <a onclick="CloseModal(); setTimeout(function() { showInPopup('@Url.Action("GetPlan", "Plan", new{}, Context.Request.Scheme)', 'Suscripción') }, 700);" class="GymAdminFormElement GymAdminFormLabel">Suscribirse a un plan</a>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

@@ -6,6 +6,8 @@ using GymAdmin.Helpers;
 using GymAdmin.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Vereyon.Web;
+using static GymAdmin.Helpers.ModalHelper;
 
 namespace GymAdmin.Controllers
 {
@@ -15,22 +17,22 @@ namespace GymAdmin.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IBlobHelper _blobHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly IFlashMessage _flashMessage;
 
-        public AccountController(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper, IMailHelper mailHelper)
+        public AccountController(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper, IMailHelper mailHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _userHelper = userHelper;
             _blobHelper = blobHelper;
             _mailHelper = mailHelper;
+            _flashMessage = flashMessage;
         }
 
-        //Not authorized actions method
         public IActionResult NotAuthorized()
         {
             return View();
         }
 
-        //View user method
         public async Task<IActionResult> ViewUser()
         {
             if (User.Identity.IsAuthenticated)
@@ -52,21 +54,20 @@ namespace GymAdmin.Controllers
                 };
                 return View(model);
             }
-            return RedirectToAction("Index", "Home");
+
+            return RedirectToAction(nameof(Login));
         }
 
-        //Login get method
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(ViewUser));
             }
 
             return View();
         }
 
-        //Login post method
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -80,33 +81,32 @@ namespace GymAdmin.Controllers
                 }
                 else if (result.IsLockedOut)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Ha alcanzado el número máximo de intentos! Intente de nuevo en 5 minutos");
+                    _flashMessage.Danger("Ha alcanzado el número máximo de intentos, intente de nuevo en 5 minutos", "Error:");
                 }
                 else if (result.IsNotAllowed)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Este email no está verificado! Siga los pasos enviados al correo");
+                    _flashMessage.Danger("Este email no está verificado, siga los pasos enviados al correo", "Error:");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "¡Email o contraseña incorrectos!");
+                    _flashMessage.Danger("Email o contraseña incorrectos", "Error:");
                 }
             }
+
             return View(model);
         }
 
-        //Logout get method
         public async Task<IActionResult> Logout()
         {
             await _userHelper.LogoutAsync();
             return RedirectToAction("Index", "Home");
         }
 
-        //Register get method
         public IActionResult Register()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(ViewUser));
             }
 
             AddUserViewModel model = new()
@@ -118,7 +118,6 @@ namespace GymAdmin.Controllers
             return View(model);
         }
 
-        //Register post method
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(AddUserViewModel model)
@@ -128,7 +127,7 @@ namespace GymAdmin.Controllers
                 User userDocumentExist = await _userHelper.GetUserAsync(model);
                 if (userDocumentExist != null)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Ya existe un usuario con este documento!");
+                    _flashMessage.Danger("Ya existe un usuario con este documento, por favor ingrese otro", "Error:");
                     return View(model);
                 }
 
@@ -141,11 +140,10 @@ namespace GymAdmin.Controllers
                 User user = await _userHelper.AddUserAsync(model, imageId);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Este correo ya está en uso!");
+                    _flashMessage.Danger("Este correo ya está en uso, por favor ingrese otro", "Error:");
                     return View(model);
                 }
 
-                //Email confirmation
                 string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 string tokenLink = Url.Action(
                     "ConfirmEmail",
@@ -153,7 +151,8 @@ namespace GymAdmin.Controllers
                     new
                     {
                         UserId = user.Id,
-                        Token = token
+                        Token = token,
+                        Route = "user"
                     },
                     protocol: HttpContext.Request.Scheme);
 
@@ -172,30 +171,19 @@ namespace GymAdmin.Controllers
 
                 if (response.IsSuccess)
                 {
-                    return RedirectToAction("ConfirmEmailMessage", "Account");
+                    _flashMessage.Confirmation("Sigue las instrucciones enviadas a tu correo", "Para continuar debes verificar tu email:");
                 }
                 else
                 {
-                    return RedirectToAction("ConfirmEmailErrorMessage", "Account");
+                    _flashMessage.Danger("Si el problema persiste comunicate con soporte técnico", "Ha ocurrido un error:");
                 }
+                return RedirectToAction(nameof(Login));
             }
             return View(model);
         }
 
-        //View with the email confirmation message about instructions to do
-        public IActionResult ConfirmEmailMessage()
-        {
-            return View();
-        }
-
-        //View with the error sending email message
-        public IActionResult ConfirmEmailErrorMessage()
-        {
-            return View();
-        }
-
-        //Confirm email method
-        public async Task<IActionResult> ConfirmEmail(string UserId, string Token)
+        [NoDirectAccess]
+        public async Task<IActionResult> ConfirmEmail(string UserId, string Token, string Route)
         {
             if (string.IsNullOrEmpty(UserId) || string.IsNullOrEmpty(Token))
             {
@@ -214,10 +202,28 @@ namespace GymAdmin.Controllers
                 return NotFound();
             }
 
-            return View();
+            if (Route == "professional")
+            {
+                _flashMessage.Confirmation("Profesional insertado correctamente", "Email verificado:");
+                return RedirectToAction("ShowProfessionals", "Service");
+            }
+            else if (Route == "director")
+            {
+                _flashMessage.Confirmation("Director insertado correctamente", "Email verificado:");
+                return RedirectToAction("Index", "Director");
+            }
+            else if (Route == "admin")
+            {
+                _flashMessage.Confirmation("Administrador insertado correctamente", "Email verificado:");
+                return RedirectToAction("Index", "User");
+            }
+            else
+            {
+                _flashMessage.Confirmation("Ya puedes iniciar sesión", "Email verificado:");
+                return RedirectToAction(nameof(Login));
+            }
         }
 
-        //Edit user get method
         public async Task<IActionResult> EditUser()
         {
             if (User.Identity.IsAuthenticated)
@@ -227,6 +233,7 @@ namespace GymAdmin.Controllers
                 {
                     return NotFound();
                 }
+
                 EditUserViewModel model = new()
                 {
                     Id = user.Id,
@@ -239,10 +246,9 @@ namespace GymAdmin.Controllers
                 };
                 return View(model);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(Login));
         }
 
-        //Edit post get method
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditUser(EditUserViewModel model)
@@ -258,37 +264,46 @@ namespace GymAdmin.Controllers
                     }
                     imageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "users");
                 }
-                User user = await _userHelper.GetUserAsync(User.Identity.Name);
-                user.FirstName = model.FirstName;
-                user.LastName = model.LastName;
-                user.Document = model.Document;
-                user.DocumentType = model.DocumentType;
-                user.PhoneNumber = model.PhoneNumber;
-                user.ImageId = imageId;
-                var result = await _userHelper.UpdateUserAsync(user);
-                if (result.Succeeded)
+
+                try
                 {
-                    return RedirectToAction("ViewUser", "Account");
+                    User user = await _userHelper.GetUserAsync(User.Identity.Name);
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    user.Document = model.Document;
+                    user.DocumentType = model.DocumentType;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.ImageId = imageId;
+                    var result = await _userHelper.UpdateUserAsync(user);
+                    if (result.Succeeded)
+                    {
+                        _flashMessage.Confirmation("Perfil actualizado correctamente", "Operación exitosa:");
+                        return RedirectToAction("ViewUser", "Account");
+                    }
+                    else
+                    {
+                        _flashMessage.Danger("Si el problema persiste comunicate con soporte técnico", "Ha ocurrido un error:");
+                        return View(model);
+                    }
                 }
-                else
+                catch
                 {
-                    ModelState.AddModelError(string.Empty, "¡Ha ocurrido un error! Intente de nuevo más tarde");
+                    _flashMessage.Danger("Ya existe un usuario con este documento, por favor ingrese otro", "Error:");
                 }
             }
             return View(model);
         }
 
-        //Change password get method
+        [NoDirectAccess]
         public IActionResult ChangePassword()
         {
             if (User.Identity.IsAuthenticated)
             {
                 return View();
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(Login));
         }
 
-        //Change password post method
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -302,35 +317,37 @@ namespace GymAdmin.Controllers
                 }
                 if (model.OldPassword == model.NewPassword)
                 {
-                    ModelState.AddModelError(string.Empty, "¡La contraseña nueva debe ser diferente de la actual!");
+                    _flashMessage.Danger("La contraseña nueva debe ser diferente de la actual", "Error:");
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "ChangePassword", model) });
                 }
                 else
                 {
                     var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                     if (result.Succeeded)
                     {
-                        return RedirectToAction(nameof(ViewUser));
+                        _flashMessage.Confirmation("Contraseña actualizada correctamente", "Operación exitosa:");
+                        return Json(new { isValid = true, html = "" });
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "¡La contraseña actual es incorrecta!");
+                        _flashMessage.Danger("La contraseña actual es incorrecta", "Error:");
                     }
                 }
             }
-            return View(model);
+
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "ChangePassword", model) });
         }
 
-        //Recover password get method
+        [NoDirectAccess]
         public IActionResult RecoverPassword()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(ViewUser));
             }
             return View();
         }
 
-        //Recover password post method
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
@@ -340,11 +357,10 @@ namespace GymAdmin.Controllers
                 User user = await _userHelper.GetUserAsync(model.Email);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Este usuario no está registrado en el sistema!");
-                    return View(model);
+                    _flashMessage.Danger("Este usuario no está registrado en el sistema", "Error:");
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "RecoverPassword", model) });
                 }
 
-                //Email confirmation
                 string token = await _userHelper.GeneratePasswordResetTokenAsync(user);
                 string tokenLink = Url.Action(
                     "ResetPassword",
@@ -370,30 +386,19 @@ namespace GymAdmin.Controllers
 
                 if (response.IsSuccess)
                 {
-                    return RedirectToAction("RecoverPasswordMessage", "Account");
+                    _flashMessage.Confirmation("Las instrucciones han sido enviadas al correo", "Recuperación de contraseña:");
                 }
                 else
                 {
-                    return RedirectToAction("RecoverPasswordErrorMessage", "Account");
+                    _flashMessage.Danger("Si el problema persiste comunicate con soporte técnico", "Ha ocurrido un error:");
                 }
 
+                return Json(new { isValid = true, html = "" });
             }
-            return View(model);
+
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "RecoverPassword", model) });
         }
 
-        //View with the recovering password message about instructions to do
-        public IActionResult RecoverPasswordMessage()
-        {
-            return View();
-        }
-
-        //View with the error recovering password message
-        public IActionResult RecoverPasswordErrorMessage()
-        {
-            return View();
-        }
-
-        //Reset password get method
         public IActionResult ResetPassword(string token)
         {
             ResetPasswordViewModel model = new()
@@ -404,7 +409,6 @@ namespace GymAdmin.Controllers
             return View(model);
         }
 
-        //Reset password post method
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
@@ -414,28 +418,29 @@ namespace GymAdmin.Controllers
                 User user = await _userHelper.GetUserAsync(model.UserName);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Este usuario no está registrado en el sistema!");
+                    _flashMessage.Danger("Este usuario no está registrado en el sistema", "Ha ocurrido un error:");
                     return View(model);
                 }
 
                 IdentityResult result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("ResetPasswordMessage", "Account");
+                    _flashMessage.Confirmation("Contraseña recuperada correctamente", "Operación exitosa:");
+                    return RedirectToAction(nameof(Login));
                 }
                 else
                 {
-                    return RedirectToAction("RecoverPasswordErrorMessage", "Account");
+                    _flashMessage.Danger("Por favor compruebe las credenciales e intente de nuevo", "Error:");
                 }
             }
 
             return View(model);
         }
 
-        //View with the reseting password message
-        public IActionResult ResetPasswordMessage()
+        public async Task<JsonResult> GetImageFullPath()
         {
-            return View();
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+            return Json(new { imagePath = user.ImageFullPath });
         }
     }
 }

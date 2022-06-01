@@ -1,14 +1,16 @@
-﻿namespace GymAdmin.Common
+﻿using GymAdmin.Enums;
+
+namespace GymAdmin.Common
 {
     public static class DiscountValues
     {
-        public static double GetDiscountValue(string plan)
+        public static double GetDiscountValue(PlanType plan)
         {
-            if (plan == "Black")
+            if (plan == PlanType.Black)
             {
                 return 1;
             }
-            else if(plan == "Regular")
+            else if(plan == PlanType.Regular)
             {
                 return 0.5;
             }

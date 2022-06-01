@@ -1,0 +1,194 @@
+﻿@model GymAdmin.Data.Entities.PlanInscription
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
+
+<style>
+    .fa-ban,
+    .fa-circle-check {
+        padding-right: 5px;
+    }
+
+    .GymAdminEditButton {
+        border-color: #FFC107;
+    }
+
+        .GymAdminEditButton:hover {
+            color: black;
+        }
+
+        .GymAdminEditButton a {
+            color: #FFC107;
+        }
+
+            .GymAdminEditButton a:hover {
+                color: black;
+            }
+
+    .GymAdminDeleteButton {
+        border-color: #DC3545;
+        color: #DC3545;
+        padding: 10px 20px;
+        margin-top: -2px !important;
+    }
+
+        .GymAdminDeleteButton:hover {
+            background-color: #DC3545;
+            color: black;
+        }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+
+    td {
+        color: white;
+    }
+</style>
+
+<flash dismissable="true" />
+
+<!-- View contract page -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="" id="GymAdminForm">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <h2 style="text-align:center;">Suscripción @Model.Plan.Name</h2>
+                        </div>
+                    </div>
+                </div>
+                @{
+                    //Format total prices and discount
+                    string p = $"{Model.Plan.Price:C2}";
+
+                    string d = $"{Model.Discount:P2}";
+
+                    string tp = $"{Model.TotalPrice:C2}";
+                }
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        @{
+                            var Status = "";
+                            if (Model.PlanStatus == GymAdmin.Enums.PlanStatus.Active)
+                            {
+                                Status = "Activo";
+                            }
+                            if (Model.PlanStatus == GymAdmin.Enums.PlanStatus.Expired)
+                            {
+                                Status = "Expirado";
+                            }
+                            if (Model.PlanStatus == GymAdmin.Enums.PlanStatus.Cancelled)
+                            {
+                                Status = "Cancelado";
+                            }
+                        }
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Suscriptor</label>
+                            <input value="@Model.User.FullName" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Precio base del plan</label>
+                            <input value="@p" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Precio final</label>
+                            <input value="@tp" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Estado</label>
+                            <input value="@Status" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        @if (Model.Plan.PlanType == GymAdmin.Enums.PlanType.TicketHolder)
+                        {
+                            <!-- Field -->
+                            <div class="form-group GymAdminFormElement">
+                                <label class="control-label GymAdminFormLabel">Días restantes</label>
+                                <input value="@Model.RemainingDays" class="GymAdminFormInput" autocomplete="off" readonly />
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Field -->
+                            var ExpDay = Model.ExpirationDate.ToString(@"dd/MM/yyyy");
+                            <div class="form-group GymAdminFormElement">
+                                <label class="control-label GymAdminFormLabel">Fecha de expiración</label>
+                                <input value="@ExpDay" class="GymAdminFormInput" autocomplete="off" readonly />
+                            </div>
+                        }
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Email del usuario</label>
+                            <input value="@Model.User.Email" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Documento del usuario</label>
+                            <input value="@Model.User.Document" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Descuento</label>
+                            <input value="@d" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        @{
+                            var ActDay = Model.ActivationDate.ToString(@"dd/MM/yyyy");
+                        }
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Fecha de activación</label>
+                            <input value="@ActDay" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Duración en días</label>
+                            <input value="@Model.Duration" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                    </div>
+                </div>
+                <!-- Buttons and links -->
+                <div class="GymAdminRegisterFormButtons form-group mt-2">
+                    @if (Model.PlanStatus == GymAdmin.Enums.PlanStatus.Active)
+                    {
+                        <button onclick="    return false;" data-id="@Model.Id" class="btn btn-outline-danger deleteItem GymAdminFormButton GymAdminDeleteButton" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-ban"></i>Cancelar plan</button>
+                    }
+                    <button disabled class="GymAdminFormButton">
+                        <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Regresar</a>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_CancelPlanDialog" />
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Plan/CancelPlan/', false);
+    </script>
+    }

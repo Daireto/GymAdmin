@@ -1,0 +1,56 @@
+﻿@model GymAdmin.Models.AddImageViewModel
+
+@{
+    ViewData["Title"] = "AddImage";
+    Layout = null;
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+
+<style>
+    .GymAdminFormElement{
+        margin-top: 0 !important;
+    }
+</style>
+
+<flash dismissable="true" />
+
+<!-- AddImage form -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="AddEventImage" id="GymAdminForm" onsubmit="return jQueryAjaxPost(this);" enctype="multipart/form-data">
+                <!-- Hidden inputs -->
+                <input type="hidden" asp-for="EventId" />
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="ImageFile" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="ImageFile" class="GymAdminFormInput GymAdminFormImageInput" autocomplete="off" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group">
+                            <input type="submit" value="Añadir" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

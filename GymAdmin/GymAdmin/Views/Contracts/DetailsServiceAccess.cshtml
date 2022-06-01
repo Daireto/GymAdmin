@@ -37,20 +37,14 @@
     .GymAdminDeleteButton {
         border-color: #DC3545;
         color: #DC3545;
+        padding: 10px 20px;
+        margin-top: -2px !important;
     }
 
         .GymAdminDeleteButton:hover {
             background-color: #DC3545;
             color: black;
         }
-
-        .GymAdminDeleteButton a {
-            color: #DC3545;
-        }
-
-            .GymAdminDeleteButton a:hover {
-                color: black;
-            }
 
     #MyTable th, .td_option {
         text-align: center;
@@ -60,6 +54,8 @@
         color: white;
     }
 </style>
+
+<flash dismissable="true" />
 
 <!-- View contract page -->
 <div id="GymAdminPrincipalContainer">
@@ -154,12 +150,13 @@
                 </div>
                 <!-- Buttons and links -->
                 <div class="GymAdminRegisterFormButtons form-group mt-2">
-                    <button disabled class="GymAdminFormButton GymAdminEditButton">
-                        <a asp-action="SetServiceAsTaken" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-circle-check"></i>Marcar como tomado</a>
-                    </button>
-                    <button disabled class="GymAdminFormButton GymAdminDeleteButton">
-                        <a asp-action="CancelService" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-ban"></i>Marcar como cancelado</a>
-                    </button>
+                    @if (Model.ServiceStatus == GymAdmin.Enums.ServiceStatus.Pending)
+                    {
+                        <button disabled class="GymAdminFormButton GymAdminEditButton">
+                            <a asp-action="SetServiceAsTaken" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-circle-check"></i>Marcar como tomado</a>
+                        </button>
+                        <button onclick="    return false;" data-id="@Model.Id" class="btn btn-outline-danger deleteItem GymAdminFormButton GymAdminDeleteButton" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-ban"></i>Marcar como cancelado</button>
+                    }
                     <button disabled class="GymAdminFormButton">
                         <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Regresar</a>
                     </button>
@@ -169,9 +166,14 @@
     </div>
 </div>
 
+<partial name="_CancelDialog" />
+
 <!-- Scripts -->
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Contracts/CancelService/', false);
+    </script>
 }

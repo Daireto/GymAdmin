@@ -1,0 +1,79 @@
+﻿@model GymAdmin.Data.Entities.Event
+
+<table class="table table-hover table-responsive table-striped" id="MyTable">
+    <!-- Text -->
+    <thead>
+        <tr>
+            <th>
+                Nombre completo
+            </th>
+            <th>
+                Correo electrónico
+            </th>
+            <th>
+                Documento
+            </th>
+            <th>
+                Tipo de documento
+            </th>
+            <th>
+                Fecha de inscripción
+            </th>
+            <th>
+                Plan activo
+            </th>
+        </tr>
+    </thead>
+    <!-- Values -->
+    <tbody>
+        @foreach (var item in Model.EventInscriptions)
+        {
+            <tr class="GymAdminTableTr">
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Document)
+                </td>
+                @{
+                    var documentType = "";
+                    if (item.User.DocumentType.ToString() == "TI")
+                    {
+                        documentType = "Tarjeta de Identidad";
+                    }
+                    else if (item.User.DocumentType.ToString() == "CC")
+                    {
+                        documentType = "Cédula de Ciudadanía";
+                    }
+                    else if (item.User.DocumentType.ToString() == "CE")
+                    {
+                        documentType = "Cédula de Extranjería";
+                    }
+                    else if (item.User.DocumentType.ToString() == "PAP")
+                    {
+                        documentType = "Pasaporte";
+                    }
+                }
+                <td>
+                    @documentType
+                </td>
+                @{
+                    var date = item.InscriptionDate.ToShortDateString(); 
+                }
+                <td>
+                    @date
+                </td>
+                @{
+                    var user = item.User.PlanInscriptions.FirstOrDefault(pi => pi.PlanStatus == GymAdmin.Enums.PlanStatus.Active);
+                    var plan = user.Plan.Name;
+                }
+                <td>
+                    @plan
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

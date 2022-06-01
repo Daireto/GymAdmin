@@ -4,18 +4,20 @@ using GymAdmin.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Vereyon.Web;
+using static GymAdmin.Helpers.ModalHelper;
 
 namespace GymAdmin.Controllers
 {
     public class ContractsController : Controller
     {
         private readonly DataContext _context;
-        private readonly IUserHelper _userHelper;
+        private readonly IFlashMessage _flashMessage;
 
-        public ContractsController(DataContext context, IUserHelper userHelper)
+        public ContractsController(DataContext context, IFlashMessage flashMessage)
         {
             _context = context;
-            _userHelper = userHelper;
+            _flashMessage = flashMessage;
         }
 
         [Authorize(Roles = "Admin")]
@@ -30,73 +32,72 @@ namespace GymAdmin.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DetailsServiceAccess(int? id)
         {
-            return View(await _context.ServiceAccesses
-                .Include(sa => sa.Service)
-                .Include(sa => sa.User)
-                .FirstOrDefaultAsync(sa => sa.Id == id));
-        }
-
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> SetServiceAsTaken(int? id)
-        {
-            if (id == null)
+            if(id == null)
             {
                 return NotFound();
             }
 
-            ServiceAccess serviceAccess = await _context.ServiceAccesses.FindAsync(id);
+            ServiceAccess serviceAccess = await _context.ServiceAccesses
+                .Include(sa => sa.Service)
+                .Include(sa => sa.User)
+                .FirstOrDefaultAsync(sa => sa.Id == id);
+
             if (serviceAccess == null)
             {
                 return NotFound();
             }
+
+            return View(serviceAccess);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [NoDirectAccess]
+        public async Task<IActionResult> SetServiceAsTaken(int id)
+        {
+            ServiceAccess serviceAccess = await _context.ServiceAccesses.FindAsync(id);
 
             if (serviceAccess.ServiceStatus == Enums.ServiceStatus.Pending)
             {
                 serviceAccess.ServiceStatus = Enums.ServiceStatus.Taken;
                 _context.Update(serviceAccess);
                 await _context.SaveChangesAsync();
+                _flashMessage.Confirmation("Registro actualizado correctamente", "Operación exitosa:");
             }
             else
             {
-                ModelState.AddModelError(String.Empty, "¡Sólo se pueden marcar como tomados los servicios pendientes!");
-                //TODO: Replace for a flash message
+                _flashMessage.Danger("Sólo se pueden marcar como tomados los servicios pendientes", "Error:");
             }
 
             return RedirectToAction("DetailsServiceAccess", "Contracts", new { id = id });
         }
 
-        public async Task<IActionResult> CancelService(int? id, string route)
+        [NoDirectAccess]
+        public async Task<IActionResult> CancelService(int id, string? route)
         {
-            if(id == null)
-            {
-                return NotFound();
-            }
-
             ServiceAccess serviceAccess = await _context.ServiceAccesses.FindAsync(id);
-            if(serviceAccess == null)
-            {
-                return NotFound();
-            }
 
-            if(serviceAccess.ServiceStatus == Enums.ServiceStatus.Pending)
+            if (serviceAccess.ServiceStatus == Enums.ServiceStatus.Pending)
             {
                 serviceAccess.ServiceStatus = Enums.ServiceStatus.Cancelled;
                 _context.Update(serviceAccess);
                 await _context.SaveChangesAsync();
+                _flashMessage.Confirmation("Registro actualizado correctamente", "Operación exitosa:");
             }
             else
             {
-                ModelState.AddModelError(String.Empty, "¡Sólo se pueden cancelar servicios pendientes!");
+                _flashMessage.Danger("Sólo se pueden cancelar servicios pendientes", "Error:");
             }
 
-            if(route == "MyServices")
-            {
-            return RedirectToAction("MyServices", "Home");
-            }
-            else
+            if(route == null)
             {
                 return RedirectToAction("DetailsServiceAccess", "Contracts", new { id = id });
             }
+
+            if (route == "MyServices")
+            {
+                return RedirectToAction("MyServices", "Home");
+            }
+            return RedirectToAction("DetailsServiceAccess", "Contracts", new { id = id });
         }
     }
 }

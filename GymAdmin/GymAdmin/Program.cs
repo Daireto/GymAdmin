@@ -3,6 +3,7 @@ using GymAdmin.Data.Entities;
 using GymAdmin.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Vereyon.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,6 @@ builder.Services.AddDbContext<DataContext>(o =>
 });
 
 //User configuration
-//TODO: Make strongest password
 builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 {
     cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
@@ -42,8 +42,10 @@ builder.Services.AddScoped<IUserHelper, UserHelper>(); //IUserHelper
 builder.Services.AddScoped<ICombosHelper, CombosHelper>(); //ICombosHelper
 builder.Services.AddScoped<IBlobHelper, BlobHelper>(); //IBlobHelper
 builder.Services.AddScoped<IMailHelper, MailHelper>(); //IMailHelper
+
 builder.Services.AddTransient<SeedDb>(); //Seeder
 
+builder.Services.AddFlashMessage(); //IFlashMessage
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); //Real time changes on views
 
 var app = builder.Build();

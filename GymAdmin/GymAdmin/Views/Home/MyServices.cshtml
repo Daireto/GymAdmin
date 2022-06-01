@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "MyServices";
 }
-<!-- Libraries -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 
 <!-- GymAdmin style -->
 <link rel="stylesheet" type="text/css" href="~/css/forms.css" />
@@ -67,6 +65,8 @@
     }
 </style>
 
+<flash dismissable="true" />
+
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="row" style="padding:0;margin:0 auto;">
@@ -76,7 +76,7 @@
                         <h3 class="panel-title GymAdminTableTitle">Servicios pendientes</h3>
                         <div class="newScheduleDiv">
                             <button disable class="GymAdminFormButton">
-                                <a asp-action="TakeService" class="GymAdminFormElement GymAdminFormLabel">Contratar un servicio</a>
+                                <a asp-action="TakeService" asp-controller="Home" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-bell-concierge"></i>Contratar servicio</a>
                             </button>
                         </div>
                     </div>
@@ -232,35 +232,34 @@
 
 @section Scripts {
     @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
-<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#MyTable').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-            },
-            "aLengthMenu": [
-                [3, 6, 9, 12, -1],
-                [3, 6, 9, 12, "Todos"]
-            ]
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [3, 6, 9, 12, -1],
+                    [3, 6, 9, 12, "Todos"]
+                ]
+            });
         });
-    });
-</script>
+    </script>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#MyTable2').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-            },
-            "aLengthMenu": [
-                [3, 6, 9, 12, -1],
-                [3, 6, 9, 12, "Todos"]
-            ]
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable2').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [3, 6, 9, 12, -1],
+                    [3, 6, 9, 12, "Todos"]
+                ]
+            });
         });
-    });
-</script>
+    </script>
 }

@@ -6,8 +6,9 @@ using GymAdmin.Helpers;
 using GymAdmin.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Vereyon.Web;
+using static GymAdmin.Helpers.ModalHelper;
 
 namespace GymAdmin.Controllers
 {
@@ -19,49 +20,29 @@ namespace GymAdmin.Controllers
         private readonly ICombosHelper _combosHelper;
         private readonly IBlobHelper _blobHelper;
         private readonly IMailHelper _mailHelper;
+        private readonly IFlashMessage _flashMessage;
 
-        public ServiceController(DataContext context, IUserHelper userHelper, ICombosHelper combosHelper, IBlobHelper blobHelper, IMailHelper mailHelper)
+        public ServiceController(DataContext context, IUserHelper userHelper, ICombosHelper combosHelper, IBlobHelper blobHelper, IMailHelper mailHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _userHelper = userHelper;
             _combosHelper = combosHelper;
             _blobHelper = blobHelper;
             _mailHelper = mailHelper;
+            _flashMessage = flashMessage;
         }
 
         //------------------------------------- Services --------------------------------------------
-
         public async Task<IActionResult> Index()
         {
             return View(await _context.Services
                 .Include(s => s.Professionals)
                 .ThenInclude(p => p.User)
+                .Include(s => s.ServiceAccesses)
                 .ToListAsync());
         }
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Service service = await _context.Services
-                .Include(s => s.Professionals)
-                .ThenInclude(s => s.User)
-                .Include(s => s.Professionals)
-                .ThenInclude(p => p.ProfessionalSchedules)
-                .ThenInclude(ps => ps.Schedule)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (service == null)
-            {
-                return NotFound();
-            }
-
-            return View(service);
-        }
-
+        [NoDirectAccess]
         public IActionResult Create()
         {
             return View();
@@ -83,111 +64,112 @@ namespace GymAdmin.Controllers
                 {
                     _context.Add(service);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    _flashMessage.Confirmation("Registro insertado correctamente", "Operación exitosa:");
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe un servicio con este nombre");
+                        _flashMessage.Danger("Ya existe un servicio con este nombre, por favor ingrese otro", "Error:");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message, "Error:");
                     }
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Create", model) });
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message, "Error:");
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Create", model) });
                 }
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllServices", _context.Services
+                            .Include(s => s.Professionals)
+                            .ThenInclude(p => p.User)
+                            .ToList())
+                });
             }
-
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Create", model) });
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             Service service = await _context.Services.FirstOrDefaultAsync(s => s.Id == id);
-
-            if (service == null)
-            {
-                return NotFound();
-            }
-
             return View(service);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Service model)
+        public async Task<IActionResult> Edit(Service model)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(model);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    _flashMessage.Confirmation("Registro actualizado correctamente", "Operación exitosa:");
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe un servicio con este nombre");
+                        _flashMessage.Danger("Ya existe un servicio con este nombre, por favor ingrese otro", "Error:");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                        _flashMessage.Danger(dbUpdateException.InnerException.Message, "Error:");
                     }
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Edit", model) });
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message, "Error:");
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Edit", model) });
                 }
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllServices", _context.Services
+                            .Include(s => s.Professionals)
+                            .ThenInclude(p => p.User)
+                            .ToList())
+                });
             }
-
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "Edit", model) });
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        [NoDirectAccess]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             Service service = await _context.Services
                 .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (service == null)
+            try
             {
-                return NotFound();
+                _context.Services.Remove(service);
+                await _context.SaveChangesAsync();
+                _flashMessage.Confirmation("Registro eliminado correctamente", "Operación exitosa:");
             }
-
-            return View(service);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            Service service = await _context.Services.FindAsync(id);
-            _context.Services.Remove(service);
-            await _context.SaveChangesAsync();
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar el servicio porque tiene registros relacionados", "Error:");
+            }
             return RedirectToAction(nameof(Index));
         }
 
         //------------------------------------- Professionals --------------------------------------------
+        public async Task<IActionResult> ShowProfessionals()
+        {
+            return View(await _context.Professionals
+                .Include(p => p.User)
+                .Include(p => p.ProfessionalSchedules)
+                .ThenInclude(ps => ps.Schedule)
+                .ToListAsync());
+        }
 
         public async Task<IActionResult> DetailsProfessional(int? id)
         {
@@ -220,12 +202,18 @@ namespace GymAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateProfessional(AddProfessionalViewModel model)
         {
+            if (await _context.Professionals.Include(p => p.User).FirstAsync(p => p.User.UserName == model.Username) != null)
+            {
+                _flashMessage.Danger("Este usuario ya es un profesional", "Error:");
+                return View(model);
+            }
+
             if (ModelState.IsValid)
             {
                 User userDocumentExist = await _userHelper.GetUserAsync(model);
                 if (userDocumentExist != null)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Ya existe un usuario con este documento!");
+                    _flashMessage.Danger("Ya existe un usuario con este documento, por favor ingrese otro", "Error:");
                     return View(model);
                 }
 
@@ -238,11 +226,10 @@ namespace GymAdmin.Controllers
                 User user = await _userHelper.AddUserAsync(model, imageId);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Este correo ya está en uso!");
+                    _flashMessage.Danger("Este correo ya está en uso, por favor ingrese otro", "Error:");
                     return View(model);
                 }
 
-                //Relation user - professional
                 Professional professional = new()
                 {
                     User = user,
@@ -267,7 +254,6 @@ namespace GymAdmin.Controllers
                 _context.Add(professional);
                 await _context.SaveChangesAsync();
 
-                //Email confirmation
                 string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 string tokenLink = Url.Action(
                     "ConfirmEmail",
@@ -275,13 +261,14 @@ namespace GymAdmin.Controllers
                     new
                     {
                         UserId = user.Id,
-                        Token = token
+                        Token = token,
+                        Route = "professional"
                     },
                     protocol: HttpContext.Request.Scheme);
 
                 string body = "<style>body{text-align:center;font-family:Verdana,Arial;}</style>" +
                     $"<h1>Soporte GymAdmin</h1>" +
-                    $"<h3>Estás a un solo paso de ser parte de nuestra comunidad</h3>" +
+                    $"<h3>Estás a un solo paso de ser un profesional de GymAdmin</h3>" +
                     $"<h4>Sólo debes hacer click en el siguiente botón para confirmar tu email</h4>" +
                     $"<br/>" +
                     $"<a style=\"padding:15px;background-color:#f1b00e;text-decoration:none;color:black;border: 5px solid #000;border-radius:10px;\" href=\"{tokenLink}\">Confirmar email</a>";
@@ -294,17 +281,18 @@ namespace GymAdmin.Controllers
 
                 if (response.IsSuccess)
                 {
-                    return RedirectToAction("ConfirmEmailMessage", "Account");
+                    _flashMessage.Confirmation("Las instrucciones han sido enviadas al correo", "Para continuar se debe verificar el email:");
                 }
                 else
                 {
-                    return RedirectToAction("ConfirmEmailErrorMessage", "Account");
+                    _flashMessage.Danger("Si el problema persiste comunicate con soporte técnico", "Ha ocurrido un error:");
                 }
+                return RedirectToAction(nameof(ShowProfessionals));
             }
-
             return View(model);
         }
 
+        [NoDirectAccess]
         public async Task<IActionResult> EditProfessional(int? id)
         {
             EditProfessionalViewModel model = new()
@@ -320,12 +308,9 @@ namespace GymAdmin.Controllers
                     .ThenInclude(ps => ps.Schedule)
                     .FirstOrDefaultAsync(p => p.Id == id);
 
-                if (professional != null)
-                {
-                    model.Id = professional.Id;
-                    model.Username = professional.User.UserName;
-                    model.ProfessionalType = professional.ProfessionalType;
-                }
+                model.Id = professional.Id;
+                model.Username = professional.User.UserName;
+                model.ProfessionalType = professional.ProfessionalType;
             }
 
             return View(model);
@@ -339,19 +324,17 @@ namespace GymAdmin.Controllers
             {
                 if (model.Username == null || model.Username == "")
                 {
+                    _flashMessage.Danger("Debe seleccionar un usuario", "Error:");
                     model.Users = await _combosHelper.GetComboUsersAsync();
-                    model.Users = await _combosHelper.GetComboUsersAsync();
-                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un usuario!");
-                    return View(model);
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditProfessional", model) });
                 }
 
                 User user = await _userHelper.GetUserAsync(model.Username);
                 if (user == null)
                 {
+                    _flashMessage.Danger("Este usuario no existe en el sistema", "Error:");
                     model.Users = await _combosHelper.GetComboUsersAsync();
-                    model.Users = await _combosHelper.GetComboUsersAsync();
-                    ModelState.AddModelError(string.Empty, "¡Este usuario no existe en el sistema!");
-                    return View(model);
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditProfessional", model) });
                 }
 
                 Professional professional = new();
@@ -379,6 +362,7 @@ namespace GymAdmin.Controllers
 
                     _context.Update(professional);
                     await _context.SaveChangesAsync();
+                    _flashMessage.Confirmation("Registro actualizado correctamente", "Operación exitosa:");
                 }
                 else
                 {
@@ -407,79 +391,60 @@ namespace GymAdmin.Controllers
 
                         _context.Add(professional);
                         await _context.SaveChangesAsync();
+                        _flashMessage.Confirmation("Registro insertado correctamente", "Operación exitosa:");
                     }
-                    catch (Exception)
+                    catch
                     {
-                        ModelState.AddModelError(string.Empty, "¡Este usuario ya tiene esta profesión!");
+                        _flashMessage.Danger("Este usuario ya es un profesional", "Error:");
                         model.Users = await _combosHelper.GetComboUsersAsync();
-                        return View(model);
+                        return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditProfessional", model) });
                     }
                 }
 
-                return RedirectToAction(nameof(DetailsProfessional), new { id = professional.Id });
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllProfessionals", _context.Professionals
+                        .Include(p => p.User)
+                        .Include(p => p.ProfessionalSchedules)
+                        .ThenInclude(ps => ps.Schedule)
+                        .ToList())
+                });
             }
 
             model.Users = await _combosHelper.GetComboUsersAsync();
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditProfessional", model) });
         }
 
-        public async Task<IActionResult> DeleteProfessional(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Professional professional = await _context.Professionals
-                .Include(p => p.User)
-                .Include(p => p.Service)
-                .Include(p => p.ProfessionalSchedules)
-                .ThenInclude(ps => ps.Schedule)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (professional == null)
-            {
-                return NotFound();
-            }
-
-            return View(professional);
-        }
-
-        [HttpPost, ActionName("DeleteProfessional")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteProfessionalConfirmed(int id)
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteProfessional(int id)
         {
             Professional professional = await _context.Professionals
                 .Include(p => p.ProfessionalSchedules)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            foreach (ProfessionalSchedule ps in professional.ProfessionalSchedules)
+            try
             {
-                _context.ProfessionalSchedules.Remove(ps);
+                foreach (ProfessionalSchedule ps in professional.ProfessionalSchedules)
+                {
+                    _context.ProfessionalSchedules.Remove(ps);
+                }
+                _context.Professionals.Remove(professional);
+                await _context.SaveChangesAsync();
+                _flashMessage.Confirmation("Registro eliminado correctamente", "Operación exitosa:");
+            }
+            catch
+            {
+                _flashMessage.Danger("No se puede borrar al profesional porque tiene registros relacionados", "Error:");
             }
 
-            _context.Professionals.Remove(professional);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(ShowProfessionals));
         }
 
-        public async Task<IActionResult> ShowProfessionals()
-        {
-            return View(await _context.Professionals
-                .Include(p => p.User)
-                .Include(p => p.ProfessionalSchedules)
-                .ThenInclude(ps => ps.Schedule)
-                .ToListAsync());
-        }
-
         //------------------------------------- Schedules --------------------------------------------
-        public IActionResult CreateSchedule(int? id)
+        [NoDirectAccess]
+        public IActionResult CreateSchedule(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             SetScheduleViewModel model = new()
             {
                 ProfessionalId = id
@@ -517,30 +482,32 @@ namespace GymAdmin.Controllers
                 {
                     _context.Add(ps);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(DetailsProfessional), new { id = model.ProfessionalId });
+                    _flashMessage.Confirmation("Registro insertado correctamente", "Operación exitosa:");
                 }
                 catch (Exception exception)
                 {
-                    ModelState.AddModelError(string.Empty, exception.Message);
+                    _flashMessage.Danger(exception.Message, "Error:");
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "CreateSchedule", model) });
                 }
+
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllSchedules", _context.Professionals
+                            .Include(p => p.User)
+                            .Include(p => p.ProfessionalSchedules)
+                            .ThenInclude(ps => ps.Schedule)
+                            .FirstOrDefault(p => p.Id == model.ProfessionalId))
+                });
             }
 
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "CreateSchedule", model) });
         }
 
-        public async Task<IActionResult> EditSchedule(int? id, int? proId)
+        [NoDirectAccess]
+        public async Task<IActionResult> EditSchedule(int id, int proId)
         {
-            if (id == null || proId == null)
-            {
-                return NotFound();
-            }
-
             Schedule schedule = await _context.Schedules.FirstOrDefaultAsync(s => s.Id == id);
-
-            if (schedule == null)
-            {
-                return NotFound();
-            }
 
             SetScheduleViewModel model = new()
             {
@@ -558,27 +525,32 @@ namespace GymAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditSchedule(int id, SetScheduleViewModel model)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 Schedule schedule = await _context.Schedules.FindAsync(id);
-                if (schedule == null)
-                {
-                    return NotFound();
-                }
 
                 Professional professional = await _context.Professionals.FindAsync(model.ProfessionalId);
 
                 ProfessionalSchedule ps = await _context.ProfessionalSchedules.FirstOrDefaultAsync(
                             ps => ps.Professional == professional && ps.Schedule == schedule);
 
+                if (schedule.Day == model.Day && schedule.StartHour == model.StartHour && schedule.FinishHour == model.FinishHour)
+                {
+                    return Json(new
+                    {
+                        isValid = true,
+                        html = ModalHelper.RenderRazorViewToString(this, "_ViewAllSchedules", _context.Professionals
+                            .Include(p => p.User)
+                            .Include(p => p.ProfessionalSchedules)
+                            .ThenInclude(ps => ps.Schedule)
+                            .FirstOrDefault(p => p.Id == model.ProfessionalId))
+                    });
+                }
+
                 Schedule schedule2 = await _context.Schedules.FirstOrDefaultAsync(
-                            s => s.Day == model.Day && s.StartHour == model.StartHour && s.FinishHour == model.FinishHour);
-                if (schedule == null)
+                    s => s.Day == model.Day && s.StartHour == model.StartHour && s.FinishHour == model.FinishHour);
+
+                if (schedule2 == null)
                 {
                     schedule2 = new()
                     {
@@ -586,31 +558,33 @@ namespace GymAdmin.Controllers
                         StartHour = model.StartHour,
                         FinishHour = model.FinishHour,
                     };
+                    _context.Add(schedule2);
                 }
 
                 ps.Schedule = schedule2;
                 _context.Update(ps);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(DetailsProfessional), new { id = model.ProfessionalId });
+                _flashMessage.Confirmation("Registro actualizado correctamente", "Operación exitosa:");
+
+                return Json(new
+                {
+                    isValid = true,
+                    html = ModalHelper.RenderRazorViewToString(this, "_ViewAllSchedules", _context.Professionals
+                            .Include(p => p.User)
+                            .Include(p => p.ProfessionalSchedules)
+                            .ThenInclude(ps => ps.Schedule)
+                            .FirstOrDefault(p => p.Id == model.ProfessionalId))
+                });
             }
 
-            return View(model);
+            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "EditSchedule", model) });
         }
 
-        public async Task<IActionResult> DeleteSchedule(int? id, int? proId)
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteSchedule(int id, int proId)
         {
-            if (id == null || proId == null)
-            {
-                return NotFound();
-            }
-
             Schedule schedule = await _context.Schedules
                 .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (schedule == null)
-            {
-                return NotFound();
-            }
 
             SetScheduleViewModel model = new()
             {
@@ -628,16 +602,7 @@ namespace GymAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteScheduleConfirmed(int id, SetScheduleViewModel model)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
             Schedule schedule = await _context.Schedules.FindAsync(id);
-            if (schedule == null)
-            {
-                return NotFound();
-            }
 
             Professional professional = await _context.Professionals.FindAsync(model.ProfessionalId);
 
@@ -653,6 +618,7 @@ namespace GymAdmin.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            _flashMessage.Confirmation("Registro eliminado correctamente", "Operación exitosa:");
             return RedirectToAction(nameof(DetailsProfessional), new { id = model.ProfessionalId });
         }
     }

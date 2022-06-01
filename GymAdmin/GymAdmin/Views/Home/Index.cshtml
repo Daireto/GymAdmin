@@ -24,13 +24,21 @@
 
     <!-- Icons style -->
     <style>
-        .fa-user,
         .fa-arrow-right-from-bracket {
             padding-right: 5px;
         }
     </style>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <style>
+            #EventOption {
+                margin-right: 40px;
+            }
+        </style>
+    }
 </head>
 
+<partial name="_BusyIndicatorPartial" />
 <body>
     <!-- Position absolute elements -->
     <div id="Unete">
@@ -68,7 +76,10 @@
                                 <a class="admin-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
                                 <a class="admin-link" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
                                 <a class="admin-link" asp-area="" asp-controller="Service" asp-action="ShowProfessionals">Profesionales</a>
+                                <a class="admin-link" asp-area="" asp-controller="Director" asp-action="Index">Directores</a>
                                 <a class="admin-link" asp-area="" asp-controller="Contracts" asp-action="Index">Contrataciones</a>
+                                <a class="admin-link" asp-area="" asp-controller="Plan" asp-action="Index">Suscripciones</a>
+                                <a class="admin-link" asp-area="" asp-controller="Attendance" asp-action="Index">Asistencias</a>
                             </div>
                         </div>
                     }
@@ -79,14 +90,17 @@
                         <!-- Services option -->
                         <li><a asp-area="" asp-controller="Home" asp-action="Professionals">Servicios adicionales</a></li>
                         <!-- Events option -->
-                        <li><a asp-area="" asp-controller="Home" asp-action="Events">Eventos grupales</a></li>
+                        <li id="EventOption"><a asp-area="" asp-controller="Home" asp-action="Events">Eventos grupales</a></li>
                         @if (User.Identity.IsAuthenticated)
                         {
                             var nombreUsuario = User.Identity.Name.Substring(0, User.Identity.Name.Length - 12);
                             nombreUsuario = nombreUsuario.Substring(0, 1).ToUpper() + nombreUsuario.Substring(1).ToLower();
                             <!-- View user option -->
-                            <li>
-                                <a asp-area="" asp-controller="Account" asp-action="ViewUser"><i class="fa-solid fa-user"></i>@nombreUsuario</a>
+                            <li id="UserOption">
+                                <a class="ViewUserLink" asp-area="" asp-controller="Account" asp-action="ViewUser">
+                                    <img id="userImage" alt="" src="" />
+                                    <div class="backdrop"></div>@nombreUsuario
+                                </a>
                             </li>
                             <!-- Logout option -->
                             <li class="nav-item">
@@ -159,7 +173,7 @@
                     <p><i class="fa-solid fa-xmark"></i>&nbsp;&nbsp;&nbsp;&nbsp;Posibilidad de llevar a un acompañante</p>
                     <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Tiempo ilimitado para el uso de las máquinas</p>
                 </div>
-                <a href="#">Inscríbete</a>
+                <a asp-action="ViewUser" asp-controller="Account">Inscríbete</a>
             </div>
             <div class="plan">
                 <div class="plan-black-head plan-head-div">
@@ -178,7 +192,7 @@
                     <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Posibilidad de llevar a un acompañante</p>
                     <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Tiempo ilimitado para el uso de las máquinas</p>
                 </div>
-                <a href="#">Inscríbete</a>
+                <a asp-action="ViewUser" asp-controller="Account">Inscríbete</a>
             </div>
             <div class="plan">
                 <div class="plan-head plan-head-div">
@@ -197,7 +211,7 @@
                     <p><i class="fa-solid fa-xmark"></i>&nbsp;&nbsp;&nbsp;&nbsp;Posibilidad de llevar a un acompañante</p>
                     <p><i class="fa-solid fa-check"></i>&nbsp;&nbsp;&nbsp;Tiempo ilimitado para el uso de las máquinas</p>
                 </div>
-                <a href="#">Inscríbete</a>
+                <a asp-action="ViewUser" asp-controller="Account">Inscríbete</a>
             </div>
         </div>
     </section>
@@ -358,9 +372,38 @@
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/font-awesome/js/fontawesome.js"></script>
+    <script src="~/lib/font-awesome/js/all.min.js"></script>
+    <script src="~/lib/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>
     <script src="~/js/main.js"></script>
     <script src="~/js/gallery-effect.js"></script>
+    <script>
+        function displayBusyIndicator() {
+            $('.loading').show();
+        }
+    </script>
+    <script>
+        $(window).on('beforeunload', function() {
+            displayBusyIndicator();
+        });
+    </script>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var height = $(window).height() - $('#body-header').height() - 40;
+                $('#body-container').css('min-height', height);
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetImageFullPath", "Account")',
+                    success: function(path) {
+                        $("#userImage").attr("src", path.imagePath);
+                    },
+                    error: function(ex) {
+                        alert('Failed to retrieve path.' + ex);
+                    }
+                });
+            });
+        </script>
+    }
 </body>
 </html>

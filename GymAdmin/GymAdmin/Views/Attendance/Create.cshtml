@@ -1,83 +1,31 @@
-﻿@model GymAdmin.Models.AddAttendanceViewModel 
+﻿@model GymAdmin.Models.AddAttendanceViewModel
 @{
-
-
+    ViewData["Title"] = "Edit";
+    Layout = null;
 }
 
 <!-- GymAdmin style -->
 <link rel="stylesheet" type="text/css" href="~/css/forms.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
-<link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
-<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
-<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
 
-<style>
-    .fa-ban,
-    .fa-circle-check {
-        padding-right: 5px;
-    }
+<flash dismissable="true" />
 
-    .GymAdminEditButton {
-        border-color: #FFC107;
-    }
-
-        .GymAdminEditButton:hover {
-            color: black;
-        }
-
-        .GymAdminEditButton a {
-            color: #FFC107;
-        }
-
-            .GymAdminEditButton a:hover {
-                color: black;
-            }
-
-    .GymAdminDeleteButton {
-        border-color: #DC3545;
-        color: #DC3545;
-    }
-
-        .GymAdminDeleteButton:hover {
-            background-color: #DC3545;
-            color: black;
-        }
-
-        .GymAdminDeleteButton a {
-            color: #DC3545;
-        }
-
-            .GymAdminDeleteButton a:hover {
-                color: black;
-            }
-
-    #MyTable th, .td_option {
-        text-align: center;
-    }
-
-    td {
-        color: white;
-    }
-</style>
-
-<!-- View contract page -->
+<!-- Attendance form -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-            <input type="hidden" asp-for="Id" >
-            <input type="hidden" asp-for="Users">
-             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <form asp-action="Create" id="GymAdminForm">
+            <form asp-action="Create" id="GymAdminForm" onsubmit="return jQueryAjaxPost(this);">
+                <!-- Hidden inputs -->
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Users" />
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
+                    <div class="col-md-12 GymAdminFormColumn">
                         <!-- Field -->
-                      
-                    
-           
-                    @if (Model.Username == null)
-                    {
                         <div class="form-group GymAdminFormElement">
-                            <label asp-for="Username" class="control-label GymAdminFormLabel"></label>
+                            <label class="control-label GymAdminFormLabel">Seleccione al usuario:</label>
                             <input id="searchUser" type="search" list="usersList" asp-for="Username" class="GymAdminFormInput" autocomplete="off" />
                             <datalist id="usersList">
                                 @foreach (var pro in Model.Users)
@@ -87,35 +35,30 @@
                             </datalist>
                             <span asp-validation-for="Username" class="text-danger"></span>
                         </div>
-                         <button type="submit" class="GymAdminFormButton">
-                       Registrar
-                    </button>
-                    } else
-                    {
-                    
-                    }
-
-                <!-- Buttons and links -->
-                   
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group">
+                            <input type="submit" value="Guardar cambios" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<!-- Scripts -->
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-<script type="text/javascript">
-    $(document).ready(function (){
-        $("#searchUser").attr("value", @Model.Username);
-    });
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#searchUser").attr("value", @Model.Username);
+        });
 
-    $("#searchUser").on("input", function (){
-        var selected = $(this).val();
-        $(this).attr("value", selected);
-    });
-</script>
+        $("#searchUser").on("input", function() {
+            var selected = $(this).val();
+            $(this).attr("value", selected);
+        });
+    </script>
 }
-

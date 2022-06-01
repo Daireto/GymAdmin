@@ -40,7 +40,119 @@ namespace GymAdmin.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Attendance");
+                    b.ToTable("Attendances");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.Director", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("Directors");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Day")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int?>("DirectorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("int");
+
+                    b.Property<long>("FinishHour")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long>("StartHour")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DirectorId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.EventImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ImageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("EventImages");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.EventInscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("InscriptionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EventInscriptions");
                 });
 
             modelBuilder.Entity("GymAdmin.Data.Entities.Plan", b =>
@@ -139,7 +251,7 @@ namespace GymAdmin.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.HasIndex("UserId", "ProfessionalType")
+                    b.HasIndex("UserId")
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
@@ -489,6 +601,48 @@ namespace GymAdmin.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("GymAdmin.Data.Entities.Director", b =>
+                {
+                    b.HasOne("GymAdmin.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.Event", b =>
+                {
+                    b.HasOne("GymAdmin.Data.Entities.Director", "Director")
+                        .WithMany("Events")
+                        .HasForeignKey("DirectorId");
+
+                    b.Navigation("Director");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.EventImage", b =>
+                {
+                    b.HasOne("GymAdmin.Data.Entities.Event", "Event")
+                        .WithMany("EventImages")
+                        .HasForeignKey("EventId");
+
+                    b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.EventInscription", b =>
+                {
+                    b.HasOne("GymAdmin.Data.Entities.Event", "Event")
+                        .WithMany("EventInscriptions")
+                        .HasForeignKey("EventId");
+
+                    b.HasOne("GymAdmin.Data.Entities.User", "User")
+                        .WithMany("EventInscriptions")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Event");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("GymAdmin.Data.Entities.PlanInscription", b =>
                 {
                     b.HasOne("GymAdmin.Data.Entities.Plan", "Plan")
@@ -600,6 +754,18 @@ namespace GymAdmin.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GymAdmin.Data.Entities.Director", b =>
+                {
+                    b.Navigation("Events");
+                });
+
+            modelBuilder.Entity("GymAdmin.Data.Entities.Event", b =>
+                {
+                    b.Navigation("EventImages");
+
+                    b.Navigation("EventInscriptions");
+                });
+
             modelBuilder.Entity("GymAdmin.Data.Entities.Plan", b =>
                 {
                     b.Navigation("PlansInscriptions");
@@ -625,6 +791,8 @@ namespace GymAdmin.Migrations
             modelBuilder.Entity("GymAdmin.Data.Entities.User", b =>
                 {
                     b.Navigation("Attendances");
+
+                    b.Navigation("EventInscriptions");
 
                     b.Navigation("PlanInscriptions");
 

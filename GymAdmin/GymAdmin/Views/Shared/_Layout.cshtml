@@ -11,7 +11,9 @@
 
     <!-- Libraries -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="~/lib/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/datatables/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/lib/jqueryui/jquery-ui.min.css" />
 
     <!-- Default style -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -20,14 +22,22 @@
     <!-- GymAdmin style -->
     <link rel="stylesheet" type="text/css" href="~/css/layout.css" />
     <link rel="stylesheet" type="text/css" href="~/css/contact.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/modal.css" />
 
     <!-- Icons style -->
     <style>
-        .fa-user,
         .fa-arrow-right-from-bracket {
             padding-right: 5px;
         }
     </style>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <style>
+            #EventOption {
+                margin-right: 40px;
+            }
+        </style>
+    }
 </head>
 
 <body>
@@ -45,13 +55,16 @@
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <!-- Admin options -->
-                            <div class="dropdown">
+                            <div class="dropdown-gymadmin">
                                 <span class="admin-link">Administración</span>
-                                <div class="dropdown-content">
+                                <div class="dropdown-content-gymadmin">
                                     <a class="admin-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
                                     <a class="admin-link" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
                                     <a class="admin-link" asp-area="" asp-controller="Service" asp-action="ShowProfessionals">Profesionales</a>
+                                    <a class="admin-link" asp-area="" asp-controller="Director" asp-action="Index">Directores</a>
                                     <a class="admin-link" asp-area="" asp-controller="Contracts" asp-action="Index">Contrataciones</a>
+                                    <a class="admin-link" asp-area="" asp-controller="Plan" asp-action="Index">Suscripciones</a>
+                                    <a class="admin-link" asp-area="" asp-controller="Attendance" asp-action="Index">Asistencias</a>
                                 </div>
                             </div>
                         }
@@ -63,7 +76,7 @@
                             <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Home" asp-action="Professionals">Servicios adicionales</a>
                         </li>
                         <!-- Events option -->
-                        <li class="nav-item">
+                        <li class="nav-item" id="EventOption">
                             <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Home" asp-action="Events">Eventos grupales</a>
                         </li>
                         @if (User.Identity.IsAuthenticated)
@@ -71,15 +84,15 @@
                             var nombreUsuario = User.Identity.Name.Substring(0, User.Identity.Name.Length - 12);
                             nombreUsuario = nombreUsuario.Substring(0, 1).ToUpper() + nombreUsuario.Substring(1).ToLower();
                             <!-- View user option -->
-                            <li class="nav-item">
-                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Account" asp-action="ViewUser"><i class="fa-solid fa-user"></i>@nombreUsuario</a>
+                            <li class="nav-item" id="UserOption">
+                                <a class="GymAdminHeaderLink ViewUserLink text-white" asp-area="" asp-controller="Account" asp-action="ViewUser">
+                                    <img id="userImage" alt="" src="" />
+                                    <div class="backdrop"></div>@nombreUsuario
+                                </a>
                             </li>
                             <!-- Logout option -->
                             <li class="nav-item">
                                 <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i>Cerrar sesión</a>
-                            </li>
-                             <li class="nav-item">
-                                <a class="GymAdminHeaderLink  text-white" asp-area="" asp-controller="Attendance" asp-action="Create"><i class="fa-solid fa-arrow-right-from-bracket"></i>Registrar Entrada</a>
                             </li>
                         }
                         else
@@ -101,7 +114,22 @@
     <!-- Razor view body -->
     <div class="container" id="body-container">
         <main role="main" class="pb-3">
+            <partial name="_BusyIndicatorPartial" />
             @RenderBody()
+            <div class="modal fade in" tabindex="-1" role="dialog" data-bs-backdrop="static" id="form-modal">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"></h5>
+                            <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -119,16 +147,43 @@
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/lib/font-awesome/js/all.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/lib/font-awesome/js/fontawesome.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/showmodal.js"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function(){
-              var height = $(window).height() - $('#body-header').height() - 40;
-              $('#body-container').css('min-height', height);
+    <script>
+        function displayBusyIndicator() {
+            $('.loading').show();
+        }
+    </script>
+    <script>
+        $(window).on('beforeunload', function() {
+            displayBusyIndicator();
         });
     </script>
+    @await RenderSectionAsync("Scripts", required: false)
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var height = $(window).height() - $('#body-header').height() - 40;
+                $('#body-container').css('min-height', height);
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetImageFullPath", "Account")',
+                    success: function(path) {
+                        $("#userImage").attr("src", path.imagePath);
+                    },
+                    error: function(ex) {
+                        alert('Failed to retrieve path.' + ex);
+                    }
+                });
+            });
+        </script>
+    }
 </body>
 </html>

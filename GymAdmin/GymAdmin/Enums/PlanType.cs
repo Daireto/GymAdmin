@@ -3,7 +3,7 @@
     public enum PlanType
     {
         TicketHolder,
-        Simple,
-        Black
+        Regular,
+        Black,
     }
 }

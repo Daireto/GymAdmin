@@ -1,0 +1,125 @@
+﻿@model GymAdmin.Data.Entities.PlanInscription
+
+@{
+    ViewData["Title"] = "MyPlan";
+    Layout = null;
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+
+<style>
+    .fa-pen-to-square,
+    .fa-lock,
+    .fa-bell-concierge {
+        padding-right: 5px;
+    }
+</style>
+
+<flash dismissable="true" />
+
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="" id="GymAdminForm">
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        @{
+                            //Format for prices and discount
+                            string p = $"{Model.Plan.Price:C2}";
+
+                            string d = $"{Model.Discount:P2}";
+
+                            string tp = $"{Model.TotalPrice:C2}";
+                        }
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Plan</label>
+                            <input value="@Model.Plan.Name" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        @if (Model.Plan.PlanType == GymAdmin.Enums.PlanType.TicketHolder)
+                        {
+                            <!-- Field -->
+                            <div class="form-group GymAdminFormElement">
+                                <label class="control-label GymAdminFormLabel">Descuento</label>
+                                <input value="@d" class="GymAdminFormInput" autocomplete="off" readonly />
+                            </div>
+                        }
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Fecha de inscripción</label>
+                            <input value="@Model.InscriptionDate.ToShortDateString()" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        @if (Model.Plan.PlanType != GymAdmin.Enums.PlanType.TicketHolder)
+                        {
+                            <!-- Field -->
+                            <div class="form-group GymAdminFormElement">
+                                <label class="control-label GymAdminFormLabel">Fecha de expiración</label>
+                                <input value="@Model.ExpirationDate.ToShortDateString()" class="GymAdminFormInput" autocomplete="off" readonly />
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Field -->
+                            <div class="form-group GymAdminFormElement">
+                                <label class="control-label GymAdminFormLabel">Días restantes</label>
+                                <input value="@Model.RemainingDays" class="GymAdminFormInput" autocomplete="off" readonly />
+                            </div>
+                        }
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Precio</label>
+                            <input value="@p" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        @if (Model.Plan.PlanType == GymAdmin.Enums.PlanType.TicketHolder)
+                        {
+                            <!-- Field -->
+                            <div class="form-group GymAdminFormElement">
+                                <label class="control-label GymAdminFormLabel">Precio final</label>
+                                <input value="@tp" class="GymAdminFormInput" autocomplete="off" readonly />
+                            </div>
+                        }
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Fecha de activación</label>
+                            <input value="@Model.ActivationDate.ToShortDateString()" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        @if (Model.Plan.PlanType != GymAdmin.Enums.PlanType.TicketHolder)
+                        {
+                            <!-- Field -->
+                            <div class="form-group GymAdminFormElement">
+                                <label class="control-label GymAdminFormLabel">Duración en días</label>
+                                <input value="@Model.Duration" class="GymAdminFormInput" autocomplete="off" readonly />
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Field -->
+                            <div class="form-group GymAdminFormElement">
+                                <label class="control-label GymAdminFormLabel">Cantidad de tiquetes</label>
+                                <input value="@Model.Duration" class="GymAdminFormInput" autocomplete="off" readonly />
+                            </div>
+                        }
+                    </div>
+                </div>
+                <!-- Buttons and links -->
+                <div class="GymAdminRegisterFormButtons form-group mt-2">
+                    <button disabled class="GymAdminFormButton">
+                        <a onclick="CloseModal(); setTimeout(function() { showInPopup('@Url.Action("EditActivePlan", "Plan", new{ id=Model.Id }, Context.Request.Scheme)', 'Editar plan') }, 700);" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-pen-to-square"></i>Editar plan</a>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

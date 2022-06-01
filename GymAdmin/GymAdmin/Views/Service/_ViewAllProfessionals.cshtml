@@ -1,0 +1,60 @@
+﻿@model IEnumerable<GymAdmin.Data.Entities.Professional>
+
+<table class="table table-hover table-responsive table-striped" id="MyTable">
+    <!-- Text -->
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.User.FullName)
+            </th>
+            <th>
+                Correo electrónico
+            </th>
+            <th>
+                Profesión
+            </th>
+            <th>
+                Cantidad de horarios
+            </th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <!-- Values -->
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="GymAdminTableTr">
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
+                <td>
+                    @{
+                        if (item.ProfessionalType.ToString() == "Physiotherapist")
+                        {
+                            <p>Fisioterapeuta</p>
+                        }
+                        else if (item.ProfessionalType.ToString() == "Nutritionist")
+                        {
+                            <p>Nutricionista</p>
+                        }
+                        else if (item.ProfessionalType.ToString() == "Instructor")
+                        {
+                            <p>Instructor</p>
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProfessionalSchedulesNumber)
+                </td>
+                <td class="td_option">
+                    <a asp-action="DetailsProfessional" asp-route-id="@item.Id" class="btn btn-outline-info">Horarios</a>
+                    <a onclick="showInPopup('@Url.Action("EditProfessional", "Service", new { id=item.Id }, Context.Request.Scheme)' , 'Editar profesional')" class="btn btn-outline-warning">Editar</a>
+                    <button data-id="@item.Id" class="btn btn-outline-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog">Eliminar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

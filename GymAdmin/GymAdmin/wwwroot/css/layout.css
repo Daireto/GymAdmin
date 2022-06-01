@@ -20,6 +20,10 @@ div.col-md-12{
     border-radius:10px;
 }
 
+a, .GymAdminFormButton {
+    cursor: pointer !important;
+}
+
 /* Webkit */
 input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(75%) sepia(92%) saturate(711%) hue-rotate(354deg) brightness(98%) contrast(94%);
@@ -98,7 +102,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
             position: relative;
             padding-bottom: 5px;
             border-bottom: 1px solid transparent;
-            margin-left: 10px;
             margin-bottom: 10px;
             width: 100%;
             text-align: center;
@@ -128,17 +131,18 @@ header a {
     font-weight: 400;
 }
 
-.dropdown {
+.dropdown-gymadmin {
     display: block;
     padding: 16px 0;
 }
 
-.dropdown-content {
+.dropdown-content-gymadmin {
+    box-sizing: content-box !important;
     visibility: hidden;
     position: absolute;
     background-color: rgba(0,0,0);
     opacity: 0;
-    min-width: 160px;
+    min-width: 160px !important;
     padding: 6px 16px 20px 16px;
     margin-top: 16px;
     z-index: 1;
@@ -149,9 +153,47 @@ header a {
     align-items: center;
 }
 
-.dropdown:hover .dropdown-content {
-    opacity: 1;
+.dropdown-gymadmin:hover .dropdown-content-gymadmin {
+    opacity: 0.8;
     visibility: visible;
+}
+
+#UserOption{
+    position: relative;
+}
+
+#userImage {
+    border-radius: 50%;
+    position: absolute;
+    width: 35px;
+    left: -40px;
+    top: -5px;
+    z-index: 1;
+}
+
+.backdrop {
+    border-radius: 50%;
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    left: -40px;
+    top: -5px;
+    z-index: 2;
+    background-color: #f2c60d;
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility .2s ease-out !important;
+    transition: opacity .2s ease-out !important;
+}
+
+#UserOption:hover .backdrop {
+    opacity: 0.5;
+    visibility: visible;
+}
+
+#UserOption:hover a.ViewUserLink {
+    border-color: #f2c60d;
+    color: #f2c60d !important;
 }
 
 /* Content */

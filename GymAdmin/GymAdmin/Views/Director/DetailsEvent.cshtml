@@ -1,0 +1,148 @@
+﻿@model GymAdmin.Data.Entities.Event
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Events/DetailsEvent.css" />
+
+<style>
+    h2 {
+        color: white !important;
+        margin-bottom: 20px;
+    }
+
+        h2.GymAdminTableTitle {
+            width: 100%;
+            text-align: center;
+        }
+
+    .fa-image,
+    .fa-ban,
+    .fa-lock {
+        padding-right: 5px;
+    }
+
+    .GymAdminDeleteButton {
+        border-color: #DC3545;
+        color: #DC3545;
+        padding: 10px 20px;
+        margin-top: -2px !important;
+    }
+
+        .GymAdminDeleteButton:hover {
+            background-color: #DC3545;
+            color: black;
+        }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+
+    #eventDescription {
+        border: none;
+        resize: none;
+        margin-top: 0 !important;
+        text-align: center;
+    }
+
+    #eventUsers {
+        font-size: 18px;
+        color: #f2c60d;
+    }
+</style>
+
+<flash dismissable="true" />
+
+<!-- View event page -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <!-- Users signed up -->
+        <div class="row" style="padding:0;margin:0 auto;">
+            <div class="col-md-12 GymAdminTableContainer">
+                <div class="panel panel-default">
+                    <div class="panel-heading GymAdminTableHeading">
+                        <h2 class="panel-title GymAdminTableTitle">@Model.Name</h2>
+                    </div>
+                    <div class="panel-body GymAdminTable">
+                        <div class="row">
+                            <!-- Left column -->
+                            <div class="col-md-6 GymAdminFormColumn">
+                                <!-- Field -->
+                                <h5>Descripción</h5>
+                                <div class="form-group GymAdminFormElement">
+                                    <textarea id="eventDescription" class="GymAdminFormTextArea" rows="8" cols="50" readonly>@Model.Description</textarea>
+                                </div>
+                                <!-- Field -->
+                                <h5>Cantidad de usuarios inscritos</h5>
+                                <div id="eventUsers">@Model.InscriptionsNumber</div>
+                                <!-- Buttons and links -->
+                                <div class="GymAdminRegisterFormButtons form-group mt-2">
+                                    <button disabled class="GymAdminFormButton">
+                                        <a onclick="showInPopup('@Url.Action("AddEventImage", "Director", new{ id = @Model.Id }, Context.Request.Scheme)' , 'Añadir imagen')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-image"></i>Añadir imagen</a>
+                                    </button>
+                                    <button disabled class="GymAdminFormButton">
+                                        <a asp-action="DetailsDirector" asp-route-id="@Model.Director.Id" asp-controller="Director" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink">Regresar</a>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Right column -->
+                            <div class="col-md-6 GymAdminFormColumn">
+                                <div id="view-all">
+                                    @await Html.PartialAsync("_ViewAllImages", Model)
+                                </div>
+                            </div>
+                        </div>
+                        <h2>Usuarios inscritos al evento</h2>
+                        <div id="view-all">
+                            @await Html.PartialAsync("_ViewAllSignedUpUsers", Model)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_DeleteImageDialog" />
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [15, 30, 60, 120, -1],
+                    [15, 30, 60, 120, "Todos"]
+                ]
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#ImagesCarousel").carousel();
+            $("#ImagesCarouselPrev").click(function() {
+                $("#ImagesCarousel").carousel("prev");
+            });
+            $("#ImagesCarouselNext").click(function() {
+                $("#ImagesCarousel").carousel("next");
+            });
+        });
+    </script>
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Director/DeleteEventImage/', false);
+    </script>
+    }

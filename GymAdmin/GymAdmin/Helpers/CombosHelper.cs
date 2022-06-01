@@ -1,6 +1,7 @@
 ﻿using GymAdmin.Common;
 using GymAdmin.Data;
 using GymAdmin.Data.Entities;
+using GymAdmin.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,9 +29,22 @@ namespace GymAdmin.Helpers
             return list;
         }
 
+        public async Task<IEnumerable<SelectListItem>> GetComboPlansAsync()
+        {
+            List<SelectListItem> list = await _context.Plans
+                .Select(p => new SelectListItem
+                {
+                    Text = p.Name,
+                    Value = p.Id.ToString(),
+                })
+                .ToListAsync();
+
+            return list;
+        }
+
         public async Task<IEnumerable<SelectListItem>> GetComboSchedulesAsync(int serviceId, DateTime day)
         {
-            List<DateTime> allSchedules = new List<DateTime>();
+            List<DateTime> allSchedules = new();
 
             for(int i=7; i<=18; i++)
             {
@@ -125,10 +139,19 @@ namespace GymAdmin.Helpers
             return list;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetComboUsersWithPlanAsync()
+        public async Task<IEnumerable<SelectListItem>> GetComboNoDirectorsAsync()
         {
+            List<Director> directors = await _context.Directors
+                .Include(p => p.User)
+                .ToListAsync();
+            List<string> userIds = new();
+            foreach (var director in directors)
+            {
+                userIds.Add(director.User.Id);
+            }
+
             List<SelectListItem> list = await _context.Users
-                .Where(u => u.PlanInscriptions.LastOrDefault() != null)
+                .Where(u => !userIds.Contains(u.Id))
                 .Select(u => new SelectListItem
                 {
                     Text = u.FullName,
@@ -139,5 +162,20 @@ namespace GymAdmin.Helpers
             return list;
         }
 
+        public async Task<IEnumerable<SelectListItem>> GetComboUsersWithPlanAsync()
+        {
+            List<SelectListItem> list = await _context.PlanInscriptions
+                .Include(pI => pI.User)
+                .Include(pI => pI.Plan)
+                .Where(pI => pI.PlanStatus == PlanStatus.Active)
+                .Select(pI => new SelectListItem
+                {
+                    Text = pI.User.FullName,
+                    Value = pI.User.UserName
+                })
+                .ToListAsync();
+
+            return list;
+        }
     }
 }

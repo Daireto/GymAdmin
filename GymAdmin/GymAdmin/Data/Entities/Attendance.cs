@@ -4,10 +4,8 @@
     {
         public int Id { get; set; }
 
-        public User User { get; set; } 
-        
-        public DateTime AttendanceDate { get; set; }
-        //attendance year,month,day and hour the user attended the gym
+        public User User { get; set; }
 
+        public DateTime AttendanceDate { get; set; }
     }
 }

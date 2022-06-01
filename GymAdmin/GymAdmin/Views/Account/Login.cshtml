@@ -8,6 +8,8 @@
 <link rel="stylesheet" type="text/css" href="~/css/forms.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/Login.css" />
 
+<flash dismissable="true" />
+
 <!-- Login form -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminLoginFormElementsContainer">
@@ -44,7 +46,7 @@
                     <button disable class="GymAdminFormButton">
                         <a asp-action="Register" class="GymAdminFormElement GymAdminFormLabel">Registrarse</a>
                     </button>
-                    <a asp-action="RecoverPassword" class="GymAdminFormLink GymAdminFormLabel">¿Has olvidado tu contraseña?</a>
+                    <a onclick="showInPopup('@Url.Action("RecoverPassword", "Account", new{}, Context.Request.Scheme)' , 'Recuperar contraseña')" class="GymAdminFormLink GymAdminFormLabel">¿Has olvidado tu contraseña?</a>
                 </div>
             </form>
         </div>
@@ -56,4 +58,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+    }

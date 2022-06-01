@@ -1,0 +1,41 @@
+﻿@model IEnumerable<GymAdmin.Data.Entities.Director>
+
+<table class="table table-hover table-responsive table-striped" id="MyTable">
+    <!-- Text -->
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.User.FullName)
+            </th>
+            <th>
+                Correo electrónico
+            </th>
+            <th>
+                Cantidad de eventos
+            </th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <!-- Values -->
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="GymAdminTableTr">
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventsNumber)
+                </td>
+                <td class="td_option">
+                    <a asp-action="DetailsDirector" asp-route-id="@item.Id" class="btn btn-outline-info">Eventos</a>
+                    <a onclick="showInPopup('@Url.Action("EditDirector", "Director", new { id=item.Id }, Context.Request.Scheme)' , 'Editar director')" class="btn btn-outline-warning">Editar</a>
+                    <button data-id="@item.Id" class="btn btn-outline-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog">Eliminar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

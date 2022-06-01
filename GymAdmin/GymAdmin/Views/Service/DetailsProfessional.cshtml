@@ -4,9 +4,6 @@
     ViewData["Title"] = "Details";
 }
 
-<!-- Libraries -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
-
 <!-- GymAdmin style -->
 <link rel="stylesheet" type="text/css" href="~/css/forms.css" />
 <link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
@@ -67,160 +64,30 @@
     }
 </style>
 
+<flash dismissable="true" />
+
 <!-- View professional page -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
-        <div class="col-md-12" id="GymAdminFieldsContainer">
-            <form asp-action="" id="GymAdminForm">
-                <div class="row">
-                    <div class="col-md-12">
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <h2 style="text-align:center;">Detalles del profesional</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <!-- Left column -->
-                    <div class="col-md-6 GymAdminFormColumn">
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Nombre completo</label>
-                            <input value="@Model.User.FullName" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        @{
-                            var professionalType = "";
-                            if (Model.ProfessionalType.ToString() == "Physiotherapist")
-                            {
-                                professionalType = "Fisioterapeuta";
-                            }
-                            else if (Model.ProfessionalType.ToString() == "Nutritionist")
-                            {
-                                professionalType = "Nutricionista";
-                            }
-                            else if (Model.ProfessionalType.ToString() == "Instructor")
-                            {
-                                professionalType = "Instructor";
-                            }
-                        }
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Profesión</label>
-                            <input value="@professionalType" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                    </div>
-                    <!-- Right column -->
-                    <div class="col-md-6 GymAdminFormColumn">
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Correo electrónico</label>
-                            <input value="@Model.User.Email" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Buttons and links -->
-                        <div class="GymAdminRegisterFormButtons form-group mt-2">
-                            <button disabled class="GymAdminFormButton">
-                                <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Regresar</a>
-                            </button>
-                            <button disabled class="GymAdminFormButton GymAdminEditButton">
-                                <a asp-action="EditProfessional" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-pen-to-square"></i>Editar</a>
-                            </button>
-                            <button disabled class="GymAdminFormButton GymAdminDeleteButton">
-                                <a asp-action="DeleteProfessional" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Eliminar</a>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <hr />
         <!-- Schedules -->
         <div class="row" style="padding:0;margin:0 auto;">
             <div class="col-md-12 GymAdminTableContainer">
                 <div class="panel panel-default">
                     <div class="panel-heading GymAdminTableHeading">
-                        <h3 class="panel-title GymAdminTableTitle">Horarios del profesional</h3>
+                        <h3 class="panel-title GymAdminTableTitle">Horarios de @Model.User.FirstName</h3>
                         <div class="newScheduleDiv">
-                            <button disable class="GymAdminFormButton">
-                                <a asp-action="CreateSchedule" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel">Asignar horario</a>
+                            <button disabled class="GymAdminFormButton">
+                                <a asp-action="ShowProfessionals" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Regresar</a>
+                            </button>
+                            <button disabled class="GymAdminFormButton">
+                                <a onclick="showInPopup('@Url.Action("CreateSchedule", "Service", new{ id=Model.Id }, Context.Request.Scheme)' , 'Asignar horario')" class="GymAdminFormElement GymAdminFormLabel">Asignar horario</a>
                             </button>
                         </div>
                     </div>
                     <div class="panel-body GymAdminTable">
-                        <table class="table table-hover table-responsive table-striped" id="MyTable">
-                            <!-- Text -->
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Día
-                                    </th>
-                                    <th>
-                                        Hora de inicio
-                                    </th>
-                                    <th>
-                                        Hora de salida
-                                    </th>
-                                    <th>
-                                        Opciones
-                                    </th>
-                                </tr>
-                            </thead>
-                            <!-- Values -->
-                            <tbody>
-                                @foreach (var item in Model.ProfessionalSchedules)
-                                {
-                                    var day = "";
-                                    if (item.Schedule.Day.ToString() == "Monday")
-                                    {
-                                        day = "Lunes";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Tuesday")
-                                    {
-                                        day = "Martes";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Wednesday")
-                                    {
-                                        day = "Miércoles";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Thursday")
-                                    {
-                                        day = "Jueves";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Friday")
-                                    {
-                                        day = "Viernes";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Saturday")
-                                    {
-                                        day = "Sábado";
-                                    }
-                                    if (item.Schedule.Day.ToString() == "Sunday")
-                                    {
-                                        day = "Domingo";
-                                    }
-                                    <tr class="GymAdminTableTr">
-                                        <td>
-                                            @day
-                                        </td>
-                                        <td>
-                                            @{
-                                                var StartHourDateTime = new DateTime(item.Schedule.StartHour.Ticks);
-                                                var FinishHourDateTime = new DateTime(item.Schedule.FinishHour.Ticks);
-                                                var StartHour12HoursFormated = StartHourDateTime.ToString("h:mm tt");
-                                                var FinishHour12HoursFormated = FinishHourDateTime.ToString("h:mm tt");
-                                            }
-                                            @StartHour12HoursFormated
-                                        </td>
-                                        <td>
-                                            @FinishHour12HoursFormated
-                                        </td>
-                                        <td class="td_option">
-                                            <a asp-action="EditSchedule" asp-route-id="@item.Schedule.Id" asp-route-proId="@Model.Id" class="btn btn-outline-warning">Editar</a>
-                                            <a asp-action="DeleteSchedule" asp-route-id="@item.Schedule.Id" asp-route-proId="@Model.Id" class="btn btn-outline-danger">Eliminar</a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                        <div id="view-all">
+                            @await Html.PartialAsync("_ViewAllSchedules", Model)
+                        </div>
                     </div>
                 </div>
             </div>
@@ -228,25 +95,23 @@
     </div>
 </div>
 
-
-
+<!-- Scripts -->
 @section Scripts {
     @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
-<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#MyTable').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-            },
-            "aLengthMenu": [
-                [25, 50, 100, 200, -1],
-                [25, 50, 100, 200, "Todos"]
-            ]
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [15, 30, 60, 120, -1],
+                    [15, 30, 60, 120, "Todos"]
+                ]
+            });
         });
-    });
-</script>
-}
+    </script>
+    }

@@ -4,3 +4,13 @@
 body {
     background-image: url("../../images/bg/users-body-background.jpg");
 }
+
+.Confirmed {
+    background-color: #9a6900 !important;
+    border-color: #9a6900 !important;
+}
+
+.NoConfirmed {
+    background-color: white !important;
+    border-color: #9a6900 !important;
+}

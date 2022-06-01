@@ -1,0 +1,76 @@
+﻿@model IEnumerable<GymAdmin.Data.Entities.Director>
+
+@{
+    ViewData["Title"] = "Directors";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
+
+<style>
+    a .fa-user-tie, a .fa-calendar {
+        padding-right: 5px;
+    }
+
+    h3 .fa-crown {
+        padding-right: 0;
+        padding-left: 10px;
+    }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+</style>
+
+<flash dismissable="true" />
+
+<!-- Directors -->
+<div class="row">
+    <div class="col-md-12 GymAdminTableContainer">
+        <div class="panel panel-default">
+            <div class="panel-heading GymAdminTableHeading">
+                <h3 class="panel-title GymAdminTableTitle">Directores de eventos<i class="fa-solid fa-crown"></i></h3>
+                <div>
+                    <button disable class="GymAdminFormButton">
+                        <a asp-action="CreateDirector" asp-controller="Director" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Crear director</a>
+                    </button>
+                    <button disable class="GymAdminFormButton">
+                        <a onclick="showInPopup('@Url.Action("EditDirector", "Director", new{}, Context.Request.Scheme)' , 'Asignar director')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-user-tie"></i>Asignar director</a>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body GymAdminTable">
+                <div id="view-all">
+                    @await Html.PartialAsync("_ViewAllDirectors", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_DeleteDialog" />
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [15, 30, 60, 120, -1],
+                    [15, 30, 60, 120, "Todos"]
+                ]
+            });
+        });
+    </script>
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Director/DeleteDirector/', false);
+    </script>
+    }

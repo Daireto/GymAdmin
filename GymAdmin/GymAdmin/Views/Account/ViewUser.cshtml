@@ -13,16 +13,19 @@
 <style>
     .fa-pen-to-square,
     .fa-lock,
+    .fa-hand-fist,
     .fa-bell-concierge {
         padding-right: 5px;
     }
 </style>
 
+<flash dismissable="true" />
+
 <!-- View user page -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
-            <form asp-action="" id="GymAdminForm">
+            <form id="GymAdminForm" onsubmit="return false;">
                 <!-- Image -->
                 <div class="row">
                     <div class="col-md-12">
@@ -92,13 +95,19 @@
                 <!-- Buttons and links -->
                 <div class="GymAdminRegisterFormButtons form-group mt-2">
                     <button disabled class="GymAdminFormButton">
-                        <a asp-action="MyServices" asp-controller="Home" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-bell-concierge"></i>Mis servicios</a>
+                        <a asp-action="MyServices" asp-controller="Home" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink"><i class="fa-solid fa-bell-concierge"></i>Mis servicios</a>
+                    </button>
+                    @if (!User.IsInRole("Admin"))
+                    {
+                        <button disabled class="GymAdminFormButton">
+                            <a onclick="showInPopup('@Url.Action("MyPlan", "Home", new{}, Context.Request.Scheme)' , 'Detalles del plan')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-hand-fist"></i>Mi plan</a>
+                        </button>
+                    }
+                    <button disabled class="GymAdminFormButton">
+                        <a asp-action="EditUser" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink"><i class="fa-solid fa-pen-to-square"></i>Editar perfil</a>
                     </button>
                     <button disabled class="GymAdminFormButton">
-                        <a asp-action="EditUser" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-pen-to-square"></i>Editar</a>
-                    </button>
-                    <button disabled class="GymAdminFormButton">
-                        <a asp-action="ChangePassword" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-lock"></i>Cambiar contraseña</a>
+                        <a onclick="showInPopup('@Url.Action("ChangePassword", "Account", new{}, Context.Request.Scheme)' , 'Cambiar contraseña')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-lock"></i>Cambiar contraseña</a>
                     </button>
                 </div>
             </form>
@@ -111,4 +120,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+    }

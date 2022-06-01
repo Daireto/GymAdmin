@@ -1,0 +1,124 @@
+﻿@model GymAdmin.Models.AddUserViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+
+<flash dismissable="true" />
+
+<!-- Create form -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="CreateDirector" id="GymAdminForm" enctype="multipart/form-data">
+                <!-- Hidden inputs -->
+                <input type="hidden" asp-for="UserType" />
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Username" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="Username" class="GymAdminFormInput" autocomplete="off" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Password" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="Password" type="password" class="GymAdminFormInput" autocomplete="off" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="FirstName" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="FirstName" class="GymAdminFormInput" autocomplete="off" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="Document" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="Document" class="GymAdminFormInput" autocomplete="off" />
+                            <span asp-validation-for="Document" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        @{
+                            var DocumentTypes = Html.GetEnumSelectList<GymAdmin.Enums.DocumentType>();
+                            foreach (var documentType in DocumentTypes)
+                            {
+                                if (documentType.Text == "TI")
+                                {
+                                    documentType.Text = "Tarjeta de Identidad";
+                                }
+                                else if (documentType.Text == "CC")
+                                {
+                                    documentType.Text = "Cédula de Ciudadanía";
+                                }
+                                else if (documentType.Text == "CE")
+                                {
+                                    documentType.Text = "Cédula de Extranjería";
+                                }
+                                else if (documentType.Text == "PAP")
+                                {
+                                    documentType.Text = "Pasaporte";
+                                }
+                            }
+                        }
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="DocumentType" class="control-label GymAdminFormLabel"></label>
+                            <select asp-for="DocumentType" asp-items="@DocumentTypes" class="GymAdminFormCombobox"></select>
+                            <span asp-validation-for="DocumentType" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="ImageFile" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="ImageFile" class="GymAdminFormInput GymAdminFormImageInput" autocomplete="off" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="ConfirmPassword" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="ConfirmPassword" type="password" class="GymAdminFormInput" autocomplete="off" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="LastName" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="LastName" class="GymAdminFormInput" autocomplete="off" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="PhoneNumber" class="control-label GymAdminFormLabel"></label>
+                            <input asp-for="PhoneNumber" class="GymAdminFormInput" autocomplete="off" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                            <input type="submit" value="Crear" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                            <button disabled class="GymAdminFormButton">
+                                <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Cancelar</a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

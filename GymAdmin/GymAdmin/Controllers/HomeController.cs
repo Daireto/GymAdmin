@@ -1,11 +1,14 @@
 ﻿using GymAdmin.Common;
 using GymAdmin.Data;
 using GymAdmin.Data.Entities;
+using GymAdmin.Enums;
 using GymAdmin.Helpers;
 using GymAdmin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Vereyon.Web;
+using static GymAdmin.Helpers.ModalHelper;
 
 namespace GymAdmin.Controllers
 {
@@ -14,15 +17,25 @@ namespace GymAdmin.Controllers
         private readonly DataContext _context;
         private readonly ICombosHelper _combosHelper;
         private readonly IUserHelper _userHelper;
+        private readonly IFlashMessage _flashMessage;
 
-        public HomeController(DataContext context, ICombosHelper combosHelper, IUserHelper userHelper)
+        public HomeController(DataContext context, ICombosHelper combosHelper, IUserHelper userHelper, IFlashMessage flashMessage)
         {
             _context = context;
             _combosHelper = combosHelper;
             _userHelper = userHelper;
+            _flashMessage = flashMessage;
         }
 
-        //Principal pages
+        //-------------------------------- General TODOs ----------------------------------
+        //TODO: If your teammates don't, make GetPlan and EditActivePlan methods in PlanController and the views with modals
+        //TODO: Make SignUpToEvent and CancelInscription methods
+        //TODO: Make Events view with pagination
+        //TODO: Make a modal that shows the selected event details and the inscription button
+        //TODO: Make My Events view
+        //TODO: Make a service on Program (like the Seeder) with UpdateExpirationDatePlan and UpdateEventAtendance methods
+
+        //------------------------------------- Principal --------------------------------------------
         public IActionResult Index()
         {
             return View();
@@ -43,6 +56,33 @@ namespace GymAdmin.Controllers
             return View();
         }
 
+        //------------------------------------- User --------------------------------------------
+        public async Task<IActionResult> MyPlan()
+        {
+            User user = await _context.Users.Include(u => u.PlanInscriptions).FirstOrDefaultAsync(u => u.Email == User.Identity.Name);
+
+            PlanInscription planInscription = await _context.PlanInscriptions
+                .Include(pI => pI.User)
+                .Include(pI => pI.Plan)
+                .FirstOrDefaultAsync(
+                    pI => pI.User.UserName == User.Identity.Name &&
+                    pI.PlanStatus == PlanStatus.Active
+                );
+
+            if (planInscription == null)
+            {
+                return View(nameof(NoPlan));
+            }
+
+            return View(planInscription);
+        }
+
+        [NoDirectAccess]
+        public IActionResult NoPlan()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> MyServices()
         {
             if (User.Identity.IsAuthenticated)
@@ -55,7 +95,7 @@ namespace GymAdmin.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        //Services, events and plans
+        [NoDirectAccess]
         public async Task<IActionResult> TakeService(int? id)
         {
             if (User.Identity.IsAuthenticated)
@@ -64,11 +104,27 @@ namespace GymAdmin.Controllers
 
                 Service service = await _context.Services.FindAsync(Id);
 
+                User user = await _userHelper.GetUserAsync(User.Identity.Name);
+
+                PlanInscription planInscription = await _context.PlanInscriptions
+                .Include(pI => pI.User)
+                .Include(pI => pI.Plan)
+                .FirstOrDefaultAsync(
+                    pI => pI.User.UserName == User.Identity.Name &&
+                    pI.PlanStatus == PlanStatus.Active
+                );
+
+                if (planInscription == null)
+                {
+                    _flashMessage.Danger("No tienes ningún plan activo, debes adquirir uno para acceder a un servicio", "Error:");
+                    return RedirectToAction("ViewUser", "Account");
+                }
+
                 TakeServiceViewModel model = new()
                 {
                     ServiceId = Id,
                     Services = await _combosHelper.GetComboServicesAsync(),
-                    Discount = DiscountValues.GetDiscountValue("Regular"),
+                    Discount = DiscountValues.GetDiscountValue(planInscription.Plan.PlanType),
                     Price = service.Price
                 };
 
@@ -88,7 +144,7 @@ namespace GymAdmin.Controllers
             {
                 if (model.AccessHour == 0)
                 {
-                    ModelState.AddModelError(string.Empty, "¡Debe seleccionar un horario!");
+                    _flashMessage.Danger("Debe seleccionar un horario", "Error:");
                     return View(model);
                 }
 
@@ -108,40 +164,48 @@ namespace GymAdmin.Controllers
 
                 _context.Add(serviceAccess);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(MyServices), "Home");
+                _flashMessage.Confirmation("Servicio contratado correctamente", "Operación exitosa:");
+                return RedirectToAction(nameof(MyServices));
             }
 
             return View(model);
         }
 
+        [NoDirectAccess]
         public async Task<JsonResult> GetHours(int serviceId, DateTime day)
         {
             var list = await _combosHelper.GetComboSchedulesAsync(serviceId, day);
             return Json(list);
         }
 
-        public JsonResult GetPrice(int serviceId)
+        [NoDirectAccess]
+        public async Task<JsonResult> GetPrice(int serviceId)
         {
             Service service = _context.Services.Find(serviceId);
 
+            PlanInscription planInscription = await _context.PlanInscriptions
+                .Include(pI => pI.User)
+                .Include(pI => pI.Plan)
+                .FirstOrDefaultAsync(
+                    pI => pI.User.UserName == User.Identity.Name &&
+                    pI.PlanStatus == PlanStatus.Active
+                );
+
             string p = $"{service.Price:C2}";
 
-            decimal totalPrice = (decimal)(Decimal.ToDouble(service.Price) - (Decimal.ToDouble(service.Price) * DiscountValues.GetDiscountValue("Regular")));
+            decimal totalPrice = (decimal)(Decimal.ToDouble(service.Price) - (Decimal.ToDouble(service.Price) * DiscountValues.GetDiscountValue(planInscription.Plan.PlanType)));
             string tp = $"{totalPrice:C2}";
 
             return Json(new { priceValue = p, totalPriceValue = tp });
         }
 
-        //TODO: Add events and plans methods
-
-        //Error control
+        //------------------------------------- Errors --------------------------------------------
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        //Error 404 method
         [Route("error/404")]
         public IActionResult Error404()
         {

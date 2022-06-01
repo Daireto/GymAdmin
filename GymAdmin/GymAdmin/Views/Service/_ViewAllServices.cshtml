@@ -1,0 +1,50 @@
+﻿@model IEnumerable<GymAdmin.Data.Entities.Service>
+
+<table class="table table-hover table-responsive table-striped" id="MyTable">
+    <!-- Text -->
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                Cantidad de profesionales
+            </th>
+            <th>
+                Cantidad de accesos
+            </th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <!-- Values -->
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="GymAdminTableTr">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                @{
+                    //Format for price
+                    string p = $"{item.Price:C2}";
+                }
+                <td>
+                    @p
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProfessionalsNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccessesNumber)
+                </td>
+                <td class="td_option">
+                    <a onclick="showInPopup('@Url.Action("Edit", "Service", new { id=item.Id }, Context.Request.Scheme)' , 'Editar servicio')" class="btn btn-outline-warning">Editar</a>
+                    <button data-id="@item.Id" class="btn btn-outline-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog">Eliminar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<GymAdmin.Data.Entities.Attendance>
+
+<table class="table table-hover table-responsive table-striped" id="MyTable">
+    <!-- Text -->
+    <thead>
+        <tr>
+            <th>
+                Fecha y hora de asistencia
+            </th>
+            <th>
+                Usuario
+            </th>
+            <th>
+                Nombre completo
+            </th>
+            <th>
+                Documento
+            </th>
+        </tr>
+    </thead>
+    <!-- Values -->
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="GymAdminTableTr">
+                <td>
+                    @Html.DisplayFor(modelItem => item.AttendanceDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Document)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

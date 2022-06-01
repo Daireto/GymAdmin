@@ -1,0 +1,68 @@
+﻿@model IEnumerable<GymAdmin.Data.Entities.Attendance>
+
+@{
+    ViewData["Title"] = "Attemdances";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
+
+<style>
+    a .fa-bell-concierge, a .fa-user-tie {
+        padding-right: 5px;
+    }
+
+    h3 .fa-hand-fist {
+        padding-right: 0;
+        padding-left: 10px;
+    }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+</style>
+
+<flash dismissable="true" />
+
+<!-- Attendances -->
+<div class="row">
+    <div class="col-md-12 GymAdminTableContainer">
+        <div class="panel panel-default">
+            <div class="panel-heading GymAdminTableHeading">
+                <h3 class="panel-title GymAdminTableTitle">Asistencias<i class="fa-solid fa-hand-fist"></i></h3>
+                <div>
+                    <button disable class="GymAdminFormButton">
+                        <a onclick="showInPopup('@Url.Action("Create", "Attendance", new{}, Context.Request.Scheme)' , 'Registrar asistencia')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-bell-concierge"></i>Registrar asistencia</a>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body GymAdminTable">
+                <div id="view-all">
+                    @await Html.PartialAsync("_ViewAllAttendances", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [15, 30, 60, 120, -1],
+                    [15, 30, 60, 120, "Todos"]
+                ]
+            });
+        });
+    </script>
+    }
