@@ -17,6 +17,7 @@
         color: white !important;
     }
 
+    .fa-ban,
     .fa-pen-to-square,
     .fa-lock {
         padding-right: 5px;
@@ -135,7 +136,7 @@
                                                 @tp
                                             </td>
                                             <td class="td_option">
-                                                <a asp-action="CancelService" asp-controller="Contracts" asp-route-id="@item.Id" asp-route-route="MyServices" class="btn btn-outline-danger">Cancelar</a>
+                                                <button onclick="    return false;" data-id="@item.Id" class="btn btn-outline-danger deleteItem  " data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-ban"></i>Cancelar</button>
                                             </td>
                                         </tr>
                                     }
@@ -230,6 +231,8 @@
     </div>
 </div>
 
+<partial name="_CancelDialog" />
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -261,5 +264,9 @@
                 ]
             });
         });
+    </script>
+
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Contracts/CancelService/', false);
     </script>
 }

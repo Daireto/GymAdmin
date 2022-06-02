@@ -16,14 +16,17 @@
             first = false;
         }
     </div>
-    <a id="ImagesCarouselPrev" class="carousel-control-prev" onclick="    return false;" role="button"
+    @if (Model.EventImages.Count != 1)
+    {
+        <a id="ImagesCarouselPrev" class="carousel-control-prev" onclick="    return false;" role="button"
        data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only btn btn-secondary">Anterior</span>
-    </a>
-    <a id="ImagesCarouselNext" class="carousel-control-next" onclick="    return false;" role="button"
+            <span class="carousel-control-prev-icon" aria-hidden="true"><i class="fa-solid fa-chevron-left"></i></span>
+            <span class="sr-only btn btn-secondary">Anterior</span>
+        </a>
+        <a id="ImagesCarouselNext" class="carousel-control-next" onclick="    return false;" role="button"
        data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only btn-primary btn">Siguiente</span>
-    </a>
+            <span class="carousel-control-next-icon" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+            <span class="sr-only btn-primary btn">Siguiente</span>
+        </a>
+    }
 </div>

@@ -202,7 +202,7 @@ namespace GymAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateProfessional(AddProfessionalViewModel model)
         {
-            if (await _context.Professionals.Include(p => p.User).FirstAsync(p => p.User.UserName == model.Username) != null)
+            if (await _context.Professionals.Include(p => p.User).FirstOrDefaultAsync(p => p.User.UserName == model.Username) != null)
             {
                 _flashMessage.Danger("Este usuario ya es un profesional", "Error:");
                 return View(model);

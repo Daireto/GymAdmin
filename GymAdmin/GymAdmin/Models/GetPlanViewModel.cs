@@ -15,6 +15,5 @@ namespace GymAdmin.Models
         [Display(Name = "Duración")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public int Duration { get; set; }
-
     }
 }

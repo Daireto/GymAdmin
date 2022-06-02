@@ -17,12 +17,14 @@ namespace GymAdmin.Controllers
         private readonly DataContext _context;
         private readonly IFlashMessage _flashMessage;
         private readonly ICombosHelper _combosHelper;
+        private readonly IUserHelper _userHelper;
 
-        public PlanController(DataContext context, IFlashMessage flashMessage, ICombosHelper combosHelper )
+        public PlanController(DataContext context, IFlashMessage flashMessage, ICombosHelper combosHelper, IUserHelper userHelper)
         {
             _context = context;
             _flashMessage = flashMessage;
             _combosHelper = combosHelper;
+            _userHelper = userHelper;
         }
 
         [Authorize(Roles = "Admin")]
@@ -79,8 +81,8 @@ namespace GymAdmin.Controllers
                             {
                                 eventInscription.EventStatus = EventStatus.Cancelled;
                                 _context.Update(eventInscription);
-                            } 
-                        } 
+                            }
+                        }
                     }
 
                     planInscription.PlanStatus = PlanStatus.Cancelled;
@@ -101,12 +103,6 @@ namespace GymAdmin.Controllers
         }
 
         [NoDirectAccess]
-        public IActionResult EditActivePlan()
-        {
-            return View();
-        }
-
-        [NoDirectAccess]
         public async Task<IActionResult> GetPlan()
         {
             GetPlanViewModel model = new()
@@ -117,65 +113,150 @@ namespace GymAdmin.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetPlan(GetPlanViewModel model)
         {
-            User user = await _context.Users.Include(u => u.PlanInscriptions).FirstOrDefaultAsync(u => u.Email == User.Identity.Name);
-            PlanInscription pI = user.PlanInscriptions.Last();
-            if (pI.PlanStatus != PlanStatus.Active || pI == null)
+            User user = await _userHelper.GetUserAsync(User.Identity.Name);
+
+            PlanInscription planInscription = await _context.PlanInscriptions
+                .Include(pI => pI.User)
+                .Include(pI => pI.Plan)
+                .FirstOrDefaultAsync(
+                    pI => pI.User.UserName == User.Identity.Name &&
+                    pI.PlanStatus == PlanStatus.Active
+                );
+
+            if (planInscription == null)
             {
                 Plan plan = await _context.Plans.FindAsync(model.PlanId);
-                if (plan.PlanType == PlanType.Regular || plan.PlanType == PlanType.Black) {
 
-                    PlanInscription pI2 = new PlanInscription
-                    {
-                        ActivationDate = DateTime.Now,
-                        ExpirationDate = DateTime.Now.AddDays(model.Duration),
-                        InscriptionDate = DateTime.Now,
-                        PlanStatus = PlanStatus.Active,
-                        Plan = plan,
-                        User = user,
-                        Duration = model.Duration,
-                        RemainingDays = model.Duration,
-                        Discount = DiscountValues.GetDiscountValue(plan.PlanType),
-                        TotalPrice = plan.Price
-
-                    };
-                    user.PlanInscriptions.Add(pI2);
-                    _context.Add(pI2);
-                    await _context.SaveChangesAsync();
+                if(plan == null)
+                {
+                    _flashMessage.Warning("El plan seleccionado no existe", "Error:");
+                    model.Plans = await _combosHelper.GetComboPlansAsync();
+                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "GetPlan", model) });
                 }
-                else
-                { 
-                    PlanInscription pI2 = new PlanInscription
+
+                try
+                {
+                    if (plan.PlanType == PlanType.Regular || plan.PlanType == PlanType.Black)
                     {
-                        ActivationDate = DateTime.Now,
-                        ExpirationDate = DateTime.Now.AddDays(90), //the plan ticketholder will have 3 months to be used, the other way it will be expired
-                        InscriptionDate = DateTime.Now,
-                        PlanStatus = PlanStatus.Active,
-                        Plan = plan,
-                        User = user,
-                        Duration = model.Duration,
-                        RemainingDays = model.Duration,
-                        Discount = DiscountValues.GetDiscountValue(plan.PlanType),
-                        TotalPrice = plan.Price
-                    };
-                    user.PlanInscriptions.Add(pI2);
-                    _context.Add(pI2);
-                    await _context.SaveChangesAsync();
+                        if (model.Duration < 1)
+                        {
+                            _flashMessage.Warning("La duración no es válida", "Error:");
+                            model.Plans = await _combosHelper.GetComboPlansAsync();
+                            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "GetPlan", model) });
+                        }
+                        else if (model.Duration > 12)
+                        {
+                            _flashMessage.Warning("Sólo se permiten hasta 12 meses de duración por suscripción", "Error:");
+                            model.Plans = await _combosHelper.GetComboPlansAsync();
+                            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "GetPlan", model) });
+                        }
 
+                        PlanInscription pI = new()
+                        {
+                            ActivationDate = DateTime.Today,
+                            ExpirationDate = DateTime.Today.AddDays(model.Duration * 30),
+                            InscriptionDate = DateTime.Today,
+                            PlanStatus = PlanStatus.Active,
+                            Plan = plan,
+                            User = user,
+                            Duration = 30 * model.Duration,
+                            RemainingDays = model.Duration,
+                            Discount = 0,
+                            TotalPrice = plan.Price * model.Duration,
+                        };
+                        _context.Add(pI);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        if (model.Duration < 1)
+                        {
+                            _flashMessage.Warning("La cantidad de tiquetes no es válida", "Error:");
+                            model.Plans = await _combosHelper.GetComboPlansAsync();
+                            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "GetPlan", model) });
+                        }
+                        else if (model.Duration > 12)
+                        {
+                            _flashMessage.Warning("Sólo se permiten hasta 12 tiquetes por usuario", "Error:");
+                            model.Plans = await _combosHelper.GetComboPlansAsync();
+                            return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "GetPlan", model) });
+                        }
+
+                        PlanInscription pI2 = new PlanInscription
+                        {
+                            ActivationDate = DateTime.Today,
+                            ExpirationDate = DateTime.Today.AddDays(90),
+                            InscriptionDate = DateTime.Today,
+                            PlanStatus = PlanStatus.Active,
+                            Plan = plan,
+                            User = user,
+                            Duration = model.Duration,
+                            RemainingDays = model.Duration,
+                            Discount = 0,
+                            TotalPrice = plan.Price * model.Duration
+                        };
+                        _context.Add(pI2);
+                        await _context.SaveChangesAsync();
+                    }
+                    _flashMessage.Confirmation("Suscripción realizada correctamente", "Operación exitosa:");
+                    return Json(new { isValid = true, redirect = true, route = "Account/ViewUser" });
                 }
-                return View(model);
-
-
-
+                catch
+                {
+                    _flashMessage.Warning("No se pudo realizar la suscripción, si el problema persiste comunícate con soporte", "Error:");
+                    return Json(new { isValid = true, redirect = true, route = "Account/ViewUser" });
+                }
             }
-            else { 
-             //the user cannot suscribe to another plan because has another one active at the moment
+            else
+            {
+                _flashMessage.Warning("Ya estás suscrito a un plan", "Error:");
+                return Json(new { isValid = true, redirect = true, route = "Account/ViewUser" });
             }
-
-            
         }
 
+        [NoDirectAccess]
+        public JsonResult GetDurationLabel(int planId)
+        {
+            Plan plan = _context.Plans.Find(planId);
+            string Label;
 
+            if(plan == null)
+            {
+                return Json(new { value = "" });
+            }
+
+            if (plan.PlanType == PlanType.TicketHolder)
+            {
+                Label = "Cantidad de tiquetes";
+            }
+            else
+            {
+                Label = "Duración en meses";
+            }
+
+            return Json(new { value = Label });
+        }
+
+        [NoDirectAccess]
+        public JsonResult GetPrice(int planId, int duration)
+        {
+            Plan plan = _context.Plans.Find(planId);
+
+            if (plan == null)
+            {
+                return Json(new { priceValue = "", totalPriceValue = "" });
+            }
+
+            string p = $"{plan.Price:C2}";
+
+            decimal totalPrice = plan.Price * duration;
+            string tp = $"{totalPrice:C2}";
+
+            return Json(new { priceValue = p, totalPriceValue = tp });
+        }
     }
 }

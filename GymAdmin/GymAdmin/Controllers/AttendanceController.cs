@@ -62,7 +62,7 @@ namespace GymAdmin.Controllers
                         );
 
                     Attendance at = new();
-                    if (pI != null &&  pI.PlanStatus==PlanStatus.Active)
+                    if (pI != null)
                     {
                         at.AttendanceDate = DateTime.Now;
                         at.User = user;

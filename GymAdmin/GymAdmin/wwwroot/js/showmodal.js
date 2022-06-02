@@ -20,6 +20,11 @@ jQueryAjaxPost = form => {
             contentType: false,
             processData: false,
             success: function (res) {
+                if (res.isValid == true && res.redirect == true) {
+                    var domain = "https://" + window.location.host + "/";
+                    window.location.href = domain + res.route;
+                    return 0;
+                }
                 if (res.isValid) {
                     $('#view-all').html(res.html)
                     $('#form-modal .modal-body').html('');
@@ -27,16 +32,15 @@ jQueryAjaxPost = form => {
                     $('#form-modal').modal('hide');
                     // reload the table         
                     location.reload()
-
                 }
-                else
-
+                else {
                     $('#form-modal .modal-body').html(res.html);
+                }
             },
             error: function (err) {
                 console.log(err)
             }
-        })
+        });
         //to prevent default form submit event
         return false;
     } catch (ex) {

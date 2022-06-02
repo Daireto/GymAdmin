@@ -32,7 +32,7 @@ namespace GymAdmin.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DetailsServiceAccess(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -72,7 +72,7 @@ namespace GymAdmin.Controllers
         }
 
         [NoDirectAccess]
-        public async Task<IActionResult> CancelService(int id, string? route)
+        public async Task<IActionResult> CancelService(int id)
         {
             ServiceAccess serviceAccess = await _context.ServiceAccesses.FindAsync(id);
 
@@ -88,15 +88,11 @@ namespace GymAdmin.Controllers
                 _flashMessage.Danger("Sólo se pueden cancelar servicios pendientes", "Error:");
             }
 
-            if(route == null)
-            {
-                return RedirectToAction("DetailsServiceAccess", "Contracts", new { id = id });
-            }
-
-            if (route == "MyServices")
+            if (User.IsInRole("User"))
             {
                 return RedirectToAction("MyServices", "Home");
             }
+
             return RedirectToAction("DetailsServiceAccess", "Contracts", new { id = id });
         }
     }

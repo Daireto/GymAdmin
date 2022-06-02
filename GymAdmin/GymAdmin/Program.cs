@@ -61,7 +61,6 @@ void SeedData()
     }
 }
 
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

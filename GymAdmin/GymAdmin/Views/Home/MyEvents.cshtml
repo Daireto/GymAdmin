@@ -1,5 +1,208 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<GymAdmin.Data.Entities.EventInscription>
+
 @{
+    ViewData["Title"] = "MyEvents";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/Register.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/EditUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Account/ViewUser.css" />
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Home/MyServices.css" />
+
+<style>
+    h3 {
+        color: white !important;
+    }
+
+    .fa-ban,
+    .fa-pen-to-square,
+    .fa-lock {
+        padding-right: 5px;
+    }
+
+    .GymAdminEditButton {
+        border-color: #FFC107;
+    }
+
+        .GymAdminEditButton:hover {
+            color: black;
+        }
+
+        .GymAdminEditButton a {
+            color: #FFC107;
+        }
+
+            .GymAdminEditButton a:hover {
+                color: black;
+            }
+
+    .GymAdminDeleteButton {
+        border-color: #DC3545;
+        color: #DC3545;
+    }
+
+        .GymAdminDeleteButton:hover {
+            background-color: #DC3545;
+            color: black;
+        }
+
+        .GymAdminDeleteButton a {
+            color: #DC3545;
+        }
+
+            .GymAdminDeleteButton a:hover {
+                color: black;
+            }
+
+    a .fa-calendar-check, a .fa-user-tie, a .fa-calendar {
+        padding-right: 5px;
+    }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+</style>
+
+<flash dismissable="true" />
+
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="row" style="padding:0;margin:0 auto;">
+            <div class="col-md-12 GymAdminTableContainer">
+                <div class="panel panel-default">
+                    <div class="panel-heading GymAdminTableHeading">
+                        <h3 class="panel-title GymAdminTableTitle">Inscripciones a eventos</h3>
+                        <div class="newScheduleDiv">
+                            <button disable class="GymAdminFormButton">
+                                <a asp-action="Index" asp-controller="Events" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-calendar-check"></i>Inscribirse a un evento</a>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-body GymAdminTable">
+                        <table class="table table-hover table-responsive table-striped" id="MyTable">
+                            <!-- Text -->
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Evento
+                                    </th>
+                                    <th>
+                                        Director
+                                    </th>
+                                    <th>
+                                        Día
+                                    </th>
+                                    <th>
+                                        Horario
+                                    </th>
+                                    <th>
+                                        Fecha de inscripción
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <!-- Values -->
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    @if (item.EventStatus == GymAdmin.Enums.EventStatus.SignedUp)
+                                    {
+                                        <tr class="GymAdminTableTr">
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Event.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Event.Director.User.FullName)
+                                            </td>
+                                            <!-- Day -->
+                                            @{
+                                                var day = "";
+                                                if (item.Event.Day.ToString() == "Monday")
+                                                {
+                                                    day = "Lunes";
+                                                }
+                                                if (item.Event.Day.ToString() == "Tuesday")
+                                                {
+                                                    day = "Martes";
+                                                }
+                                                if (item.Event.Day.ToString() == "Wednesday")
+                                                {
+                                                    day = "Miércoles";
+                                                }
+                                                if (item.Event.Day.ToString() == "Thursday")
+                                                {
+                                                    day = "Jueves";
+                                                }
+                                                if (item.Event.Day.ToString() == "Friday")
+                                                {
+                                                    day = "Viernes";
+                                                }
+                                                if (item.Event.Day.ToString() == "Saturday")
+                                                {
+                                                    day = "Sábado";
+                                                }
+                                                if (item.Event.Day.ToString() == "Sunday")
+                                                {
+                                                    day = "Domingo";
+                                                }
+                                            }
+                                            <td>
+                                                @day
+                                            </td>
+                                            <!-- Hours -->
+                                            @{
+                                                var StartHourDateTime = new DateTime(item.Event.StartHour.Ticks);
+                                                var FinishHourDateTime = new DateTime(item.Event.FinishHour.Ticks);
+                                                var StartHour12HoursFormated = StartHourDateTime.ToString("h:mm tt");
+                                                var FinishHour12HoursFormated = FinishHourDateTime.ToString("h:mm tt");
+                                                var sch = $"{StartHour12HoursFormated} - {FinishHour12HoursFormated}";
+                                            }
+                                            <td>
+                                                @sch
+                                            </td>
+                                            <td>
+                                                @item.InscriptionDate.ToString(@"dd/MM/yyyy")
+                                            </td>
+                                            <td class="td_option">
+                                                <button onclick="    return false;" data-id="@item.Id" class="btn btn-outline-danger deleteItem  " data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-ban"></i>Cancelar</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_CancelEventDialog" />
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [10, 20, 30, 40, -1],
+                    [10, 20, 30, 40, "Todos"]
+                ]
+            });
+        });
+    </script>
+
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Events/CancelInscription/', false);
+    </script>
 }

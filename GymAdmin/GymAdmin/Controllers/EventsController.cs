@@ -62,16 +62,18 @@ namespace GymAdmin.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ShowEventInscriptions() //TODO: Make view
+        public async Task<IActionResult> ShowEventInscriptions()
         {
             return View(await _context.EventInscriptions
                 .Include(ei => ei.User)
                 .Include(ei => ei.Event)
+                .ThenInclude(e => e.Director)
+                .ThenInclude(d => d.User)
                 .ToListAsync());
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DetailsEventInscription(int id) //TODO: Make view
+        public async Task<IActionResult> DetailsEventInscription(int id)
         {
             return View(await _context.EventInscriptions
                 .Include(ei => ei.User)
@@ -82,9 +84,10 @@ namespace GymAdmin.Controllers
         }
 
         [NoDirectAccess]
-        public async Task<IActionResult> SignUpToEvent(int id) //TODO: Make modal
+        public async Task<IActionResult> SignUpToEvent(int id)
         {
             Event objectEvent = await _context.Events
+                .Include(e => e.EventImages)
                 .Include(e => e.Director)
                 .ThenInclude(d => d.User)
                 .FirstOrDefaultAsync(e => e.Id == id);
@@ -98,7 +101,8 @@ namespace GymAdmin.Controllers
                 EventType = objectEvent.EventType,
                 FinishHour = objectEvent.FinishHour,
                 Name = objectEvent.Name,
-                StartHour = objectEvent.StartHour
+                StartHour = objectEvent.StartHour,
+                EventImages = objectEvent.EventImages,
             };
 
             return View(model);
@@ -110,10 +114,31 @@ namespace GymAdmin.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+                PlanInscription planInscription = await _context.PlanInscriptions
+                .Include(pI => pI.User)
+                .Include(pI => pI.Plan)
+                .FirstOrDefaultAsync(
+                    pI => pI.User.UserName == User.Identity.Name &&
+                    pI.PlanStatus == PlanStatus.Active
+                );
+
+                if (planInscription == null)
+                {
+                    if (User.IsInRole("User"))
+                    {
+                        _flashMessage.Danger("No tienes ningún plan activo, debes adquirir uno para inscribirte a un evento", "Error:");
+                        return Json(new { isValid = true, redirect = true, route = "Account/ViewUser" });
+                    }
+                    else
+                    {
+                        return Json(new { isValid = true, redirect = true, route = "Account/ViewUser" });
+                    }
+                }
+
                 Event objectEvent = await _context.Events.FindAsync(model.EventId);
 
                 EventInscription ei = await _context.EventInscriptions
-                    .FirstAsync(ei =>
+                    .FirstOrDefaultAsync(ei =>
                         ei.Event.Id == objectEvent.Id &&
                         ei.User.Email == User.Identity.Name &&
                         ei.EventStatus == EventStatus.SignedUp
@@ -134,19 +159,19 @@ namespace GymAdmin.Controllers
                     _context.Add(ei);
                     await _context.SaveChangesAsync();
                     _flashMessage.Confirmation("Inscripción realizada correctamente", "Operación exitosa:");
-                    return RedirectToAction("MyEvents", "Home");
+                    return Json(new { isValid = true, redirect = true, route = "Home/MyEvents" });
                 }
                 else
                 {
-                    _flashMessage.Danger("Ya estás inscrito a este evento", "Error:");
-                    return Json(new { isValid = false, html = ModalHelper.RenderRazorViewToString(this, "SignUpToEvent", model) });
+                    _flashMessage.Warning("Ya estás inscrito/a a este evento", "Error:");
+                    return Json(new { isValid = true, redirect = true, route = "Events/Index" });
                 }
             }
-            return RedirectToAction("Login", "Account");
+            return Json(new { isValid = true, redirect = true, route = "Account/Login" });
         }
 
         [NoDirectAccess]
-        public async Task<IActionResult> CancelInscription(int id, string? route) //TODO: Make modal
+        public async Task<IActionResult> CancelInscription(int id)
         {
             EventInscription eventInscription = await _context.EventInscriptions.FindAsync(id);
 
@@ -162,15 +187,11 @@ namespace GymAdmin.Controllers
                 _flashMessage.Danger("Sólo se pueden cancelar inscripciones activas", "Error:");
             }
 
-            if (route == null)
-            {
-                return RedirectToAction(nameof(DetailsEventInscription), new { id = id });
-            }
-
-            if (route == "MyEvents")
+            if (User.IsInRole("User"))
             {
                 return RedirectToAction("MyEvents", "Home");
             }
+
             return RedirectToAction(nameof(DetailsEventInscription), new { id = id });
         }
     }

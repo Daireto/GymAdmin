@@ -455,7 +455,7 @@ namespace GymAdmin.Data
                         Description = "El Karate es un arte marcial japonés que se considera, sobre todo, un arte defensivo. " +
                         "No necesitas inscribirte en el Dojo más caro para aprender esta grandiosa arte marcial. En GymAdmin " +
                         "aprenderás todo sobre el Karate, desde las técnicas de defensa más básicas hasta las más avanzadas. " +
-                        "Todo esto bajo la orientación de nuestros mejores directores.\n\nInscríbete y demuestra tu poder entrenando " +
+                        "\n\nInscríbete y demuestra tu poder entrenando " +
                         "Karate con nosotros.",
                         EventImages = new List<EventImage>()
                         {
@@ -1093,7 +1093,7 @@ namespace GymAdmin.Data
                 {
                     Name = "Regular",
                     PlanType = PlanType.Regular,
-                    Price = 49000
+                    Price = 49900
                 });
 
                 _context.Add(new Plan

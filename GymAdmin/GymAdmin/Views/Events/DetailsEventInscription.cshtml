@@ -1,4 +1,4 @@
-﻿@model GymAdmin.Data.Entities.ServiceAccess
+﻿@model GymAdmin.Data.Entities.EventInscription
 
 @{
     ViewData["Title"] = "Details";
@@ -57,7 +57,7 @@
 
 <flash dismissable="true" />
 
-<!-- View contract page -->
+<!-- View inscription page -->
 <div id="GymAdminPrincipalContainer">
     <div class="row" id="GymAdminRegisterFormElementsContainer">
         <div class="col-md-12" id="GymAdminFieldsContainer">
@@ -66,33 +66,20 @@
                     <div class="col-md-12">
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
-                            <h2 style="text-align:center;">Servicio de @Model.Service.Name</h2>
+                            <h2 style="text-align:center;">Inscripción a @Model.Event.Name</h2>
                         </div>
                     </div>
                 </div>
-                @{
-                    //Format for prices and discount
-                    string p = $"{Model.Service.Price:C2}";
-
-                    string d = $"{Model.Discount:P2}";
-
-                    decimal totalPrice = (decimal)(Decimal.ToDouble(Model.Service.Price) - (Decimal.ToDouble(Model.Service.Price) * Model.Discount));
-                    string tp = $"{totalPrice:C2}";
-                }
                 <div class="row">
                     <!-- Left column -->
                     <div class="col-md-6 GymAdminFormColumn">
                         @{
                             var Status = "";
-                            if (Model.ServiceStatus == GymAdmin.Enums.ServiceStatus.Pending)
+                            if (Model.EventStatus == GymAdmin.Enums.EventStatus.SignedUp)
                             {
-                                Status = "Contratado por";
+                                Status = "Inscripción de";
                             }
-                            if (Model.ServiceStatus == GymAdmin.Enums.ServiceStatus.Taken)
-                            {
-                                Status = "Tomado por";
-                            }
-                            if (Model.ServiceStatus == GymAdmin.Enums.ServiceStatus.Cancelled)
+                            if (Model.EventStatus == GymAdmin.Enums.EventStatus.Cancelled)
                             {
                                 Status = "Cancelado por";
                             }
@@ -104,21 +91,50 @@
                         </div>
                         <!-- Field -->
                         <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Precio base del servicio</label>
-                            <input value="@p" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Precio final</label>
-                            <input value="@tp" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <label class="control-label GymAdminFormLabel">Director del evento</label>
+                            <input value="@Model.Event.Director.User.FullName" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
                         @{
-                            var ContractDay = Model.AccessDate.ToString(@"dd/MM/yyyy");
+                            var date = "";
+                            var day = "";
+                            if (Model.Event.Day.ToString() == "Monday")
+                            {
+                                day = "Lunes";
+                            }
+                            if (Model.Event.Day.ToString() == "Tuesday")
+                            {
+                                day = "Martes";
+                            }
+                            if (Model.Event.Day.ToString() == "Wednesday")
+                            {
+                                day = "Miércoles";
+                            }
+                            if (Model.Event.Day.ToString() == "Thursday")
+                            {
+                                day = "Jueves";
+                            }
+                            if (Model.Event.Day.ToString() == "Friday")
+                            {
+                                day = "Viernes";
+                            }
+                            if (Model.Event.Day.ToString() == "Saturday")
+                            {
+                                day = "Sábado";
+                            }
+                            if (Model.Event.Day.ToString() == "Sunday")
+                            {
+                                day = "Domingo";
+                            }
+                            var StartHourDateTime = new DateTime(Model.Event.StartHour.Ticks);
+                            var FinishHourDateTime = new DateTime(Model.Event.FinishHour.Ticks);
+                            var StartHour12HoursFormated = StartHourDateTime.ToString("h:mm tt");
+                            var FinishHour12HoursFormated = FinishHourDateTime.ToString("h:mm tt");
+                            date = $"{day} de {StartHour12HoursFormated} a {FinishHour12HoursFormated}";
                         }
                         <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Fecha de la cita</label>
-                            <input value="@ContractDay" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <label class="control-label GymAdminFormLabel">Horario del evento</label>
+                            <input value="@date" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                     <!-- Right column -->
@@ -134,31 +150,23 @@
                             <input value="@Model.User.Document" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                         <!-- Field -->
-                        <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Descuento</label>
-                            <input value="@d" class="GymAdminFormInput" autocomplete="off" readonly />
-                        </div>
-                        <!-- Field -->
                         @{
-                            var ContractHour = Model.AccessDate.ToString("h:mm tt");
+                            var iday = Model.InscriptionDate.ToString(@"dd/MM/yyyy");
                         }
                         <div class="form-group GymAdminFormElement">
-                            <label class="control-label GymAdminFormLabel">Hora del contrato</label>
-                            <input value="@ContractHour" class="GymAdminFormInput" autocomplete="off" readonly />
+                            <label class="control-label GymAdminFormLabel">Fecha de inscripción</label>
+                            <input value="@iday" class="GymAdminFormInput" autocomplete="off" readonly />
                         </div>
                     </div>
                 </div>
                 <!-- Buttons and links -->
                 <div class="GymAdminRegisterFormButtons form-group mt-2">
-                    @if (Model.ServiceStatus == GymAdmin.Enums.ServiceStatus.Pending)
+                    @if (Model.EventStatus == GymAdmin.Enums.EventStatus.SignedUp)
                     {
-                        <button disabled class="GymAdminFormButton GymAdminEditButton">
-                            <a asp-action="SetServiceAsTaken" asp-route-id="@Model.Id" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton"><i class="fa-solid fa-circle-check"></i>Marcar como tomado</a>
-                        </button>
                         <button onclick="    return false;" data-id="@Model.Id" class="btn btn-outline-danger deleteItem GymAdminFormButton GymAdminDeleteButton" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa-solid fa-ban"></i>Marcar como cancelado</button>
                     }
                     <button disabled class="GymAdminFormButton">
-                        <a asp-action="Index" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Regresar</a>
+                        <a asp-action="ShowEventInscriptions" class="GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton">Regresar</a>
                     </button>
                 </div>
             </form>
@@ -166,7 +174,7 @@
     </div>
 </div>
 
-<partial name="_CancelDialog" />
+<partial name="_CancelEventDialog" />
 
 <!-- Scripts -->
 @section Scripts {
@@ -174,6 +182,6 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Contracts/CancelService/', false);
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Events/CancelInscription/', false);
     </script>
 }

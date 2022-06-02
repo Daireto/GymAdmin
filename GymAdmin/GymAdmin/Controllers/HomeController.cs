@@ -27,16 +27,49 @@ namespace GymAdmin.Controllers
             _flashMessage = flashMessage;
         }
 
-        //-------------------------------- TODOs ----------------------------------
-        //TODO: Dashboard and personalize navbar
-        //TODO: Make a service on Program (like the Seeder) with UpdateExpirationDatePlan method
-
-        //TODO: If your teammates don't, make GetPlan and EditActivePlan methods in PlanController and the views with modals
-
         //------------------------------------- Principal --------------------------------------------
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            ICollection<Event> events = await _context.Events
+                .Include(e => e.Director)
+                .ThenInclude(d => d.User)
+                .ToListAsync();
+
+            var MondayNumber = events.Where(e => e.Day == DayOfWeek.Monday).Count();
+            var TuesdayNumber = events.Where(e => e.Day == DayOfWeek.Tuesday).Count();
+            var WednesdayNumber = events.Where(e => e.Day == DayOfWeek.Wednesday).Count();
+            var ThursdayNumber = events.Where(e => e.Day == DayOfWeek.Thursday).Count();
+            var FridayNumber = events.Where(e => e.Day == DayOfWeek.Friday).Count();
+            var SaturdayNumber = events.Where(e => e.Day == DayOfWeek.Saturday).Count();
+            var SundayNumber = events.Where(e => e.Day == DayOfWeek.Sunday).Count();
+
+            List<int> list = new()
+            {
+                MondayNumber, TuesdayNumber, WednesdayNumber, ThursdayNumber, FridayNumber, SaturdayNumber, SundayNumber
+            };
+
+            int rows = list.Max();
+
+            HomeIndexEventsViewModel model = new()
+            {
+                MondayEvents = events.Where(e => e.Day == DayOfWeek.Monday).OrderBy(e => e.StartHour.Hours).ToList(),
+                TuesdayEvents = events.Where(e => e.Day == DayOfWeek.Tuesday).OrderBy(e => e.StartHour.Hours).ToList(),
+                WednesdayEvents = events.Where(e => e.Day == DayOfWeek.Wednesday).OrderBy(e => e.StartHour.Hours).ToList(),
+                ThursdayEvents = events.Where(e => e.Day == DayOfWeek.Thursday).OrderBy(e => e.StartHour.Hours).ToList(),
+                FridayEvents = events.Where(e => e.Day == DayOfWeek.Friday).OrderBy(e => e.StartHour.Hours).ToList(),
+                SaturdayEvents = events.Where(e => e.Day == DayOfWeek.Saturday).OrderBy(e => e.StartHour.Hours).ToList(),
+                SundayEvents = events.Where(e => e.Day == DayOfWeek.Sunday).OrderBy(e => e.StartHour.Hours).ToList(),
+                MondayNumber = rows - MondayNumber,
+                TuesdayNumber = rows - TuesdayNumber,
+                WednesdayNumber = rows - WednesdayNumber,
+                ThursdayNumber = rows - ThursdayNumber,
+                FridayNumber = rows - FridayNumber,
+                SaturdayNumber = rows - SaturdayNumber,
+                SundayNumber = rows - SundayNumber,
+                RowsNumber = list.Max()
+            };
+
+            return View(model);
         }
 
         public IActionResult Events()
@@ -81,12 +114,14 @@ namespace GymAdmin.Controllers
             return View();
         }
 
-        public async Task<IActionResult> MyEvents() //TODO: Make view
+        public async Task<IActionResult> MyEvents()
         {
             if (User.Identity.IsAuthenticated)
             {
                 return View(await _context.EventInscriptions.Where(ei => ei.User.Email == User.Identity.Name)
                     .Include(ei => ei.Event)
+                    .ThenInclude(e => e.Director)
+                    .ThenInclude(d => d.User)
                     .ToListAsync());
             }
 
@@ -126,8 +161,15 @@ namespace GymAdmin.Controllers
 
                 if (planInscription == null)
                 {
-                    _flashMessage.Danger("No tienes ningún plan activo, debes adquirir uno para acceder a un servicio", "Error:");
-                    return RedirectToAction("ViewUser", "Account");
+                    if (User.IsInRole("User"))
+                    {
+                        _flashMessage.Danger("No tienes ningún plan activo, debes adquirir uno para acceder a un servicio", "Error:");
+                        return RedirectToAction("ViewUser", "Account");
+                    }
+                    else
+                    {
+                        return RedirectToAction("ViewUser", "Account");
+                    }
                 }
 
                 TakeServiceViewModel model = new()
@@ -154,6 +196,7 @@ namespace GymAdmin.Controllers
             {
                 if (model.AccessHour == 0)
                 {
+                    model.Services = await _combosHelper.GetComboServicesAsync();
                     _flashMessage.Danger("Debe seleccionar un horario", "Error:");
                     return View(model);
                 }

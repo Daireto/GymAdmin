@@ -1,4 +1,77 @@
-﻿@{
-    ViewData["Title"] = "Get Plan";
+﻿@model GymAdmin.Models.GetPlanViewModel
+
+@{
+    ViewData["Title"] = "GetPlan";
     Layout = null;
 }
+
+<link rel="stylesheet" type="text/css" href="~/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Home/TakeService.css" />
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+
+<flash dismissable="true" />
+
+<!-- Edit form -->
+<div id="GymAdminPrincipalContainer">
+    <div class="row" id="GymAdminRegisterFormElementsContainer">
+        <div class="col-md-12" id="GymAdminFieldsContainer">
+            <form asp-action="GetPlan" asp-controller="Plan" id="GymAdminForm" onsubmit="return jQueryAjaxPost(this);">
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <!-- Left column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label asp-for="PlanId" class="control-label GymAdminFormLabel"></label>
+                            <select id="PlanId" asp-for="PlanId" asp-items="@Model.Plans" class="GymAdminFormCombobox"></select>
+                            <span asp-validation-for="PlanId" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Precio del plan</label>
+                            <input id="showPrice" value="" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                        <!-- Buttons and links -->
+                        <div class="GymAdminRegisterFormButtons form-group mt-2">
+                            <input type="submit" value="Suscribirse" class="GymAdminFormButton GymAdminFormElement GymAdminFormLabel GymAdminRegisterFormButton" />
+                        </div>
+                    </div>
+                    <!-- Right column -->
+                    <div class="col-md-6 GymAdminFormColumn">
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label id="DurationLabel" asp-for="Duration" class="control-label GymAdminFormLabel"></label>
+                            <select id="Duration" asp-for="Duration" class="GymAdminFormCombobox">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                            <span asp-validation-for="Duration" class="text-danger"></span>
+                        </div>
+                        <!-- Field -->
+                        <div class="form-group GymAdminFormElement">
+                            <label class="control-label GymAdminFormLabel">Precio final</label>
+                            <input id="totalPrice" value="" class="GymAdminFormInput" autocomplete="off" readonly />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

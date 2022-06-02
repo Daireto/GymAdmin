@@ -1,0 +1,114 @@
+﻿@model IEnumerable<GymAdmin.Data.Entities.EventInscription>
+
+@{
+    ViewData["Title"] = "EventInscriptions";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/tables.css" />
+<link rel="stylesheet" type="text/css" href="~/css/User/Users.css" />
+
+<style>
+    a .fa-users, a .fa-bell-concierge {
+        padding-right: 5px;
+    }
+
+    h3 .fa-calendar-check {
+        padding-right: 0;
+        padding-left: 10px;
+    }
+
+    #MyTable th, .td_option {
+        text-align: center;
+    }
+</style>
+
+<!-- EventInscriptions -->
+<div class="row">
+    <div class="col-md-12 GymAdminTableContainer">
+        <div class="panel panel-default">
+            <div class="panel-heading GymAdminTableHeading">
+                <h3 class="panel-title GymAdminTableTitle">Inscripciones a eventos<i class="fa-solid fa-calendar-check"></i></h3>
+            </div>
+            <div class="panel-body GymAdminTable">
+                <table class="table table-hover table-responsive table-striped" id="MyTable">
+                    <!-- Text -->
+                    <thead>
+                        <tr>
+                            <th>
+                                Evento
+                            </th>
+                            <th>
+                                Usuario
+                            </th>
+                            <th>
+                                Fecha de inscripción
+                            </th>
+                            <th>
+                                Estado
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <!-- Values -->
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="GymAdminTableTr">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Event.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User.Email)
+                                </td>
+                                @{
+                                    var idate = item.InscriptionDate.ToString(@"dd/MM/yyyy");
+                                }
+                                <td>
+                                    @idate
+                                </td>
+                                @{
+                                    var Status = "";
+                                    if (item.EventStatus == GymAdmin.Enums.EventStatus.SignedUp)
+                                    {
+                                        Status = "Inscrito";
+                                    }
+                                    if (item.EventStatus == GymAdmin.Enums.EventStatus.Cancelled)
+                                    {
+                                        Status = "Cancelado";
+                                    }
+                                }
+                                <td>
+                                    @Status
+                                </td>
+                                <td class="td_option">
+                                    <a asp-action="DetailsEventInscription" asp-route-id="@item.Id" class="btn btn-outline-info">Detalles</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#MyTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [15, 30, 60, 120, -1],
+                    [15, 30, 60, 120, "Todos"]
+                ]
+            });
+        });
+    </script>
+}

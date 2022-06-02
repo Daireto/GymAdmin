@@ -142,6 +142,10 @@ h3.PrincipalTitle {
     flex-wrap: wrap;
 }
 
+flash .alert{
+    margin: 10px 40px;
+}
+
 /* Events */
 .EventItemContainer {
     width: 300px;

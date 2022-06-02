@@ -14,7 +14,8 @@
     .fa-pen-to-square,
     .fa-lock,
     .fa-hand-fist,
-    .fa-bell-concierge {
+    .fa-bell-concierge,
+    .fa-calendar-check {
         padding-right: 5px;
     }
 </style>
@@ -94,11 +95,14 @@
                 </div>
                 <!-- Buttons and links -->
                 <div class="GymAdminRegisterFormButtons form-group mt-2">
-                    <button disabled class="GymAdminFormButton">
-                        <a asp-action="MyServices" asp-controller="Home" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink"><i class="fa-solid fa-bell-concierge"></i>Mis servicios</a>
-                    </button>
                     @if (!User.IsInRole("Admin"))
                     {
+                        <button disabled class="GymAdminFormButton">
+                            <a asp-action="MyServices" asp-controller="Home" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink"><i class="fa-solid fa-bell-concierge"></i>Mis servicios</a>
+                        </button>
+                        <button disabled class="GymAdminFormButton">
+                            <a asp-action="MyEvents" asp-controller="Home" class="GymAdminFormLink GymAdminFormLabel GymAdminRegisterFormLink"><i class="fa-solid fa-calendar-check"></i>Mis eventos</a>
+                        </button>
                         <button disabled class="GymAdminFormButton">
                             <a onclick="showInPopup('@Url.Action("MyPlan", "Home", new{}, Context.Request.Scheme)' , 'Detalles del plan')" class="GymAdminFormElement GymAdminFormLabel"><i class="fa-solid fa-hand-fist"></i>Mi plan</a>
                         </button>
@@ -120,4 +124,73 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script type="text/javascript">
+        $('.modal').on('shown.bs.modal', function() {
+            $("#DurationLabel").html("");
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetDurationLabel", "Plan")',
+                data: { planId: $("#PlanId").val() },
+                success: function(res) {
+                    $("#DurationLabel").html(res.value);
+                },
+                error: function(ex) {
+                    $("#DurationLabel").html("");
+                    alert('Failed to retrieve price.' + ex);
+                }
+            });
+            $("#showPrice").attr("readonly", false);
+            $("#totalPrice").attr("readonly", false);
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPrice", "Plan")',
+                data: { planId: $("#PlanId").val(), duration: $("#Duration").val() },
+                success: function(prices) {
+                    $("#showPrice").val(prices.priceValue);
+                    $("#totalPrice").val(prices.totalPriceValue);
+                },
+                error: function(ex) {
+                    $("#showPrice").attr("readonly", true);
+                    $("#totalPrice").attr("readonly", true);
+                    alert('Failed to retrieve price.' + ex);
+                }
+            });
+            $("#showPrice").attr("readonly", true);
+            $("#totalPrice").attr("readonly", true);
+            $("#PlanId, #Duration").change(function() {
+                $("#DurationLabel").html("");
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetDurationLabel", "Plan")',
+                    data: { planId: $("#PlanId").val() },
+                    success: function(res) {
+                        $("#DurationLabel").html(res.value);
+                    },
+                    error: function(ex) {
+                        $("#DurationLabel").html("");
+                        alert('Failed to retrieve price.' + ex);
+                    }
+                });
+                $("#showPrice").attr("readonly", false);
+                $("#totalPrice").attr("readonly", false);
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetPrice", "Plan")',
+                    data: { planId: $("#PlanId").val(), duration: $("#Duration").val() },
+                    success: function(prices) {
+                        $("#showPrice").val(prices.priceValue);
+                        $("#totalPrice").val(prices.totalPriceValue);
+                    },
+                    error: function(ex) {
+                        $("#showPrice").attr("readonly", true);
+                        $("#totalPrice").attr("readonly", true);
+                        alert('Failed to retrieve price.' + ex);
+                    }
+                });
+                $("#showPrice").attr("readonly", true);
+                $("#totalPrice").attr("readonly", true);
+                return false;
+            });
+        });
+    </script>
     }

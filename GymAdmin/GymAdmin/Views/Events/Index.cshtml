@@ -37,6 +37,7 @@
             </div>
         </aside>
         <section id="ViewEventsSection">
+            <flash dismissable="true" />
             <div class="FilteredEventsContainer">
                 @foreach (var eventItem in Model.Events)
                 {
@@ -110,4 +111,15 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script type="text/javascript">
+        $('.modal').on('shown.bs.modal', function() {
+            $("#ImagesCarousel").carousel();
+            $("#ImagesCarouselPrev").click(function() {
+                $("#ImagesCarousel").carousel("prev");
+            });
+            $("#ImagesCarouselNext").click(function() {
+                $("#ImagesCarousel").carousel("next");
+            });
+        });
+    </script>
     }

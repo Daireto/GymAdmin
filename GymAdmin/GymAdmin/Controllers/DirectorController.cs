@@ -68,7 +68,7 @@ namespace GymAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateDirector(AddUserViewModel model)
         {
-            if (await _context.Directors.Include(p => p.User).FirstAsync(p => p.User.UserName == model.Username) != null)
+            if (await _context.Directors.Include(p => p.User).FirstOrDefaultAsync(p => p.User.UserName == model.Username) != null)
             {
                 _flashMessage.Danger("Este usuario ya es un director", "Error:");
                 return View(model);

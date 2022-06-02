@@ -1,4 +1,6 @@
-﻿@{
+﻿@model GymAdmin.Models.HomeIndexEventsViewModel
+
+@{
     Layout = null;
 }
 
@@ -39,7 +41,7 @@
 </head>
 
 <body>
-<partial name="_BusyIndicatorPartial" />
+    <partial name="_BusyIndicatorPartial" />
     <!-- Position absolute elements -->
     <div id="Unete">
         @if (User.Identity.IsAuthenticated)
@@ -78,6 +80,7 @@
                                 <a class="admin-link" asp-area="" asp-controller="Service" asp-action="ShowProfessionals">Profesionales</a>
                                 <a class="admin-link" asp-area="" asp-controller="Director" asp-action="Index">Directores</a>
                                 <a class="admin-link" asp-area="" asp-controller="Contracts" asp-action="Index">Contrataciones</a>
+                                <a class="admin-link" asp-area="" asp-controller="Events" asp-action="ShowEventInscriptions">Inscripciones</a>
                                 <a class="admin-link" asp-area="" asp-controller="Plan" asp-action="Index">Suscripciones</a>
                                 <a class="admin-link" asp-area="" asp-controller="Attendance" asp-action="Index">Asistencias</a>
                             </div>
@@ -201,7 +204,7 @@
                 </div>
                 <div class="plan-price">
                     <p>DESDE</p>
-                    <h3>$ 49.000</h3>
+                    <h3>$ 49.900</h3>
                     <hr />
                 </div>
                 <div class="plan-description">
@@ -220,67 +223,122 @@
     <section id="classes">
         <div class="container">
             <h2>EVENTOS GRUPALES</h2>
-            <table>
-                <tr>
-                    <th>DÍAS</th>
-                    <th>LUNES</th>
-                    <th>MARTES</th>
-                    <th>MIÉRCOLES</th>
-                    <th>JUEVES</th>
-                    <th>VIERNES</th>
-                </tr>
-                <tr class="row1">
-                    <td>09:00 - 10:00</td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <p>Yoga</p>
-                        <p>Michael Lewis</p>
-                    </td>
-                    <td>
-                        <p>Cardio</p>
-                        <p>Donald Cox</p>
-                    </td>
-                    <td>
-                        <p>Body Balance</p>
-                        <p>Gloria Parker</p>
-                    </td>
-                </tr>
-                <tr class="row2">
-                    <td>10:00 - 12:00</td>
-                    <td>
-                        <p>Cardio</p>
-                        <p>Donald Cox</p>
-                    </td>
-                    <td>
-                        <p>Body Balance</p>
-                        <p>Gloria Parker</p>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <p>Yoga</p>
-                        <p>Michael Lewis</p>
-                    </td>
-                </tr>
-                <tr class="row3">
-                    <td>12:00 - 02:00</td>
-                    <td>
-                        <p>Body Balance</p>
-                        <p>Gloria Parker</p>
-                    </td>
-                    <td>
-                        <p>Cardio</p>
-                        <p>Donald Cox</p>
-                    </td>
-                    <td></td>
-                    <td>
-                        <p>Yoga</p>
-                        <p>Michael Lewis</p>
-                    </td>
-                    <td></td>
-                </tr>
-            </table>
+            <div class="EventsTable">
+                <!-- Monday -->
+                <div class="MondayEvents DayEventDiv">
+                    <div class="TitleCell">
+                        <p class="TitleText">LUNES</p>
+                    </div>
+                    @foreach (var item in Model.MondayEvents)
+                    {
+                        <div class="cell">
+                            <p class="director">@item.Director.User.FullName</p>
+                            <p class="eventname">@item.Name</p>
+                        </div>
+                    }
+                    @for (int i = 0; i < Model.MondayNumber; i++)
+                    {
+                        <div class="cell noeventcell">
+                            <p class="noevent">Pronto</p>
+                        </div>
+                    }
+                </div>
+                <!-- Tuesday -->
+                <div class="TuesdayEvents DayEventDiv">
+                    <div class="TitleCell">
+                        <p class="TitleText">MARTES</p>
+                    </div>
+                    @foreach (var item in Model.TuesdayEvents)
+                    {
+                        <div class="cell">
+                            <p class="director">@item.Director.User.FullName</p>
+                            <p class="eventname">@item.Name</p>
+                        </div>
+                    }
+                    @for (int i = 0; i < Model.TuesdayNumber; i++)
+                    {
+                        <div class="cell noeventcell">
+                            <p class="noevent">Pronto</p>
+                        </div>
+                    }
+                </div>
+                <!-- Wednesday -->
+                <div class="WednesdayEvents DayEventDiv">
+                    <div class="TitleCell">
+                        <p class="TitleText">MIÉRCOLES</p>
+                    </div>
+                    @foreach (var item in Model.WednesdayEvents)
+                    {
+                        <div class="cell">
+                            <p class="director">@item.Director.User.FullName</p>
+                            <p class="eventname">@item.Name</p>
+                        </div>
+                    }
+                    @for (int i = 0; i < Model.WednesdayNumber; i++)
+                    {
+                        <div class="cell noeventcell">
+                            <p class="noevent">Pronto</p>
+                        </div>
+                    }
+                </div>
+                <!-- Thursday -->
+                <div class="ThursdayEvents DayEventDiv">
+                    <div class="TitleCell">
+                        <p class="TitleText">JUEVES</p>
+                    </div>
+                    @foreach (var item in Model.ThursdayEvents)
+                    {
+                        <div class="cell">
+                            <p class="director">@item.Director.User.FullName</p>
+                            <p class="eventname">@item.Name</p>
+                        </div>
+                    }
+                    @for (int i = 0; i < Model.ThursdayNumber; i++)
+                    {
+                        <div class="cell noeventcell">
+                            <p class="noevent">Pronto</p>
+                        </div>
+                    }
+                </div>
+                <!-- Friday -->
+                <div class="FridayEvents DayEventDiv">
+                    <div class="TitleCell">
+                        <p class="TitleText">VIERNES</p>
+                    </div>
+                    @foreach (var item in Model.FridayEvents)
+                    {
+                        <div class="cell">
+                            <p class="director">@item.Director.User.FullName</p>
+                            <p class="eventname">@item.Name</p>
+                        </div>
+                    }
+                    @for (int i = 0; i < Model.FridayNumber; i++)
+                    {
+                        <div class="cell noeventcell">
+                            <p class="noevent">Pronto</p>
+                        </div>
+                    }
+                </div>
+                <!-- Saturday -->
+                <div class="SaturdayEvents DayEventDiv">
+                    <div class="TitleCell">
+                        <p class="TitleText">SÁBADO</p>
+                    </div>
+                    @foreach (var item in Model.SaturdayEvents)
+                    {
+                        <div class="cell">
+                            <p class="director">@item.Director.User.FullName</p>
+                            <p class="eventname">@item.Name</p>
+                        </div>
+                    }
+                    @for (int i = 0; i < Model.SaturdayNumber; i++)
+                    {
+                        <div class="cell noeventcell">
+                            <p class="noevent">Pronto</p>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     </section>
 
@@ -291,32 +349,35 @@
             <div class="events-gallery-images">
                 <!-- Image -->
                 <div id="photo1" class="photo">
-                    <img class="img-hover" src="~/images/home/events/events-cardio1.jpg" alt="" />
-                    <div class="dark-backdrop-hidden">
-                        <p>Cardio</p>
-                    </div>
-                </div>
-                <!-- Image -->
-                <div id="photo2" class="photo">
                     <img class="img-hover" src="~/images/home/events/events-women1.jpg" alt="" />
                     <div class="dark-backdrop-hidden">
                         <p>Body Balance</p>
                     </div>
                 </div>
                 <!-- Image -->
-                <div id="photo3" class="photo">
-                    <img class="img-hover" src="~/images/home/events/events-yoga1.jpg" alt="" />
+                <div id="photo2" class="photo">
+                    <img class="img-hover" src="~/images/home/events/events-jump-header.jpg" alt="" />
                     <div class="dark-backdrop-hidden">
-                        <p>Yoga</p>
+                        <p>Salto alto</p>
                     </div>
                 </div>
-                <!-- Links -->
-                <div class="events-gallery-links">
-                    <div class="flex-links">
-                        <a asp-area="" asp-controller="Home" asp-action="Events">Ver eventos grupales</a>
-                        <a href="#">Quiero inscribirme a un evento</a>
+                <!-- Image -->
+                <div id="photo3" class="photo">
+                    <img class="img-hover" src="~/images/home/events/events-danceinpairs-header.jpg" alt="" />
+                    <div class="dark-backdrop-hidden">
+                        <p>Folclor en pareja</p>
                     </div>
                 </div>
+                <!-- Image -->
+                <div id="photo4" class="photo">
+                    <img class="img-hover" src="~/images/home/events/events-children-header.jpg" alt="" />
+                    <div class="dark-backdrop-hidden">
+                        <p>Breakdance infantil</p>
+                    </div>
+                </div>
+            </div>
+            <div class="EventButton">
+                <a asp-area="" asp-controller="Events" asp-action="Index">Ver todos los eventos</a>
             </div>
         </div>
     </section>

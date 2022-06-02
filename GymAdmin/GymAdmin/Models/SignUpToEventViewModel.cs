@@ -1,4 +1,5 @@
-﻿using GymAdmin.Enums;
+﻿using GymAdmin.Data.Entities;
+using GymAdmin.Enums;
 
 namespace GymAdmin.Models
 {
@@ -12,5 +13,6 @@ namespace GymAdmin.Models
         public TimeSpan FinishHour { get; set; }
         public EventType EventType { get; set; }
         public string Description { get; set; }
+        public ICollection<EventImage> EventImages { get; set; }
     }
 }

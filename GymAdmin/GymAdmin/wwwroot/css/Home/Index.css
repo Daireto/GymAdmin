@@ -125,9 +125,9 @@ header {
                     border-bottom: 1px solid #f2c60d;
                 }
 
-header a{
-    font-weight: 400;
-}
+    header a {
+        font-weight: 400;
+    }
 
 .header-title {
     text-align: center;
@@ -182,7 +182,7 @@ header a{
             margin-left: 10px;
         }
 
-.dropdown{
+.dropdown {
     display: block;
     padding: 16px 0;
 }
@@ -391,7 +391,7 @@ h2.plans-title span {
         text-align: center;
     }
 
-table {
+/*table {
     width: 100%;
     text-align: center;
     padding-bottom: 30px;
@@ -418,6 +418,67 @@ tr td:first-child {
 
 td p:first-child {
     font-weight: bold;
+}*/
+
+/* New Events Styles */
+.EventsTable {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.DayEventDiv {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.TitleCell {
+    font-size: 21px;
+    font-style: italic;
+    font-weight: 600;
+    height: 55px;
+    margin: 1px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .TitleCell .TitleText {
+        margin: 0 !important;
+        width: 100%;
+        color: rgb(29, 29, 29);
+    }
+
+.cell {
+    height: 100px;
+    margin: 1px;
+}
+
+    .cell:nth-child(odd) {
+        background-color: white;
+    }
+
+    .cell:nth-child(even) {
+        background-color: #E0E0E0;
+    }
+
+.director {
+    color: rgb(29, 29, 29);
+    font-weight: bold;
+}
+
+.noeventcell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.noevent {
+    margin: 0 !important;
+    width: 100%;
+    color: darkred;
 }
 
 /* Gallery */
@@ -503,7 +564,7 @@ td p:first-child {
     margin: 0.3% 0.3% 0 0;
 }
 
-.events-gallery-links {
+#photo4 {
     margin: 0.3% 0 0 0.3%;
 }
 
@@ -530,6 +591,27 @@ td p:first-child {
     transform: scale(1.2);
     transition: transform 0.5s ease-in-out;
 }
+
+.EventButton {
+    margin: 20px auto 40px auto;
+}
+
+    .EventButton a {
+        background-color: transparent;
+        border: 1px solid #f2c60d;
+        border-radius: 10px;
+        color: #f2c60d;
+        font-size: 16px;
+        font-weight: 400;
+        padding: 15px 20px;
+        text-decoration: none;
+        transition: all .2s ease-out;
+    }
+
+        .EventButton a:hover {
+            background-color: #f2c60d;
+            color: black;
+        }
 
 /* Services */
 #services {
