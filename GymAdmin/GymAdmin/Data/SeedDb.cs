@@ -531,28 +531,53 @@ namespace GymAdmin.Data
             {
                 List<string> EmailsList = new()
                 {
+                    "victoria@yopmail.com",
                     "millie@yopmail.com",
                     "brett@yopmail.com",
                     "brian@yopmail.com",
+                    "vanessa@yopmail.com",
+                    "rihanna@yopmail.com",
                     "lamar@yopmail.com",
                     "peyton@yopmail.com",
+                    "madison@yopmail.com",
+                    "aliya@yopmail.com",
+                    "mariana@yopmail.com",
+                    "greeicy@yopmail.com",
+                    "chris@yopmail.com",
                 };
 
                 var Events = await _context.Events.ToListAsync();
 
-                foreach(Event objectEvent in Events)
+                bool exit;
+                foreach (string email in EmailsList)
                 {
-                    foreach(string email in EmailsList)
+                    for (int i = 0; i < 5; i++)
                     {
-                        User user = await _userHelper.GetUserAsync(email);
-                        EventInscription eventInscription = new()
+                        exit = false;
+                        while (exit == false)
                         {
-                            Event = objectEvent,
-                            User = user,
-                            EventStatus = EventStatus.SignedUp,
-                            InscriptionDate = DateTime.Now,
-                        };
-                        _context.Add(eventInscription);
+                            var random = new Random();
+                            int index = random.Next(Events.Count);
+
+                            User user = await _userHelper.GetUserAsync(email);
+
+                            var ei = await _context.EventInscriptions
+                                .Where(ei => ei.User == user && ei.Event == Events[index] && ei.EventStatus == EventStatus.SignedUp)
+                                .FirstOrDefaultAsync();
+
+                            if (ei == null)
+                            {
+                                EventInscription eventInscription = new()
+                                {
+                                    Event = Events[index],
+                                    User = user,
+                                    EventStatus = EventStatus.SignedUp,
+                                    InscriptionDate = DateTime.Now,
+                                };
+                                _context.Add(eventInscription);
+                                exit = true;
+                            }
+                        }
                     }
                 }
             }
@@ -891,11 +916,19 @@ namespace GymAdmin.Data
 
                 List<string> EmailsList = new()
                 {
+                    "victoria@yopmail.com",
                     "millie@yopmail.com",
                     "brett@yopmail.com",
                     "brian@yopmail.com",
+                    "vanessa@yopmail.com",
+                    "rihanna@yopmail.com",
                     "lamar@yopmail.com",
                     "peyton@yopmail.com",
+                    "madison@yopmail.com",
+                    "aliya@yopmail.com",
+                    "mariana@yopmail.com",
+                    "greeicy@yopmail.com",
+                    "chris@yopmail.com",
                 };
 
                 int randomHour = 13;
@@ -905,7 +938,7 @@ namespace GymAdmin.Data
                 Enums.ServiceStatus status = Enums.ServiceStatus.Pending;
                 foreach (string email in EmailsList)
                 {
-                    foreach (Service service in ServicesList)
+                    for (int i = 0; i < 5; i++)
                     {
                         notExist = false;
                         while (notExist == false)
@@ -917,11 +950,14 @@ namespace GymAdmin.Data
                             }
                             randomDay = new Random().Next(1, 12);
 
+                            var random = new Random();
+                            int index = random.Next(ServicesList.Count);
+
                             DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour);
 
                             var serviceAccesses = await _context.ServiceAccesses
                                 .Where(sa =>
-                                    sa.Service.Id == service.Id &&
+                                    sa.Service.Id == ServicesList[index].Id &&
                                     sa.AccessDate == searchDate &&
                                     sa.ServiceStatus == status)
                                 .ToListAsync();
@@ -932,7 +968,7 @@ namespace GymAdmin.Data
                                     .Include(p => p.Service)
                                     .Include(p => p.ProfessionalSchedules)
                                     .ThenInclude(ps => ps.Schedule)
-                                    .Where(p => p.Service.Id == service.Id)
+                                    .Where(p => p.Service.Id == ServicesList[index].Id)
                                     .ToListAsync();
 
                                 bool result = professionals.Any(p => p.ProfessionalSchedules.Any(ps =>
@@ -953,11 +989,11 @@ namespace GymAdmin.Data
                                     _context.Add(new ServiceAccess
                                     {
                                         User = user,
-                                        Service = service,
+                                        Service = ServicesList[index],
                                         AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
                                         ServiceStatus = status,
                                         Discount = DiscountValues.GetDiscountValue(planInscription.Plan.PlanType),
-                                        TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue(planInscription.Plan.PlanType)),
+                                        TotalPrice = ServicesList[index].Price - (ServicesList[index].Price * (decimal)DiscountValues.GetDiscountValue(planInscription.Plan.PlanType)),
                                     });
                                     await _context.SaveChangesAsync();
                                     notExist = true;
@@ -970,7 +1006,7 @@ namespace GymAdmin.Data
                 status = Enums.ServiceStatus.Taken;
                 foreach (string email in EmailsList)
                 {
-                    foreach (Service service in ServicesList)
+                    for (int i = 0; i < 5; i++)
                     {
                         notExist = false;
                         while (notExist == false)
@@ -982,11 +1018,14 @@ namespace GymAdmin.Data
                             }
                             randomDay = new Random().Next(-12, -1);
 
+                            var random = new Random();
+                            int index = random.Next(ServicesList.Count);
+
                             DateTime searchDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour);
 
                             var serviceAccesses = await _context.ServiceAccesses
                                 .Where(sa =>
-                                    sa.Service.Id == service.Id &&
+                                    sa.Service.Id == ServicesList[index].Id &&
                                     sa.AccessDate == searchDate &&
                                     sa.ServiceStatus == status)
                                 .ToListAsync();
@@ -997,7 +1036,7 @@ namespace GymAdmin.Data
                                     .Include(p => p.Service)
                                     .Include(p => p.ProfessionalSchedules)
                                     .ThenInclude(ps => ps.Schedule)
-                                    .Where(p => p.Service.Id == service.Id)
+                                    .Where(p => p.Service.Id == ServicesList[index].Id)
                                     .ToListAsync();
 
                                 bool result = professionals.Any(p => p.ProfessionalSchedules.Any(ps =>
@@ -1018,11 +1057,11 @@ namespace GymAdmin.Data
                                     _context.Add(new ServiceAccess
                                     {
                                         User = user,
-                                        Service = service,
+                                        Service = ServicesList[index],
                                         AccessDate = DateTime.Today.AddDays(randomDay).AddHours(randomHour),
                                         ServiceStatus = status,
                                         Discount = DiscountValues.GetDiscountValue(planInscription.Plan.PlanType),
-                                        TotalPrice = service.Price - (service.Price * (decimal)DiscountValues.GetDiscountValue(planInscription.Plan.PlanType)),
+                                        TotalPrice = ServicesList[index].Price - (ServicesList[index].Price * (decimal)DiscountValues.GetDiscountValue(planInscription.Plan.PlanType)),
                                     });
                                     await _context.SaveChangesAsync();
                                     notExist = true;
@@ -1112,84 +1151,59 @@ namespace GymAdmin.Data
         {
             if (!_context.PlanInscriptions.Any())
             {
-                User user = await _userHelper.GetUserAsync("brett@yopmail.com");
-                User user2 = await _userHelper.GetUserAsync("brian@yopmail.com");
-                User user3 = await _userHelper.GetUserAsync("millie@yopmail.com");
-                User user4 = await _userHelper.GetUserAsync("lamar@yopmail.com");
-                User user5 = await _userHelper.GetUserAsync("peyton@yopmail.com");
-                Plan plan = await _context.Plans.FindAsync(1); //TicketHolder
-                Plan plan2 = await _context.Plans.FindAsync(2); //Regular
-                Plan plan3 = await _context.Plans.FindAsync(3); //Black
-                PlanInscription pl1 = new()
+                List<string> EmailsList = new()
                 {
-                    InscriptionDate = DateTime.Today,
-                    ActivationDate = DateTime.Today,
-                    User = user,
-                    Plan = plan,
-                    Duration = 5,
-                    ExpirationDate = DateTime.Today.AddDays(5),
-                    PlanStatus = PlanStatus.Active,
-                    TotalPrice = plan.Price * 5,
-                    RemainingDays = 5,
-                    Discount = DiscountValues.GetDiscountValue(plan.PlanType)
+                    "victoria@yopmail.com",
+                    "millie@yopmail.com",
+                    "brett@yopmail.com",
+                    "brian@yopmail.com",
+                    "vanessa@yopmail.com",
+                    "rihanna@yopmail.com",
+                    "lamar@yopmail.com",
+                    "peyton@yopmail.com",
+                    "madison@yopmail.com",
+                    "aliya@yopmail.com",
+                    "mariana@yopmail.com",
+                    "greeicy@yopmail.com",
+                    "chris@yopmail.com",
                 };
-                PlanInscription pl2 = new()
+
+                var plans = await _context.Plans.ToListAsync();
+
+                foreach (string email in EmailsList)
                 {
-                    InscriptionDate = DateTime.Today,
-                    ActivationDate = DateTime.Today,
-                    User = user2,
-                    Plan = plan2,
-                    Duration = 30,
-                    ExpirationDate = DateTime.Today.AddDays(30),
-                    PlanStatus = PlanStatus.Active,
-                    TotalPrice = plan2.Price,
-                    RemainingDays = 30,
-                    Discount = 0
-                };
-                PlanInscription pl3 = new()
-                {
-                    InscriptionDate = DateTime.Today,
-                    ActivationDate = DateTime.Today,
-                    User = user3,
-                    Plan = plan3,
-                    Duration = 30,
-                    ExpirationDate = DateTime.Today.AddDays(30),
-                    PlanStatus = PlanStatus.Active,
-                    TotalPrice = plan3.Price,
-                    RemainingDays = 30,
-                    Discount = 0
-                };
-                PlanInscription pl4 = new()
-                {
-                    InscriptionDate = DateTime.Today,
-                    ActivationDate = DateTime.Today,
-                    User = user4,
-                    Plan = plan2,
-                    Duration = 30,
-                    ExpirationDate = DateTime.Today.AddDays(30),
-                    PlanStatus = PlanStatus.Active,
-                    TotalPrice = plan2.Price,
-                    RemainingDays = 30,
-                    Discount = 0
-                };
-                PlanInscription pl5 = new()
-                {
-                    InscriptionDate = DateTime.Today,
-                    ActivationDate = DateTime.Today,
-                    User = user5,
-                    Plan = plan3,
-                    Duration = 30,
-                    ExpirationDate = DateTime.Today.AddDays(30),
-                    PlanStatus = PlanStatus.Active,
-                    TotalPrice = plan3.Price,
-                    RemainingDays = 30,
-                    Discount = 0
-                };
-                _context.Add(pl1);
-                _context.Add(pl2);
-                _context.Add(pl3);
-                _context.Add(pl4);
-                _context.Add(pl5);
+                    var random = new Random();
+                    int index = random.Next(plans.Count);
+
+                    User user = await _userHelper.GetUserAsync(email);
+
+                    int Duration = random.Next(12);
+
+                    PlanInscription pl = new()
+                    {
+                        InscriptionDate = DateTime.Today,
+                        ActivationDate = DateTime.Today,
+                        User = user,
+                        Plan = plans[index],
+                        PlanStatus = PlanStatus.Active,
+                        Discount = DiscountValues.GetDiscountValue(plans[index].PlanType)
+                    };
+
+                    if (plans[index].PlanType == PlanType.TicketHolder)
+                    {
+                        pl.Duration = Duration;
+                        pl.ExpirationDate = DateTime.Today.AddDays(90);
+                        pl.RemainingDays = Duration;
+                    }
+                    else
+                    {
+                        pl.Duration = Duration * 30;
+                        pl.ExpirationDate = DateTime.Today.AddDays(5);
+                        pl.RemainingDays = Duration * 30;
+                    }
+                    pl.TotalPrice = plans[index].Price * Duration;
+                    _context.Add(pl);
+                }
                 await _context.SaveChangesAsync();
             }
         }

@@ -94,6 +94,10 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     padding: 0 20px;
 }
 
+header a {
+    font-weight: 400;
+}
+
 .left-nav {
     display: flex;
     align-items: center;
@@ -122,25 +126,26 @@ input[type="time"]::-webkit-calendar-picker-indicator {
                 border-bottom: 1px solid #f2c60d;
             }
 
-    .left-nav span {
-        color: white !important;
-        transition: all .2s ease-out !important;
-    }
-
-        .left-nav span:hover {
-            color: #f2c60d !important;
-        }
-
-        .left-nav span.admin-link {
+        .left-nav a.admin-link-dashboard {
             position: relative;
             top: 2px !important;
             padding-bottom: 5px;
             margin-left: 10px;
         }
 
-header a {
-    font-weight: 400;
-}
+    .left-nav span {
+        text-decoration: none !important;
+        color: white !important;
+        transition: all .2s ease-out !important;
+    }
+
+        .left-nav span.admin-link {
+            position: relative;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            width: 100%;
+            text-align: center;
+        }
 
 .dropdown-gymadmin {
     display: block;
@@ -151,9 +156,44 @@ header a {
     box-sizing: content-box !important;
     visibility: hidden;
     position: absolute;
-    background-color: rgba(0,0,0);
+    background-color: rgba(0,0,0,0.8);
     opacity: 0;
-    min-width: 160px !important;
+    min-width: 160px;
+    padding: 0 0 20px 0;
+    margin-top: 16px;
+    z-index: 1;
+    transition: visibility .2s ease-out !important;
+    transition: opacity .2s ease-out !important;
+    display: flex;
+    flex-direction: column;
+}
+
+    .dropdown-content-gymadmin span {
+        padding: 0 !important;
+        margin: 0 !important;
+        display: inline-block;
+    }
+
+.dropdown-gymadmin:hover .dropdown-content-gymadmin {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-systemdata-gymadmin {
+    display: block;
+    padding: 16px 0;
+    width: 165px;
+}
+
+.dropdown-systemdata-content-gymadmin {
+    box-sizing: border-box !important;
+    visibility: hidden;
+    position: absolute;
+    left: 165px;
+    top: -16px;
+    background-color: rgba(0,0,0,0.8);
+    opacity: 0;
+    min-width: 160px;
     padding: 6px 16px 20px 16px;
     margin-top: 16px;
     z-index: 1;
@@ -161,15 +201,51 @@ header a {
     transition: opacity .2s ease-out !important;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.dropdown-gymadmin:hover .dropdown-content-gymadmin {
-    opacity: 0.8;
+.dropdown-systemdata-gymadmin:hover .dropdown-systemdata-content-gymadmin {
+    opacity: 1;
     visibility: visible;
 }
 
-#UserOption{
+.dropdown-operations-gymadmin {
+    display: block;
+    padding: 16px 0;
+    width: 165px;
+}
+
+.dropdown-operations-content-gymadmin {
+    box-sizing: content-box !important;
+    visibility: hidden;
+    position: absolute;
+    left: 165px;
+    top: -16px;
+    background-color: rgba(0,0,0,0.8);
+    opacity: 0;
+    min-width: 160px;
+    padding: 6px 16px 20px 16px;
+    margin-top: 16px;
+    z-index: 1;
+    transition: visibility .2s ease-out !important;
+    transition: opacity .2s ease-out !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-operations-gymadmin:hover .dropdown-operations-content-gymadmin {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-systemdata-gymadmin:hover span.admin-link {
+    color: #f2c60d !important;
+}
+
+.dropdown-operations-gymadmin:hover span.admin-link {
+    color: #f2c60d !important;
+}
+
+#UserOption {
     position: relative;
 }
 
@@ -213,6 +289,6 @@ header a {
 }
 
 /* Corrections */
-tbody tr{
+tbody tr {
     background-color: transparent !important;
 }

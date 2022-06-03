@@ -1,0 +1,150 @@
+﻿@model GymAdmin.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Administración";
+}
+
+<!-- GymAdmin style -->
+<link rel="stylesheet" type="text/css" href="~/css/Dashboard/DashboardStyles.css" />
+
+<!-- Dashboard view -->
+<div class="dashboard-container">
+    <div class="AdminPanel">
+        <aside id="ViewOptionsAside">
+            <div class="OptionsContainer">
+                <h3 class="PrincipalTitle">ADMINISTRACIÓN</h3>
+                <!-- Links -->
+                <div class="LinksContainer">
+                    <div class="CrudLinks">
+                        <h4 class="LinksTitle">Datos del sistema</h4>
+                        <div class="Links">
+                            <a class="Link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
+                            <a class="Link" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
+                            <a class="Link" asp-area="" asp-controller="Service" asp-action="ShowProfessionals">Profesionales</a>
+                            <a class="Link" asp-area="" asp-controller="Director" asp-action="Index">Directores</a>
+                        </div>
+                    </div>
+                    <div class="OperationLinks">
+                        <h4 class="LinksTitle">Operaciones</h4>
+                        <div class="Links">
+                            <a class="Link" asp-area="" asp-controller="Contracts" asp-action="Index">Contrataciones</a>
+                            <a class="Link" asp-area="" asp-controller="Events" asp-action="ShowEventInscriptions">Inscripciones</a>
+                            <a class="Link" asp-area="" asp-controller="Plan" asp-action="Index">Suscripciones</a>
+                            <a class="Link" asp-area="" asp-controller="Attendance" asp-action="Index">Asistencias</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <section id="ViewStatisticsSection">
+            <div class="StatisticsContainer">
+                <div class="PlanStatisticsContainer">
+                    <div class="chart" id="piecontainer"></div>
+                </div>
+                <div class="UserStatisticsContainer">
+                    <div class="StatisticsRow">
+                        <div class="Users">
+                            <span class="NumberTitle">Usuarios</span>
+                            <span class="Number">@Model.Users</span>
+                        </div>
+                        <div class="Professionals">
+                            <span class="NumberTitle">Profesionales</span>
+                            <span class="Number">@Model.Professionals</span>
+                        </div>
+                        <div class="Directors">
+                            <span class="NumberTitle">Directores</span>
+                            <span class="Number">@Model.Directors</span>
+                        </div>
+                    </div>
+                    <div class="StatisticsRow">
+                        <div class="PendingContracts">
+                            <span class="NumberTitle">Citas pendientes</span>
+                            <span class="Number">@Model.PendingContracts</span>
+                        </div>
+                    </div>
+                    @{
+                        var IncomeBySuscriptions = $"{Model.IncomeBySuscriptions:C0}";
+                        var IncomeByContracts = $"{Model.IncomeByContracts:C0}";
+                        var TotalIncome = $"{Model.TotalIncome:C0}";
+                    }
+                    <div class="StatisticsRow">
+                        <div class="SuscriptionsIncome">
+                            <span class="NumberTitle">Ingresos por suscripciones</span>
+                            <span class="Number">@IncomeBySuscriptions</span>
+                        </div>
+                        <div class="ContractsIncome">
+                            <span class="NumberTitle">Ingresos por contrataciones</span>
+                            <span class="Number">@IncomeByContracts</span>
+                        </div>
+                        <div class="TotalIncome">
+                            <span class="NumberTitle">Ingresos totales del gimnasio</span>
+                            <span class="Number">@TotalIncome</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ServicesStatisticsContainer">
+                    <div class="chart" id="barcontainer"></div>
+                </div>
+                <div class="EventsStatisticsContainer">
+                    <div class="chart" id="eventsbarcontainer"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <script src="~/js/charts.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                url: '@Url.Action("DataPieChart")',
+                success: function(data) {
+                    console.log(data);
+                    PieChart(data);
+                },
+                error: function(ex) {
+                    alert("Failed to retrieve the data: ", ex)
+                }
+            });
+            $.ajax({
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                url: '@Url.Action("DataBarChart")',
+                success: function(data) {
+                    console.log(data);
+                    BarChart(data);
+                },
+                error: function(ex) {
+                    alert("Failed to retrieve the data: ", ex)
+                }
+            });
+            $.ajax({
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                url: '@Url.Action("EventsDataBarChart")',
+                success: function(data) {
+                    console.log(data);
+                    EventsBarChart(data);
+                },
+                error: function(ex) {
+                    alert("Failed to retrieve the data: ", ex)
+                }
+            });
+        });
+    </script>
+}

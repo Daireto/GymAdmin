@@ -22,5 +22,7 @@ namespace GymAdmin.Data.Entities
         public PlanType PlanType { get; set; }
 
         public ICollection <PlanInscription> PlansInscriptions { get; set;}
+
+        public int PlansInscriptionsNumber => PlansInscriptions == null ? 0 : PlansInscriptions.Count;
     }
 }

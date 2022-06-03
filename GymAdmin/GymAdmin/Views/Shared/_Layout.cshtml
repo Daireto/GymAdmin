@@ -57,9 +57,9 @@
                         <!-- Header brand -->
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
-                            <!-- Admin options -->
+                            @*<!-- Admin options -->
                             <div class="dropdown-gymadmin">
-                                <span class="admin-link">Administración</span>
+                                <a class="admin-link-dashboard" asp-area="" asp-controller="Dashboard" asp-action="Index">Administración</a>
                                 <div class="dropdown-content-gymadmin">
                                     <a class="admin-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
                                     <a class="admin-link" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
@@ -70,7 +70,31 @@
                                     <a class="admin-link" asp-area="" asp-controller="Plan" asp-action="Index">Suscripciones</a>
                                     <a class="admin-link" asp-area="" asp-controller="Attendance" asp-action="Index">Asistencias</a>
                                 </div>
+                            </div>*@
+                            <!-- Admin options -->
+                        <div class="dropdown-gymadmin">
+                            <a class="admin-link-dashboard" asp-area="" asp-controller="Dashboard" asp-action="Index">Administración</a>
+                            <div class="dropdown-content-gymadmin">
+                                <div class="dropdown-systemdata-gymadmin">
+                                    <span class="admin-link">Datos del sistema</span>
+                                    <div class="dropdown-systemdata-content-gymadmin">
+                                        <a class="admin-link" asp-area="" asp-controller="User" asp-action="Index">Usuarios</a>
+                                        <a class="admin-link" asp-area="" asp-controller="Service" asp-action="Index">Servicios</a>
+                                        <a class="admin-link" asp-area="" asp-controller="Service" asp-action="ShowProfessionals">Profesionales</a>
+                                        <a class="admin-link" asp-area="" asp-controller="Director" asp-action="Index">Directores</a>
+                                    </div>
+                                </div>
+                                <div class="dropdown-operations-gymadmin">
+                                    <span class="admin-link">Operaciones</span>
+                                    <div class="dropdown-operations-content-gymadmin">
+                                        <a class="admin-link" asp-area="" asp-controller="Contracts" asp-action="Index">Contrataciones</a>
+                                        <a class="admin-link" asp-area="" asp-controller="Events" asp-action="ShowEventInscriptions">Inscripciones</a>
+                                        <a class="admin-link" asp-area="" asp-controller="Plan" asp-action="Index">Suscripciones</a>
+                                        <a class="admin-link" asp-area="" asp-controller="Attendance" asp-action="Index">Asistencias</a>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
                         }
                     </div>
                     <!-- Header right menu -->

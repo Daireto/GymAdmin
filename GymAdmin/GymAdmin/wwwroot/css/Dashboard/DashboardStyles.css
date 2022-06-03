@@ -1,0 +1,158 @@
+﻿/* General */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Geneva, Tahoma, sans-serif;
+}
+
+#blur-bg {
+    background-image: url("../../images/bg/message-body-background.jpg");
+    background-attachment: fixed;
+}
+
+.container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.pb-3 {
+    padding-bottom: 0 !important;
+}
+
+.GymAdminHeader {
+    margin-bottom: 0 !important;
+}
+
+.dashboard-container {
+    width: 100%;
+    background-color: rgb(44, 43, 44, 0.8);
+}
+
+/* Structure */
+.AdminPanel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+#ViewOptionsAside {
+    width: 25%;
+    min-height: 100%;
+    padding: 30px 20px;
+    background-color: rgb(13, 13, 13);
+}
+
+#ViewStatisticsSection {
+    width: 75%;
+    min-height: 100%;
+}
+
+/* Aside */
+.OptionsContainer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+    .OptionsContainer .LinksContainer {
+        width: 100%;
+    }
+
+h3.PrincipalTitle {
+    color: #f2c60d;
+    font-style: italic;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #f2c60d;
+    text-align: center;
+}
+
+.LinksContainer {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f2c60d;
+}
+
+.CrudLinks{
+    width: 100%;
+}
+
+.LinksTitle {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #f2c60d;
+    font-weight: 300;
+}
+
+.Links {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.Link {
+    width: 140px;
+    padding: 5px 20px;
+    text-align: center;
+    margin: 3px;
+    background-color: transparent;
+    border: 1px solid #f2c60d;
+    color: #f2c60d;
+    text-decoration: none;
+    transition: all .2s ease-out;
+}
+
+    .Link:hover {
+        background-color: #f2c60d;
+        color: black;
+    }
+
+/* Section */
+#ViewStatisticsSection{
+    padding: 30px 0;
+}
+
+.StatisticsContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.highcharts-credits{
+    display: none;
+}
+
+.UserStatisticsContainer{
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    width: 420px;
+    height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.StatisticsRow{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+    .StatisticsRow div {
+        width: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+.NumberTitle {
+    color: #f2c60d;
+}
+
+.Number{
+    color: white;
+}

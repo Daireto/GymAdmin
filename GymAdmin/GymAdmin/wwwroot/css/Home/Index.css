@@ -167,19 +167,24 @@ header {
                 border-bottom: 1px solid #f2c60d;
             }
 
+        .left-nav a.admin-link-dashboard {
+            position: relative;
+            padding-bottom: 5px;
+            margin-left: 10px;
+        }
+
     .left-nav span {
+        text-decoration: none !important;
         color: white !important;
         transition: all .2s ease-out !important;
     }
 
-        .left-nav span:hover {
-            color: #f2c60d !important;
-        }
-
         .left-nav span.admin-link {
             position: relative;
             padding-bottom: 5px;
-            margin-left: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            text-align: center;
         }
 
 .dropdown {
@@ -191,7 +196,42 @@ header {
     box-sizing: content-box !important;
     visibility: hidden;
     position: absolute;
-    background-color: rgba(0,0,0);
+    background-color: rgba(0,0,0,0.8);
+    opacity: 0;
+    min-width: 160px;
+    padding: 0 0 20px 0;
+    margin-top: 16px;
+    z-index: 1;
+    transition: visibility .2s ease-out !important;
+    transition: opacity .2s ease-out !important;
+    display: flex;
+    flex-direction: column;
+}
+
+    .dropdown-content span {
+        padding: 0 !important;
+        margin: 0 !important;
+        display: inline-block;
+    }
+
+    .dropdown:hover .dropdown-content {
+        opacity: 1;
+        visibility: visible;
+    }
+
+.dropdown-systemdata {
+    display: block;
+    padding: 16px 0;
+    width: 165px;
+}
+
+.dropdown-systemdata-content {
+    box-sizing: border-box !important;
+    visibility: hidden;
+    position: absolute;
+    left: 165px;
+    top: -16px;
+    background-color: rgba(0,0,0,0.8);
     opacity: 0;
     min-width: 160px;
     padding: 6px 16px 20px 16px;
@@ -201,12 +241,48 @@ header {
     transition: opacity .2s ease-out !important;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.dropdown:hover .dropdown-content {
-    opacity: 0.8;
+.dropdown-systemdata:hover .dropdown-systemdata-content {
+    opacity: 1;
     visibility: visible;
+}
+
+.dropdown-operations {
+    display: block;
+    padding: 16px 0;
+    width: 165px;
+}
+
+.dropdown-operations-content {
+    box-sizing: content-box !important;
+    visibility: hidden;
+    position: absolute;
+    left: 165px;
+    top: -16px;
+    background-color: rgba(0,0,0,0.8);
+    opacity: 0;
+    min-width: 160px;
+    padding: 6px 16px 20px 16px;
+    margin-top: 16px;
+    z-index: 1;
+    transition: visibility .2s ease-out !important;
+    transition: opacity .2s ease-out !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-operations:hover .dropdown-operations-content {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-systemdata:hover span.admin-link {
+    color: #f2c60d !important;
+}
+
+.dropdown-operations:hover span.admin-link {
+    color: #f2c60d !important;
 }
 
 .brand {
