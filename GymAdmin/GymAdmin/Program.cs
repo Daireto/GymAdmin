@@ -4,6 +4,7 @@ using GymAdmin.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Vereyon.Web;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +22,14 @@ builder.Services.AddIdentity<User, IdentityRole>(cfg =>
     cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
     cfg.SignIn.RequireConfirmedEmail = true;
     cfg.User.RequireUniqueEmail = true;
-    cfg.Password.RequireDigit = false;
+    cfg.Password.RequireDigit = true;
     cfg.Password.RequiredUniqueChars = 0;
-    cfg.Password.RequireLowercase = false;
-    cfg.Password.RequireNonAlphanumeric = false;
-    cfg.Password.RequireUppercase = false;
+    cfg.Password.RequireLowercase = true;
+    cfg.Password.RequireNonAlphanumeric = true;
+    cfg.Password.RequireUppercase = true;
+    cfg.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    cfg.Lockout.MaxFailedAccessAttempts = 3;
+    cfg.Lockout.AllowedForNewUsers = true;
 })
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<DataContext>();
@@ -54,7 +58,7 @@ SeedData();
 void SeedData()
 {
     IServiceScopeFactory scopedFactory = app.Services.GetService<IServiceScopeFactory>();
-    using (IServiceScope scope = scopedFactory.CreateScope())
+    using (IServiceScope? scope = scopedFactory.CreateScope())
     {
         SeedDb service = scope.ServiceProvider.GetService<SeedDb>();
         service.SeedAsync().Wait();

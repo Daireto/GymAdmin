@@ -575,13 +575,13 @@ namespace GymAdmin.Data
                                     InscriptionDate = DateTime.Now,
                                 };
                                 _context.Add(eventInscription);
+                                await _context.SaveChangesAsync();
                                 exit = true;
                             }
                         }
                     }
                 }
             }
-            await _context.SaveChangesAsync();
         }
 
         //Professionals
@@ -1100,7 +1100,7 @@ namespace GymAdmin.Data
                     ImageId = imageId,
                     UserType = userType,
                 };
-                await _userHelper.AddUserAsync(user, "123456");
+                await _userHelper.AddUserAsync(user, "GymAdmin2022.");
                 await _userHelper.AddUserToRoleAsync(user, userType.ToString());
                 string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
                 await _userHelper.ConfirmEmailAsync(user, token);
@@ -1177,7 +1177,7 @@ namespace GymAdmin.Data
 
                     User user = await _userHelper.GetUserAsync(email);
 
-                    int Duration = random.Next(12);
+                    int Duration = random.Next(1, 12);
 
                     PlanInscription pl = new()
                     {
